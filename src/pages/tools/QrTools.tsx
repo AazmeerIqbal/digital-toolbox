@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Card,
@@ -10,13 +10,27 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { QrCode, Camera, Download } from "lucide-react";
+import {
+  QrCode,
+  Camera,
+  Download,
+  Play,
+  Square,
+  Copy,
+  Check,
+} from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
+import { Html5QrcodeScanner } from "html5-qrcode";
 import { ToolLayout } from "@/components/ToolLayout";
 
 export default function QrTools() {
   const [text, setText] = useState("");
   const [size, setSize] = useState(256);
+  const [isScanning, setIsScanning] = useState(false);
+  const [scannedResult, setScannedResult] = useState("");
+  const [copied, setCopied] = useState(false);
+  const scannerRef = useRef<Html5QrcodeScanner | null>(null);
+  const scannerContainerRef = useRef<HTMLDivElement>(null);
 
   const downloadQR = () => {
     const canvas = document.querySelector("canvas");
@@ -28,6 +42,59 @@ export default function QrTools() {
       a.click();
     }
   };
+
+  const startScanner = () => {
+    if (scannerContainerRef.current && !isScanning) {
+      setIsScanning(true);
+      setScannedResult("");
+
+      scannerRef.current = new Html5QrcodeScanner(
+        "qr-reader",
+        {
+          fps: 10,
+          qrbox: { width: 250, height: 250 },
+          aspectRatio: 1.0,
+        },
+        false
+      );
+
+      scannerRef.current.render(
+        (decodedText) => {
+          setScannedResult(decodedText);
+          stopScanner();
+        },
+        (error) => {
+          // Error handling is optional
+        }
+      );
+    }
+  };
+
+  const stopScanner = () => {
+    if (scannerRef.current && isScanning) {
+      scannerRef.current.clear();
+      scannerRef.current = null;
+      setIsScanning(false);
+    }
+  };
+
+  const copyToClipboard = async () => {
+    if (scannedResult) {
+      try {
+        await navigator.clipboard.writeText(scannedResult);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error("Failed to copy text: ", err);
+      }
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      stopScanner();
+    };
+  }, []);
 
   return (
     <>
@@ -129,17 +196,63 @@ export default function QrTools() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-center p-8 border-2 border-dashed border-border rounded-lg">
-                    <Camera className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground mb-4">
-                      QR Scanner feature
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Camera access required for scanning
-                    </p>
-                    <Button variant="outline" className="mt-4" disabled>
-                      Enable Scanner (Coming Soon)
-                    </Button>
+                  <div className="space-y-4">
+                    {!isScanning ? (
+                      <div className="text-center p-8 border-2 border-dashed border-border rounded-lg">
+                        <Camera className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                        <p className="text-muted-foreground mb-4">
+                          Click start to begin scanning QR codes
+                        </p>
+                        <Button onClick={startScanner} className="w-full">
+                          <Play className="mr-2 h-4 w-4" />
+                          Start Scanner
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <div className="relative">
+                          <div id="qr-reader" className="w-full"></div>
+                          <Button
+                            onClick={stopScanner}
+                            variant="outline"
+                            size="sm"
+                            className="absolute top-2 right-2 z-10"
+                          >
+                            <Square className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <p className="text-sm text-muted-foreground text-center">
+                          Point your camera at a QR code to scan
+                        </p>
+                      </div>
+                    )}
+
+                    {scannedResult && (
+                      <div className="space-y-3 p-4 bg-muted rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-medium text-sm">
+                            Scanned Result:
+                          </h4>
+                          <Button
+                            onClick={copyToClipboard}
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0"
+                          >
+                            {copied ? (
+                              <Check className="h-4 w-4 text-green-500" />
+                            ) : (
+                              <Copy className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </div>
+                        <Textarea
+                          value={scannedResult}
+                          readOnly
+                          className="min-h-[80px] text-sm"
+                        />
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
