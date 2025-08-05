@@ -19,7 +19,7 @@ const Index = () => {
     <>
       <Helmet>
         <title>
-          Free Online Tools - Digital Toolbox for Productivity & Conversion
+          Digital Toolbox - Free Online Tools for Productivity & Conversion
         </title>
         <meta
           name="description"
@@ -31,7 +31,7 @@ const Index = () => {
         />
         <meta
           property="og:title"
-          content="Free Online Tools - Digital Toolbox"
+          content="Digital Toolbox - Free Online Tools"
         />
         <meta
           property="og:description"
