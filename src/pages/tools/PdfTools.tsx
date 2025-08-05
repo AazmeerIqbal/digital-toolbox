@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import {
   Card,
@@ -31,15 +31,93 @@ export default function PdfTools() {
   const [files, setFiles] = useState<File[]>([]);
   const [processing, setProcessing] = useState(false);
   const [extractedText, setExtractedText] = useState<string>("");
+  const [dragActive, setDragActive] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(event.target.files || []);
-    setFiles((prev) => [...prev, ...selectedFiles]);
+    if (selectedFiles.length === 0) return;
+
+    // Validate file types
+    const validFiles = selectedFiles.filter((file) => {
+      if (file.type !== "application/pdf") {
+        toast({
+          title: "Invalid file type",
+          description: `${file.name} is not a PDF file`,
+          variant: "destructive",
+        });
+        return false;
+      }
+      return true;
+    });
+
+    if (validFiles.length > 0) {
+      setFiles((prev) => [...prev, ...validFiles]);
+      toast({
+        title: "Files added",
+        description: `${validFiles.length} PDF file(s) added successfully`,
+      });
+    }
+
+    // Reset the input value to allow selecting the same file again
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length === 0) return;
+
+    // Validate file types
+    const validFiles = files.filter((file) => {
+      if (file.type !== "application/pdf") {
+        toast({
+          title: "Invalid file type",
+          description: `${file.name} is not a PDF file`,
+          variant: "destructive",
+        });
+        return false;
+      }
+      return true;
+    });
+
+    if (validFiles.length > 0) {
+      setFiles((prev) => [...prev, ...validFiles]);
+      toast({
+        title: "Files added",
+        description: `${validFiles.length} PDF file(s) added successfully`,
+      });
+    }
   };
 
   const removeFile = (index: number) => {
     setFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const clearAllFiles = () => {
+    setFiles([]);
+  };
+
+  const triggerFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
   };
 
   const mergePdfs = async () => {
@@ -77,9 +155,10 @@ export default function PdfTools() {
 
       toast({ title: "Success", description: "PDFs merged successfully!" });
     } catch (error) {
+      console.error("Merge error:", error);
       toast({
         title: "Error",
-        description: "Failed to merge PDFs",
+        description: "Failed to merge PDFs. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -119,9 +198,10 @@ export default function PdfTools() {
 
       toast({ title: "Success", description: "PDF split successfully!" });
     } catch (error) {
+      console.error("Split error:", error);
       toast({
         title: "Error",
-        description: "Failed to split PDF",
+        description: "Failed to split PDF. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -160,9 +240,10 @@ export default function PdfTools() {
 
       toast({ title: "Success", description: "PDF rotated successfully!" });
     } catch (error) {
+      console.error("Rotate error:", error);
       toast({
         title: "Error",
-        description: "Failed to rotate PDF",
+        description: "Failed to rotate PDF. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -191,9 +272,10 @@ export default function PdfTools() {
         description: "Text extraction completed (demo mode)",
       });
     } catch (error) {
+      console.error("Extract error:", error);
       toast({
         title: "Error",
-        description: "Failed to extract text",
+        description: "Failed to extract text. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -314,18 +396,34 @@ export default function PdfTools() {
                 <CardDescription>Select PDF files to work with</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="border-2 border-dashed border-border rounded-lg p-8 text-center mb-6">
+                <div
+                  className={`border-2 border-dashed rounded-lg p-8 text-center mb-6 transition-colors ${
+                    dragActive
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:border-primary/50"
+                  }`}
+                  onDragEnter={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDragOver={handleDrag}
+                  onDrop={handleDrop}
+                >
                   <Upload className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <label htmlFor="pdf-upload" className="cursor-pointer">
-                    <Button variant="outline" className="mb-2">
-                      Choose PDF Files
-                    </Button>
-                    <p className="text-sm text-muted-foreground">
-                      Select PDF files to process
-                    </p>
-                  </label>
+                  <Button
+                    variant="outline"
+                    className="mb-2"
+                    onClick={triggerFileInput}
+                    disabled={processing}
+                  >
+                    Choose PDF Files
+                  </Button>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Select PDF files to process or drag and drop here
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Maximum file size: 10MB per file
+                  </p>
                   <input
-                    id="pdf-upload"
+                    ref={fileInputRef}
                     type="file"
                     multiple
                     accept=".pdf"
@@ -336,12 +434,35 @@ export default function PdfTools() {
 
                 {files.length > 0 && (
                   <div className="space-y-2 mb-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold">
+                        Selected Files ({files.length})
+                      </h3>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={clearAllFiles}
+                        className="text-destructive hover:text-destructive"
+                      >
+                        Clear All
+                      </Button>
+                    </div>
                     {files.map((file, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between p-2 border rounded"
+                        className="flex items-center justify-between p-3 border rounded-lg bg-muted/50"
                       >
-                        <span className="text-sm">{file.name}</span>
+                        <div className="flex items-center gap-3">
+                          <FileText className="h-5 w-5 text-primary" />
+                          <div>
+                            <span className="text-sm font-medium">
+                              {file.name}
+                            </span>
+                            <p className="text-xs text-muted-foreground">
+                              {(file.size / 1024 / 1024).toFixed(2)} MB
+                            </p>
+                          </div>
+                        </div>
                         <Button
                           size="sm"
                           variant="destructive"
@@ -363,11 +484,16 @@ export default function PdfTools() {
                     disabled={processing || files.length === 0}
                     className="bg-primary text-primary-foreground hover:bg-primary/90"
                   >
-                    {processing
-                      ? "Processing..."
-                      : `Process with ${
-                          tools.find((t) => t.id === activeTab)?.title
-                        }`}
+                    {processing ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Processing...
+                      </>
+                    ) : (
+                      `Process with ${
+                        tools.find((t) => t.id === activeTab)?.title
+                      }`
+                    )}
                   </Button>
                 </div>
 
