@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Database, User, Mail, Phone, MapPin, FileText, Copy, Download } from "lucide-react";
 import { faker } from "@faker-js/faker";
 import { useToast } from "@/hooks/use-toast";
+import { ToolLayout } from "@/components/ToolLayout";
 
 type DataType = 'person' | 'address' | 'contact' | 'lorem' | 'json';
 
@@ -162,7 +163,7 @@ export default function FakeDataGenerator() {
         <meta name="keywords" content="fake data generator, test data, dummy data, lorem ipsum, random data, json generator" />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-subtle">
+      <ToolLayout>
         <div className="container mx-auto px-4 py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -256,8 +257,8 @@ export default function FakeDataGenerator() {
               </Card>
             )}
           </motion.div>
-        </div>
-      </div>
+                </div>
+      </ToolLayout>
     </>
   );
 }

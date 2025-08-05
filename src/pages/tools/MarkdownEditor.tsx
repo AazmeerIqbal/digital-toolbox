@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Edit3, Eye, Download, Save } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { ToolLayout } from "@/components/ToolLayout";
 
 export default function MarkdownEditor() {
   const [markdown, setMarkdown] = useState("");
@@ -72,7 +73,7 @@ export default function MarkdownEditor() {
         <meta name="keywords" content="markdown editor, markdown preview, notepad, text editor, markdown converter" />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-subtle">
+      <ToolLayout>
         <div className="container mx-auto px-4 py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -181,8 +182,8 @@ Write your markdown here...
               </CardContent>
             </Card>
           </motion.div>
-        </div>
-      </div>
+                </div>
+      </ToolLayout>
     </>
   );
 }

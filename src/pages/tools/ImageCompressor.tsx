@@ -8,6 +8,7 @@ import { Slider } from "@/components/ui/slider";
 import { ImageIcon, Upload, Download, Trash2, Settings } from "lucide-react";
 import imageCompression from "browser-image-compression";
 import { useToast } from "@/hooks/use-toast";
+import { ToolLayout } from "@/components/ToolLayout";
 
 interface CompressedImage {
   original: File;
@@ -100,7 +101,7 @@ export default function ImageCompressor() {
         <meta name="keywords" content="image compressor, resize images, compress photos, image optimization, reduce file size" />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-subtle">
+      <ToolLayout>
         <div className="container mx-auto px-4 py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -240,8 +241,8 @@ export default function ImageCompressor() {
               </Card>
             )}
           </motion.div>
-        </div>
-      </div>
+                </div>
+      </ToolLayout>
     </>
   );
 }

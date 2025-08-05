@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Copy, Type, RotateCcw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { ToolLayout } from "@/components/ToolLayout";
 
 export default function TextConverter() {
   const [inputText, setInputText] = useState("");
@@ -42,7 +43,7 @@ export default function TextConverter() {
         <meta name="keywords" content="text converter, case converter, uppercase, lowercase, camelcase, snake case, text tools" />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-subtle">
+      <ToolLayout>
         <div className="container mx-auto px-4 py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -132,8 +133,8 @@ export default function TextConverter() {
               </div>
             )}
           </motion.div>
-        </div>
-      </div>
+                </div>
+      </ToolLayout>
     </>
   );
 }

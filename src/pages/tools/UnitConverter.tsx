@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import { ToolLayout } from "@/components/ToolLayout";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -95,7 +96,7 @@ export default function UnitConverter() {
         <meta name="keywords" content="unit converter, length converter, weight converter, temperature converter, measurement conversion" />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-subtle">
+      <ToolLayout>
         <div className="container mx-auto px-4 py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -221,8 +222,8 @@ export default function UnitConverter() {
               </Card>
             )}
           </motion.div>
-        </div>
-      </div>
+                </div>
+      </ToolLayout>
     </>
   );
 }

@@ -1,7 +1,14 @@
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { ToolCard } from "@/components/ToolCard";
 import { tools, featuredTools, toolsByCategory } from "@/data/tools";
@@ -11,17 +18,34 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Free Online Tools - Digital Toolbox for Productivity & Conversion</title>
-        <meta name="description" content="Collection of 13+ free online tools for PDF conversion, image processing, text manipulation, color tools, timers and more. No registration required." />
-        <meta name="keywords" content="free online tools, pdf converter, image tools, text converter, color picker, productivity tools, online utilities" />
-        <meta property="og:title" content="Free Online Tools - Digital Toolbox" />
-        <meta property="og:description" content="13+ powerful free tools for PDF conversion, image processing, text manipulation and more. All in your browser." />
+        <title>
+          Free Online Tools - Digital Toolbox for Productivity & Conversion
+        </title>
+        <meta
+          name="description"
+          content="Collection of 13+ free online tools for PDF conversion, image processing, text manipulation, color tools, timers and more. No registration required."
+        />
+        <meta
+          name="keywords"
+          content="free online tools, pdf converter, image tools, text converter, color picker, productivity tools, online utilities"
+        />
+        <meta
+          property="og:title"
+          content="Free Online Tools - Digital Toolbox"
+        />
+        <meta
+          property="og:description"
+          content="13+ powerful free tools for PDF conversion, image processing, text manipulation and more. All in your browser."
+        />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <link rel="canonical" href="https://yoursite.com" />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-subtle">
+        {/* Header */}
+        <Header />
+
         {/* Hero Section */}
         <Hero />
 
@@ -39,7 +63,8 @@ const Index = () => {
                 Why Choose Our Tools?
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Powerful, secure, and completely free tools that work entirely in your browser
+                Powerful, secure, and completely free tools that work entirely
+                in your browser
               </p>
             </motion.div>
 
@@ -48,23 +73,27 @@ const Index = () => {
                 {
                   icon: Zap,
                   title: "Lightning Fast",
-                  description: "All processing happens locally in your browser for maximum speed"
+                  description:
+                    "All processing happens locally in your browser for maximum speed",
                 },
                 {
                   icon: Shield,
                   title: "100% Secure",
-                  description: "Your files never leave your device, ensuring complete privacy"
+                  description:
+                    "Your files never leave your device, ensuring complete privacy",
                 },
                 {
                   icon: Sparkles,
                   title: "No Registration",
-                  description: "Start using tools immediately without creating accounts"
+                  description:
+                    "Start using tools immediately without creating accounts",
                 },
                 {
                   icon: Smartphone,
                   title: "Mobile Friendly",
-                  description: "Responsive design that works perfectly on all devices"
-                }
+                  description:
+                    "Responsive design that works perfectly on all devices",
+                },
               ].map((feature, index) => (
                 <motion.div
                   key={index}
@@ -76,8 +105,12 @@ const Index = () => {
                   <Card className="text-center h-full border-border/50 hover:border-primary/20 transition-colors">
                     <CardContent className="pt-6">
                       <feature.icon className="h-12 w-12 text-primary mx-auto mb-4" />
-                      <h3 className="font-semibold text-lg mb-2">{feature.title}</h3>
-                      <p className="text-muted-foreground text-sm">{feature.description}</p>
+                      <h3 className="font-semibold text-lg mb-2">
+                        {feature.title}
+                      </h3>
+                      <p className="text-muted-foreground text-sm">
+                        {feature.description}
+                      </p>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -96,7 +129,10 @@ const Index = () => {
               viewport={{ once: true }}
               className="text-center mb-12"
             >
-              <Badge variant="secondary" className="mb-4 bg-primary/10 text-primary border-primary/20">
+              <Badge
+                variant="secondary"
+                className="mb-4 bg-primary/10 text-primary border-primary/20"
+              >
                 <Sparkles className="h-4 w-4 mr-2" />
                 Most Popular
               </Badge>
@@ -135,24 +171,26 @@ const Index = () => {
             </motion.div>
 
             <div className="space-y-12 max-w-6xl mx-auto">
-              {Object.entries(toolsByCategory).map(([category, categoryTools]) => (
-                <motion.div
-                  key={category}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
-                  viewport={{ once: true }}
-                >
-                  <h3 className="text-2xl font-bold text-foreground mb-6 capitalize">
-                    {category} Tools
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {categoryTools.map((tool, index) => (
-                      <ToolCard key={tool.id} tool={tool} index={index} />
-                    ))}
-                  </div>
-                </motion.div>
-              ))}
+              {Object.entries(toolsByCategory).map(
+                ([category, categoryTools]) => (
+                  <motion.div
+                    key={category}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                    viewport={{ once: true }}
+                  >
+                    <h3 className="text-2xl font-bold text-foreground mb-6 capitalize">
+                      {category} Tools
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {categoryTools.map((tool, index) => (
+                        <ToolCard key={tool.id} tool={tool} index={index} />
+                      ))}
+                    </div>
+                  </motion.div>
+                )
+              )}
             </div>
           </div>
         </section>
@@ -162,7 +200,9 @@ const Index = () => {
           <div className="container mx-auto px-4">
             {/* Horizontal Ad Placeholder */}
             <div className="bg-muted/30 border-2 border-dashed border-muted-foreground/20 rounded-lg p-8 text-center">
-              <p className="text-muted-foreground text-sm">Advertisement Placeholder (728x90)</p>
+              <p className="text-muted-foreground text-sm">
+                Advertisement Placeholder (728x90)
+              </p>
             </div>
           </div>
         </div>
@@ -171,12 +211,28 @@ const Index = () => {
         <footer className="bg-foreground/5 py-8 mt-16">
           <div className="container mx-auto px-4 text-center">
             <p className="text-muted-foreground">
-              © 2024 Digital Toolbox. All tools are free to use. No registration required.
+              © 2024 Digital Toolbox. All tools are free to use. No registration
+              required.
             </p>
             <div className="mt-4 space-x-6 text-sm">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Privacy Policy</a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Terms of Service</a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Contact</a>
+              <a
+                href="#"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                Privacy Policy
+              </a>
+              <a
+                href="#"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                Terms of Service
+              </a>
+              <a
+                href="#"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                Contact
+              </a>
             </div>
           </div>
         </footer>

@@ -1,11 +1,18 @@
 import { Helmet } from "react-helmet-async";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { QrCode, Camera, Download } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
+import { ToolLayout } from "@/components/ToolLayout";
 
 export default function QrTools() {
   const [text, setText] = useState("");
@@ -26,11 +33,17 @@ export default function QrTools() {
     <>
       <Helmet>
         <title>QR Code Generator & Scanner - Free Online Tool</title>
-        <meta name="description" content="Generate QR codes from text or URLs and scan QR codes using your camera. Free online QR code tools with no registration required." />
-        <meta name="keywords" content="qr code generator, qr scanner, qr code reader, free qr tools, barcode generator" />
+        <meta
+          name="description"
+          content="Generate QR codes from text or URLs and scan QR codes using your camera. Free online QR code tools with no registration required."
+        />
+        <meta
+          name="keywords"
+          content="qr code generator, qr scanner, qr code reader, free qr tools, barcode generator"
+        />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-subtle">
+      <ToolLayout>
         <div className="container mx-auto px-4 py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -39,8 +52,12 @@ export default function QrTools() {
             className="max-w-4xl mx-auto"
           >
             <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold text-foreground mb-4">QR Code Tools</h1>
-              <p className="text-xl text-muted-foreground">Generate and scan QR codes instantly</p>
+              <h1 className="text-4xl font-bold text-foreground mb-4">
+                QR Code Tools
+              </h1>
+              <p className="text-xl text-muted-foreground">
+                Generate and scan QR codes instantly
+              </p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -63,11 +80,13 @@ export default function QrTools() {
                       onChange={(e) => setText(e.target.value)}
                       className="min-h-[100px]"
                     />
-                    
+
                     <div>
-                      <label className="text-sm font-medium mb-2 block">Size</label>
-                      <select 
-                        value={size} 
+                      <label className="text-sm font-medium mb-2 block">
+                        Size
+                      </label>
+                      <select
+                        value={size}
                         onChange={(e) => setSize(Number(e.target.value))}
                         className="w-full p-2 border border-border rounded-lg bg-background"
                       >
@@ -79,7 +98,7 @@ export default function QrTools() {
 
                     {text && (
                       <div className="text-center space-y-4">
-                        <div className="inline-block p-4 bg-white rounded-lg shadow-md">
+                        <div className="inline-block p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
                           <QRCodeSVG
                             value={text}
                             size={Math.min(size, 300)}
@@ -87,7 +106,7 @@ export default function QrTools() {
                             includeMargin={true}
                           />
                         </div>
-                        
+
                         <Button onClick={downloadQR} className="w-full">
                           <Download className="mr-2 h-4 w-4" />
                           Download QR Code
@@ -112,7 +131,9 @@ export default function QrTools() {
                 <CardContent>
                   <div className="text-center p-8 border-2 border-dashed border-border rounded-lg">
                     <Camera className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground mb-4">QR Scanner feature</p>
+                    <p className="text-muted-foreground mb-4">
+                      QR Scanner feature
+                    </p>
                     <p className="text-sm text-muted-foreground">
                       Camera access required for scanning
                     </p>
@@ -125,7 +146,7 @@ export default function QrTools() {
             </div>
           </motion.div>
         </div>
-      </div>
+      </ToolLayout>
     </>
   );
 }

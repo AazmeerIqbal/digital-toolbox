@@ -33,30 +33,39 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            
-            {/* Tool Routes */}
-            <Route path="/tools/image-to-pdf" element={<ImageToPdf />} />
-            <Route path="/tools/pdf-tools" element={<PdfTools />} />
-            <Route path="/tools/text-converter" element={<TextConverter />} />
-            <Route path="/tools/unit-converter" element={<UnitConverter />} />
-            <Route path="/tools/qr-tools" element={<QrTools />} />
-            <Route path="/tools/markdown-editor" element={<MarkdownEditor />} />
-            <Route path="/tools/color-tools" element={<ColorTools />} />
-            <Route path="/tools/timer-tools" element={<TimerTools />} />
-            <Route path="/tools/resume-builder" element={<ResumeBuilder />} />
-            <Route path="/tools/fake-data-generator" element={<FakeDataGenerator />} />
-            <Route path="/tools/image-compressor" element={<ImageCompressor />} />
-            <Route path="/tools/age-calculator" element={<AgeCalculator />} />
-            <Route path="/tools/typing-test" element={<TypingTest />} />
-            
-            {/* Catch-all for 404 */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </ThemeProvider>
+            <Routes>
+              <Route path="/" element={<Index />} />
+
+              {/* Tool Routes */}
+              <Route path="/tools/image-to-pdf" element={<ImageToPdf />} />
+              <Route path="/tools/pdf-tools" element={<PdfTools />} />
+              <Route path="/tools/text-converter" element={<TextConverter />} />
+              <Route path="/tools/unit-converter" element={<UnitConverter />} />
+              <Route path="/tools/qr-tools" element={<QrTools />} />
+              <Route
+                path="/tools/markdown-editor"
+                element={<MarkdownEditor />}
+              />
+              <Route path="/tools/color-tools" element={<ColorTools />} />
+              <Route path="/tools/timer-tools" element={<TimerTools />} />
+              <Route path="/tools/resume-builder" element={<ResumeBuilder />} />
+              <Route
+                path="/tools/fake-data-generator"
+                element={<FakeDataGenerator />}
+              />
+              <Route
+                path="/tools/image-compressor"
+                element={<ImageCompressor />}
+              />
+              <Route path="/tools/age-calculator" element={<AgeCalculator />} />
+              <Route path="/tools/typing-test" element={<TypingTest />} />
+
+              {/* Catch-all for 404 */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </ThemeProvider>
     </HelmetProvider>
   </QueryClientProvider>
 );

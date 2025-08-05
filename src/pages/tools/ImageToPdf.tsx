@@ -1,7 +1,14 @@
 import { Helmet } from "react-helmet-async";
+import { ToolLayout } from "@/components/ToolLayout";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Upload, Download, FileImage, Trash2 } from "lucide-react";
 import jsPDF from "jspdf";
@@ -12,16 +19,16 @@ export default function ImageToPdf() {
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
-    setImages(prev => [...prev, ...files]);
+    setImages((prev) => [...prev, ...files]);
   };
 
   const removeImage = (index: number) => {
-    setImages(prev => prev.filter((_, i) => i !== index));
+    setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   const convertToPdf = async () => {
     if (images.length === 0) return;
-    
+
     setProcessing(true);
     try {
       const pdf = new jsPDF();
@@ -30,47 +37,47 @@ export default function ImageToPdf() {
       for (const image of images) {
         const imageUrl = URL.createObjectURL(image);
         const img = new Image();
-        
+
         await new Promise((resolve) => {
           img.onload = resolve;
           img.src = imageUrl;
         });
 
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
         canvas.width = img.width;
         canvas.height = img.height;
         ctx?.drawImage(img, 0, 0);
-        
-        const imgData = canvas.toDataURL('image/jpeg', 0.95);
-        
+
+        const imgData = canvas.toDataURL("image/jpeg", 0.95);
+
         if (!isFirstPage) {
           pdf.addPage();
         }
-        
+
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = pdf.internal.pageSize.getHeight();
         const aspectRatio = img.width / img.height;
-        
+
         let width = pdfWidth - 20;
         let height = width / aspectRatio;
-        
+
         if (height > pdfHeight - 20) {
           height = pdfHeight - 20;
           width = height * aspectRatio;
         }
-        
+
         const x = (pdfWidth - width) / 2;
         const y = (pdfHeight - height) / 2;
-        
-        pdf.addImage(imgData, 'JPEG', x, y, width, height);
+
+        pdf.addImage(imgData, "JPEG", x, y, width, height);
         URL.revokeObjectURL(imageUrl);
         isFirstPage = false;
       }
-      
-      pdf.save('converted-images.pdf');
+
+      pdf.save("converted-images.pdf");
     } catch (error) {
-      console.error('Error converting to PDF:', error);
+      console.error("Error converting to PDF:", error);
     } finally {
       setProcessing(false);
     }
@@ -80,11 +87,17 @@ export default function ImageToPdf() {
     <>
       <Helmet>
         <title>Image to PDF Converter - Free Online Tool</title>
-        <meta name="description" content="Convert multiple images to PDF online for free. No registration required. Fast, secure, and easy to use image to PDF converter." />
-        <meta name="keywords" content="image to pdf, convert images, pdf converter, free tool, online converter" />
+        <meta
+          name="description"
+          content="Convert multiple images to PDF online for free. No registration required. Fast, secure, and easy to use image to PDF converter."
+        />
+        <meta
+          name="keywords"
+          content="image to pdf, convert images, pdf converter, free tool, online converter"
+        />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-subtle">
+      <ToolLayout>
         <div className="container mx-auto px-4 py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -93,8 +106,12 @@ export default function ImageToPdf() {
             className="max-w-4xl mx-auto"
           >
             <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold text-foreground mb-4">Image to PDF Converter</h1>
-              <p className="text-xl text-muted-foreground">Convert multiple images into a single PDF document</p>
+              <h1 className="text-4xl font-bold text-foreground mb-4">
+                Image to PDF Converter
+              </h1>
+              <p className="text-xl text-muted-foreground">
+                Convert multiple images into a single PDF document
+              </p>
             </div>
 
             <Card className="mb-8">
@@ -104,7 +121,8 @@ export default function ImageToPdf() {
                   Upload Images
                 </CardTitle>
                 <CardDescription>
-                  Select multiple images to convert to PDF. Supported formats: JPG, PNG, GIF, BMP
+                  Select multiple images to convert to PDF. Supported formats:
+                  JPG, PNG, GIF, BMP
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -152,11 +170,13 @@ export default function ImageToPdf() {
                         >
                           <Trash2 className="h-3 w-3" />
                         </Button>
-                        <p className="text-xs text-center mt-1 truncate">{image.name}</p>
+                        <p className="text-xs text-center mt-1 truncate">
+                          {image.name}
+                        </p>
                       </div>
                     ))}
                   </div>
-                  
+
                   <div className="flex justify-center">
                     <Button
                       onClick={convertToPdf}
@@ -177,8 +197,8 @@ export default function ImageToPdf() {
               </Card>
             )}
           </motion.div>
-        </div>
-      </div>
+                </div>
+      </ToolLayout>
     </>
   );
 }

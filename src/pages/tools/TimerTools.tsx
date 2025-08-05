@@ -1,10 +1,17 @@
 import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Timer, Clock, Play, Pause, RotateCcw } from "lucide-react";
+import { ToolLayout } from "@/components/ToolLayout";
 
 export default function TimerTools() {
   const [pomodoroTime, setPomodoroTime] = useState(25 * 60); // 25 minutes
@@ -17,10 +24,10 @@ export default function TimerTools() {
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    
+
     if (pomodoroRunning && pomodoroTime > 0) {
       interval = setInterval(() => {
-        setPomodoroTime(time => {
+        setPomodoroTime((time) => {
           if (time <= 1) {
             setPomodoroRunning(false);
             // You could add notification here
@@ -30,28 +37,28 @@ export default function TimerTools() {
         });
       }, 1000);
     }
-    
+
     return () => clearInterval(interval);
   }, [pomodoroRunning, pomodoroTime]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    
+
     if (stopwatchRunning) {
       interval = setInterval(() => {
-        setStopwatchTime(time => time + 1);
+        setStopwatchTime((time) => time + 1);
       }, 1000);
     }
-    
+
     return () => clearInterval(interval);
   }, [stopwatchRunning]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    
+
     if (countdownRunning && countdownTime > 0) {
       interval = setInterval(() => {
-        setCountdownTime(time => {
+        setCountdownTime((time) => {
           if (time <= 1) {
             setCountdownRunning(false);
             return 0;
@@ -60,14 +67,16 @@ export default function TimerTools() {
         });
       }, 1000);
     }
-    
+
     return () => clearInterval(interval);
   }, [countdownRunning, countdownTime]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${mins.toString().padStart(2, "0")}:${secs
+      .toString()
+      .padStart(2, "0")}`;
   };
 
   const resetPomodoro = () => {
@@ -88,12 +97,20 @@ export default function TimerTools() {
   return (
     <>
       <Helmet>
-        <title>Pomodoro Timer & Stopwatch - Free Online Productivity Tools</title>
-        <meta name="description" content="Pomodoro timer, stopwatch and countdown timer for productivity. Free online timer tools with clean interface and easy controls." />
-        <meta name="keywords" content="pomodoro timer, stopwatch, countdown timer, productivity timer, focus timer" />
+        <title>
+          Pomodoro Timer & Stopwatch - Free Online Productivity Tools
+        </title>
+        <meta
+          name="description"
+          content="Pomodoro timer, stopwatch and countdown timer for productivity. Free online timer tools with clean interface and easy controls."
+        />
+        <meta
+          name="keywords"
+          content="pomodoro timer, stopwatch, countdown timer, productivity timer, focus timer"
+        />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-subtle">
+      <ToolLayout>
         <div className="container mx-auto px-4 py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -102,8 +119,12 @@ export default function TimerTools() {
             className="max-w-6xl mx-auto"
           >
             <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold text-foreground mb-4">Timer Tools</h1>
-              <p className="text-xl text-muted-foreground">Productivity timers for focused work sessions</p>
+              <h1 className="text-4xl font-bold text-foreground mb-4">
+                Timer Tools
+              </h1>
+              <p className="text-xl text-muted-foreground">
+                Productivity timers for focused work sessions
+              </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -120,29 +141,35 @@ export default function TimerTools() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
-                    <div 
+                    <div
                       className={`text-6xl font-mono font-bold ${
-                        pomodoroTime <= 60 ? 'text-red-500' : 'text-foreground'
+                        pomodoroTime <= 60 ? "text-red-500" : "text-foreground"
                       }`}
                     >
                       {formatTime(pomodoroTime)}
                     </div>
-                    
+
                     <div className="flex gap-2">
                       <Button
                         onClick={() => setPomodoroRunning(!pomodoroRunning)}
                         disabled={pomodoroTime === 0}
                         className="flex-1"
                       >
-                        {pomodoroRunning ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                        {pomodoroRunning ? (
+                          <Pause className="h-4 w-4" />
+                        ) : (
+                          <Play className="h-4 w-4" />
+                        )}
                       </Button>
                       <Button variant="outline" onClick={resetPomodoro}>
                         <RotateCcw className="h-4 w-4" />
                       </Button>
                     </div>
-                    
+
                     <div className="text-sm text-muted-foreground">
-                      {pomodoroTime === 0 ? "Time's up! Take a break." : "Focus time"}
+                      {pomodoroTime === 0
+                        ? "Time's up! Take a break."
+                        : "Focus time"}
                     </div>
                   </div>
                 </CardContent>
@@ -155,28 +182,30 @@ export default function TimerTools() {
                     <Clock className="h-5 w-5 text-blue-500" />
                     Stopwatch
                   </CardTitle>
-                  <CardDescription>
-                    Track elapsed time
-                  </CardDescription>
+                  <CardDescription>Track elapsed time</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
                     <div className="text-6xl font-mono font-bold text-foreground">
                       {formatTime(stopwatchTime)}
                     </div>
-                    
+
                     <div className="flex gap-2">
                       <Button
                         onClick={() => setStopwatchRunning(!stopwatchRunning)}
                         className="flex-1"
                       >
-                        {stopwatchRunning ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                        {stopwatchRunning ? (
+                          <Pause className="h-4 w-4" />
+                        ) : (
+                          <Play className="h-4 w-4" />
+                        )}
                       </Button>
                       <Button variant="outline" onClick={resetStopwatch}>
                         <RotateCcw className="h-4 w-4" />
                       </Button>
                     </div>
-                    
+
                     <div className="text-sm text-muted-foreground">
                       {stopwatchRunning ? "Running..." : "Ready to start"}
                     </div>
@@ -191,33 +220,35 @@ export default function TimerTools() {
                     <Timer className="h-5 w-5 text-green-500" />
                     Countdown Timer
                   </CardTitle>
-                  <CardDescription>
-                    Custom countdown timer
-                  </CardDescription>
+                  <CardDescription>Custom countdown timer</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
-                    <div 
+                    <div
                       className={`text-6xl font-mono font-bold ${
-                        countdownTime <= 60 ? 'text-red-500' : 'text-foreground'
+                        countdownTime <= 60 ? "text-red-500" : "text-foreground"
                       }`}
                     >
                       {formatTime(countdownTime)}
                     </div>
-                    
+
                     <div className="flex gap-2">
                       <Button
                         onClick={() => setCountdownRunning(!countdownRunning)}
                         disabled={countdownTime === 0}
                         className="flex-1"
                       >
-                        {countdownRunning ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                        {countdownRunning ? (
+                          <Pause className="h-4 w-4" />
+                        ) : (
+                          <Play className="h-4 w-4" />
+                        )}
                       </Button>
                       <Button variant="outline" onClick={resetCountdown}>
                         <RotateCcw className="h-4 w-4" />
                       </Button>
                     </div>
-                    
+
                     <div className="space-y-2">
                       <Input
                         type="number"
@@ -244,7 +275,7 @@ export default function TimerTools() {
             </div>
           </motion.div>
         </div>
-      </div>
+      </ToolLayout>
     </>
   );
 }

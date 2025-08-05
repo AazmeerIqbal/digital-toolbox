@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import { ToolLayout } from "@/components/ToolLayout";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -129,7 +130,7 @@ export default function AgeCalculator() {
         <meta name="keywords" content="age calculator, date calculator, zodiac sign, birth date, age in days, age in hours" />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-subtle">
+      <ToolLayout>
         <div className="container mx-auto px-4 py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -258,8 +259,8 @@ export default function AgeCalculator() {
               </>
             )}
           </motion.div>
-        </div>
-      </div>
+                </div>
+      </ToolLayout>
     </>
   );
 }
