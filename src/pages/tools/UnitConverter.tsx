@@ -1,5 +1,6 @@
-import { Helmet } from "react-helmet-async";
 import { ToolLayout } from "@/components/ToolLayout";
+import { SEOHead } from "@/components/SEOHead";
+import { getSEOConfig } from "@/lib/seo-config";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -42,6 +43,7 @@ const conversions = {
 };
 
 export default function UnitConverter() {
+  const seoConfig = getSEOConfig("unitconverter");
   const [category, setCategory] = useState("length");
   const [fromUnit, setFromUnit] = useState("");
   const [toUnit, setToUnit] = useState("");
@@ -90,11 +92,7 @@ export default function UnitConverter() {
 
   return (
     <>
-      <Helmet>
-        <title>Unit Converter - Free Online Conversion Tool</title>
-        <meta name="description" content="Convert units of length, weight, temperature and more. Free online unit converter with accurate calculations and easy-to-use interface." />
-        <meta name="keywords" content="unit converter, length converter, weight converter, temperature converter, measurement conversion" />
-      </Helmet>
+      <SEOHead config={seoConfig} />
 
       <ToolLayout>
         <div className="container mx-auto px-4 py-8">

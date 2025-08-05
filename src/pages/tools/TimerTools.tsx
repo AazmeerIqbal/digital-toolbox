@@ -1,4 +1,3 @@
-import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
@@ -12,8 +11,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Timer, Clock, Play, Pause, RotateCcw } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
+import { SEOHead } from "@/components/SEOHead";
+import { getSEOConfig } from "@/lib/seo-config";
 
 export default function TimerTools() {
+  const seoConfig = getSEOConfig("timertools");
   const [pomodoroTime, setPomodoroTime] = useState(25 * 60); // 25 minutes
   const [pomodoroRunning, setPomodoroRunning] = useState(false);
   const [stopwatchTime, setStopwatchTime] = useState(0);
@@ -96,19 +98,7 @@ export default function TimerTools() {
 
   return (
     <>
-      <Helmet>
-        <title>
-          Pomodoro Timer & Stopwatch - Free Online Productivity Tools
-        </title>
-        <meta
-          name="description"
-          content="Pomodoro timer, stopwatch and countdown timer for productivity. Free online timer tools with clean interface and easy controls."
-        />
-        <meta
-          name="keywords"
-          content="pomodoro timer, stopwatch, countdown timer, productivity timer, focus timer"
-        />
-      </Helmet>
+      <SEOHead config={seoConfig} />
 
       <ToolLayout>
         <div className="container mx-auto px-4 py-8">

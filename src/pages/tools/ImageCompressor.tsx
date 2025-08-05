@@ -1,4 +1,3 @@
-import { Helmet } from "react-helmet-async";
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import {
@@ -15,6 +14,8 @@ import { ImageIcon, Upload, Download, Trash2, Settings } from "lucide-react";
 import imageCompression from "browser-image-compression";
 import { useToast } from "@/hooks/use-toast";
 import { ToolLayout } from "@/components/ToolLayout";
+import { SEOHead } from "@/components/SEOHead";
+import { getSEOConfig } from "@/lib/seo-config";
 
 interface CompressedImage {
   original: File;
@@ -26,6 +27,7 @@ interface CompressedImage {
 }
 
 export default function ImageCompressor() {
+  const seoConfig = getSEOConfig("imagecompressor");
   const [images, setImages] = useState<CompressedImage[]>([]);
   const [processing, setProcessing] = useState(false);
   const [quality, setQuality] = useState([0.8]);
@@ -221,17 +223,7 @@ export default function ImageCompressor() {
 
   return (
     <>
-      <Helmet>
-        <title>Image Compressor - Free Online Image Compression Tool</title>
-        <meta
-          name="description"
-          content="Compress and resize images online for free. Reduce file size while maintaining quality. Support for JPG, PNG, WebP and more."
-        />
-        <meta
-          name="keywords"
-          content="image compressor, resize images, compress photos, image optimization, reduce file size"
-        />
-      </Helmet>
+      <SEOHead config={seoConfig} />
 
       <ToolLayout>
         <div className="container mx-auto px-4 py-8">

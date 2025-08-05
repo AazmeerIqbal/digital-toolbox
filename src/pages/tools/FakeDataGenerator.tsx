@@ -1,4 +1,3 @@
-import { Helmet } from "react-helmet-async";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,10 +9,13 @@ import { Database, User, Mail, Phone, MapPin, FileText, Copy, Download } from "l
 import { faker } from "@faker-js/faker";
 import { useToast } from "@/hooks/use-toast";
 import { ToolLayout } from "@/components/ToolLayout";
+import { SEOHead } from "@/components/SEOHead";
+import { getSEOConfig } from "@/lib/seo-config";
 
 type DataType = 'person' | 'address' | 'contact' | 'lorem' | 'json';
 
 export default function FakeDataGenerator() {
+  const seoConfig = getSEOConfig("fakedatagenerator");
   const [dataType, setDataType] = useState<DataType>('person');
   const [count, setCount] = useState(5);
   const [generatedData, setGeneratedData] = useState<string>('');
@@ -157,11 +159,7 @@ export default function FakeDataGenerator() {
 
   return (
     <>
-      <Helmet>
-        <title>Fake Data Generator - Free Online Test Data Creator</title>
-        <meta name="description" content="Generate fake data including names, emails, addresses, phone numbers and JSON objects for testing and development." />
-        <meta name="keywords" content="fake data generator, test data, dummy data, lorem ipsum, random data, json generator" />
-      </Helmet>
+      <SEOHead config={seoConfig} />
 
       <ToolLayout>
         <div className="container mx-auto px-4 py-8">

@@ -1,5 +1,6 @@
-import { Helmet } from "react-helmet-async";
 import { ToolLayout } from "@/components/ToolLayout";
+import { SEOHead } from "@/components/SEOHead";
+import { getSEOConfig } from "@/lib/seo-config";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,6 +23,7 @@ interface AgeData {
 }
 
 export default function AgeCalculator() {
+  const seoConfig = getSEOConfig("agecalculator");
   const [birthDate, setBirthDate] = useState('');
   const [ageData, setAgeData] = useState<AgeData | null>(null);
 
@@ -124,11 +126,7 @@ export default function AgeCalculator() {
 
   return (
     <>
-      <Helmet>
-        <title>Age Calculator - Calculate Your Exact Age</title>
-        <meta name="description" content="Calculate your exact age in years, months, days, hours and minutes. Find your zodiac sign and interesting birth date facts." />
-        <meta name="keywords" content="age calculator, date calculator, zodiac sign, birth date, age in days, age in hours" />
-      </Helmet>
+      <SEOHead config={seoConfig} />
 
       <ToolLayout>
         <div className="container mx-auto px-4 py-8">

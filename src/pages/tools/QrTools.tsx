@@ -1,6 +1,7 @@
-import { Helmet } from "react-helmet-async";
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
+import { SEOHead } from "@/components/SEOHead";
+import { getSEOConfig } from "@/lib/seo-config";
 import {
   Card,
   CardContent,
@@ -24,6 +25,7 @@ import { Html5QrcodeScanner } from "html5-qrcode";
 import { ToolLayout } from "@/components/ToolLayout";
 
 export default function QrTools() {
+  const seoConfig = getSEOConfig("qr-tools");
   const [text, setText] = useState("");
   const [size, setSize] = useState(256);
   const [isScanning, setIsScanning] = useState(false);
@@ -98,17 +100,7 @@ export default function QrTools() {
 
   return (
     <>
-      <Helmet>
-        <title>QR Code Generator & Scanner - Free Online Tool</title>
-        <meta
-          name="description"
-          content="Generate QR codes from text or URLs and scan QR codes using your camera. Free online QR code tools with no registration required."
-        />
-        <meta
-          name="keywords"
-          content="qr code generator, qr scanner, qr code reader, free qr tools, barcode generator"
-        />
-      </Helmet>
+      <SEOHead config={seoConfig} />
 
       <ToolLayout>
         <div className="container mx-auto px-4 py-8">

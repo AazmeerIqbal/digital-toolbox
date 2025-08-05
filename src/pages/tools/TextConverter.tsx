@@ -1,26 +1,68 @@
-import { Helmet } from "react-helmet-async";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Copy, Type, RotateCcw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ToolLayout } from "@/components/ToolLayout";
+import { SEOHead } from "@/components/SEOHead";
+import { getSEOConfig } from "@/lib/seo-config";
 
 export default function TextConverter() {
+  const seoConfig = getSEOConfig("text-converter");
   const [inputText, setInputText] = useState("");
   const { toast } = useToast();
 
   const transformations = [
     { name: "UPPERCASE", fn: (text: string) => text.toUpperCase() },
     { name: "lowercase", fn: (text: string) => text.toLowerCase() },
-    { name: "Title Case", fn: (text: string) => text.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()) },
-    { name: "camelCase", fn: (text: string) => text.replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => index === 0 ? word.toLowerCase() : word.toUpperCase()).replace(/\s+/g, '') },
-    { name: "snake_case", fn: (text: string) => text.toLowerCase().replace(/\s+/g, '_') },
-    { name: "kebab-case", fn: (text: string) => text.toLowerCase().replace(/\s+/g, '-') },
-    { name: "Sentence case", fn: (text: string) => text.charAt(0).toUpperCase() + text.slice(1).toLowerCase() },
-    { name: "aLtErNaTiNg CaSe", fn: (text: string) => text.split('').map((char, i) => i % 2 === 0 ? char.toLowerCase() : char.toUpperCase()).join('') },
+    {
+      name: "Title Case",
+      fn: (text: string) =>
+        text.replace(
+          /\w\S*/g,
+          (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+        ),
+    },
+    {
+      name: "camelCase",
+      fn: (text: string) =>
+        text
+          .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) =>
+            index === 0 ? word.toLowerCase() : word.toUpperCase()
+          )
+          .replace(/\s+/g, ""),
+    },
+    {
+      name: "snake_case",
+      fn: (text: string) => text.toLowerCase().replace(/\s+/g, "_"),
+    },
+    {
+      name: "kebab-case",
+      fn: (text: string) => text.toLowerCase().replace(/\s+/g, "-"),
+    },
+    {
+      name: "Sentence case",
+      fn: (text: string) =>
+        text.charAt(0).toUpperCase() + text.slice(1).toLowerCase(),
+    },
+    {
+      name: "aLtErNaTiNg CaSe",
+      fn: (text: string) =>
+        text
+          .split("")
+          .map((char, i) =>
+            i % 2 === 0 ? char.toLowerCase() : char.toUpperCase()
+          )
+          .join(""),
+    },
   ];
 
   const copyToClipboard = (text: string, type: string) => {
@@ -31,17 +73,14 @@ export default function TextConverter() {
     });
   };
 
-  const getWordCount = (text: string) => text.trim() ? text.trim().split(/\s+/).length : 0;
+  const getWordCount = (text: string) =>
+    text.trim() ? text.trim().split(/\s+/).length : 0;
   const getCharCount = (text: string) => text.length;
-  const removeExtraSpaces = (text: string) => text.replace(/\s+/g, ' ').trim();
+  const removeExtraSpaces = (text: string) => text.replace(/\s+/g, " ").trim();
 
   return (
     <>
-      <Helmet>
-        <title>Text Case Converter - Free Online Text Tool</title>
-        <meta name="description" content="Convert text to uppercase, lowercase, title case, camelCase, snake_case and more. Free online text converter with word count and character count." />
-        <meta name="keywords" content="text converter, case converter, uppercase, lowercase, camelcase, snake case, text tools" />
-      </Helmet>
+      <SEOHead config={seoConfig} />
 
       <ToolLayout>
         <div className="container mx-auto px-4 py-8">
@@ -52,8 +91,12 @@ export default function TextConverter() {
             className="max-w-4xl mx-auto"
           >
             <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold text-foreground mb-4">Text Case Converter</h1>
-              <p className="text-xl text-muted-foreground">Transform your text into any case format</p>
+              <h1 className="text-4xl font-bold text-foreground mb-4">
+                Text Case Converter
+              </h1>
+              <p className="text-xl text-muted-foreground">
+                Transform your text into any case format
+              </p>
             </div>
 
             <Card className="mb-8">
@@ -73,11 +116,14 @@ export default function TextConverter() {
                   onChange={(e) => setInputText(e.target.value)}
                   className="min-h-[120px] mb-4"
                 />
-                
+
                 <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-4">
                   <span>Words: {getWordCount(inputText)}</span>
                   <span>Characters: {getCharCount(inputText)}</span>
-                  <span>Characters (no spaces): {getCharCount(inputText.replace(/\s/g, ''))}</span>
+                  <span>
+                    Characters (no spaces):{" "}
+                    {getCharCount(inputText.replace(/\s/g, ""))}
+                  </span>
                 </div>
 
                 <div className="flex gap-2">
@@ -111,7 +157,9 @@ export default function TextConverter() {
                   >
                     <Card>
                       <CardHeader className="pb-3">
-                        <CardTitle className="text-lg">{transform.name}</CardTitle>
+                        <CardTitle className="text-lg">
+                          {transform.name}
+                        </CardTitle>
                       </CardHeader>
                       <CardContent>
                         <div className="bg-muted p-3 rounded-lg mb-3 min-h-[60px] font-mono text-sm">
@@ -120,7 +168,12 @@ export default function TextConverter() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => copyToClipboard(transform.fn(inputText), transform.name)}
+                          onClick={() =>
+                            copyToClipboard(
+                              transform.fn(inputText),
+                              transform.name
+                            )
+                          }
                           className="w-full"
                         >
                           <Copy className="w-4 h-4 mr-2" />
@@ -133,7 +186,7 @@ export default function TextConverter() {
               </div>
             )}
           </motion.div>
-                </div>
+        </div>
       </ToolLayout>
     </>
   );

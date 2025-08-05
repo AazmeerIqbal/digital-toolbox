@@ -1,14 +1,22 @@
-import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Edit3, Eye, Download, Save } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ToolLayout } from "@/components/ToolLayout";
+import { SEOHead } from "@/components/SEOHead";
+import { getSEOConfig } from "@/lib/seo-config";
 
 export default function MarkdownEditor() {
+  const seoConfig = getSEOConfig("markdown-editor");
   const [markdown, setMarkdown] = useState("");
   const [preview, setPreview] = useState("");
   const { toast } = useToast();
@@ -25,15 +33,15 @@ export default function MarkdownEditor() {
     // Simple markdown to HTML conversion
     const convertMarkdown = (text: string) => {
       return text
-        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-        .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-        .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
-        .replace(/\*(.*)\*/gim, '<em>$1</em>')
+        .replace(/^# (.*$)/gim, "<h1>$1</h1>")
+        .replace(/^## (.*$)/gim, "<h2>$1</h2>")
+        .replace(/^### (.*$)/gim, "<h3>$1</h3>")
+        .replace(/\*\*(.*)\*\*/gim, "<strong>$1</strong>")
+        .replace(/\*(.*)\*/gim, "<em>$1</em>")
         .replace(/\[([^\]]*)\]\(([^\)]*)\)/gim, '<a href="$2">$1</a>')
-        .replace(/\n/gim, '<br>');
+        .replace(/\n/gim, "<br>");
     };
-    
+
     setPreview(convertMarkdown(markdown));
   }, [markdown]);
 
@@ -67,11 +75,7 @@ export default function MarkdownEditor() {
 
   return (
     <>
-      <Helmet>
-        <title>Markdown Notepad - Free Online Markdown Editor</title>
-        <meta name="description" content="Write and preview markdown with live rendering. Save notes locally and export to .md or .txt files. Free online markdown editor." />
-        <meta name="keywords" content="markdown editor, markdown preview, notepad, text editor, markdown converter" />
-      </Helmet>
+      <SEOHead config={seoConfig} />
 
       <ToolLayout>
         <div className="container mx-auto px-4 py-8">
@@ -82,8 +86,12 @@ export default function MarkdownEditor() {
             className="max-w-7xl mx-auto"
           >
             <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold text-foreground mb-4">Markdown Notepad</h1>
-              <p className="text-xl text-muted-foreground">Write and preview markdown with live rendering</p>
+              <h1 className="text-4xl font-bold text-foreground mb-4">
+                Markdown Notepad
+              </h1>
+              <p className="text-xl text-muted-foreground">
+                Write and preview markdown with live rendering
+              </p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -102,11 +110,19 @@ export default function MarkdownEditor() {
                       <Save className="mr-2 h-4 w-4" />
                       Save
                     </Button>
-                    <Button size="sm" variant="outline" onClick={downloadAsMarkdown}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={downloadAsMarkdown}
+                    >
                       <Download className="mr-2 h-4 w-4" />
                       .md
                     </Button>
-                    <Button size="sm" variant="outline" onClick={downloadAsText}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={downloadAsText}
+                    >
                       <Download className="mr-2 h-4 w-4" />
                       .txt
                     </Button>
@@ -142,9 +158,13 @@ Write your markdown here...
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="h-full pb-6">
-                  <div 
+                  <div
                     className="h-full overflow-auto p-4 bg-muted/30 rounded-lg prose prose-sm max-w-none"
-                    dangerouslySetInnerHTML={{ __html: preview || "<p class='text-muted-foreground'>Your preview will appear here...</p>" }}
+                    dangerouslySetInnerHTML={{
+                      __html:
+                        preview ||
+                        "<p class='text-muted-foreground'>Your preview will appear here...</p>",
+                    }}
                   />
                 </CardContent>
               </Card>
@@ -160,29 +180,30 @@ Write your markdown here...
                   <div>
                     <h4 className="font-semibold mb-2">Headers</h4>
                     <code className="text-xs">
-                      # H1<br/>
-                      ## H2<br/>
+                      # H1
+                      <br />
+                      ## H2
+                      <br />
                       ### H3
                     </code>
                   </div>
                   <div>
                     <h4 className="font-semibold mb-2">Emphasis</h4>
                     <code className="text-xs">
-                      **bold**<br/>
+                      **bold**
+                      <br />
                       *italic*
                     </code>
                   </div>
                   <div>
                     <h4 className="font-semibold mb-2">Links</h4>
-                    <code className="text-xs">
-                      [text](url)
-                    </code>
+                    <code className="text-xs">[text](url)</code>
                   </div>
                 </div>
               </CardContent>
             </Card>
           </motion.div>
-                </div>
+        </div>
       </ToolLayout>
     </>
   );

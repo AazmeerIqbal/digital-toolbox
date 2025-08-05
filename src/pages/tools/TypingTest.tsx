@@ -1,5 +1,6 @@
-import { Helmet } from "react-helmet-async";
 import { ToolLayout } from "@/components/ToolLayout";
+import { SEOHead } from "@/components/SEOHead";
+import { getSEOConfig } from "@/lib/seo-config";
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,6 +17,7 @@ interface TestResult {
 }
 
 export default function TypingTest() {
+  const seoConfig = getSEOConfig("typingtest");
   const [isActive, setIsActive] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [userInput, setUserInput] = useState('');
@@ -133,11 +135,7 @@ export default function TypingTest() {
 
   return (
     <>
-      <Helmet>
-        <title>Typing Speed Test - Free Online WPM Test</title>
-        <meta name="description" content="Test your typing speed and accuracy with our free online typing test. Get detailed statistics including WPM, accuracy, and performance analytics." />
-        <meta name="keywords" content="typing test, typing speed, wpm test, words per minute, typing accuracy, keyboard test" />
-      </Helmet>
+      <SEOHead config={seoConfig} />
 
       <ToolLayout>
         <div className="container mx-auto px-4 py-8">

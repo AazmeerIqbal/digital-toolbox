@@ -1,4 +1,3 @@
-import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import {
   Card,
@@ -11,36 +10,17 @@ import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { ToolCard } from "@/components/ToolCard";
+import { SEOHead } from "@/components/SEOHead";
+import { getSEOConfig } from "@/lib/seo-config";
 import { tools, featuredTools, toolsByCategory } from "@/data/tools";
 import { Sparkles, Zap, Shield, Smartphone } from "lucide-react";
 
 const Index = () => {
+  const seoConfig = getSEOConfig("home");
+
   return (
     <>
-      <Helmet>
-        <title>
-          Digital Toolbox - Free Online Tools for Productivity & Conversion
-        </title>
-        <meta
-          name="description"
-          content="Collection of 13+ free online tools for PDF conversion, image processing, text manipulation, color tools, timers and more. No registration required."
-        />
-        <meta
-          name="keywords"
-          content="free online tools, pdf converter, image tools, text converter, color picker, productivity tools, online utilities"
-        />
-        <meta
-          property="og:title"
-          content="Digital Toolbox - Free Online Tools"
-        />
-        <meta
-          property="og:description"
-          content="13+ powerful free tools for PDF conversion, image processing, text manipulation and more. All in your browser."
-        />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <link rel="canonical" href="https://yoursite.com" />
-      </Helmet>
+      <SEOHead config={seoConfig} />
 
       <div className="min-h-screen bg-gradient-subtle">
         {/* Header */}

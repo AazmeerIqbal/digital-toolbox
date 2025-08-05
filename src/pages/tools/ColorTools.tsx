@@ -1,4 +1,3 @@
-import { Helmet } from "react-helmet-async";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -13,8 +12,11 @@ import { Input } from "@/components/ui/input";
 import { Palette, Copy, Shuffle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ToolLayout } from "@/components/ToolLayout";
+import { SEOHead } from "@/components/SEOHead";
+import { getSEOConfig } from "@/lib/seo-config";
 
 export default function ColorTools() {
+  const seoConfig = getSEOConfig("color-tools");
   const [selectedColor, setSelectedColor] = useState("#3b82f6");
   const [palette, setPalette] = useState<string[]>([]);
   const { toast } = useToast();
@@ -99,17 +101,7 @@ export default function ColorTools() {
 
   return (
     <>
-      <Helmet>
-        <title>Color Tools Suite - Free Online Color Picker & Converter</title>
-        <meta
-          name="description"
-          content="Color picker, HEX to RGB converter, HSL converter, palette generator and gradient creator. Free online color tools for designers and developers."
-        />
-        <meta
-          name="keywords"
-          content="color picker, hex to rgb, color converter, palette generator, color tools, gradient generator"
-        />
-      </Helmet>
+      <SEOHead config={seoConfig} />
 
       <ToolLayout>
         <div className="container mx-auto px-4 py-8">

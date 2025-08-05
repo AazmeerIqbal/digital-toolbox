@@ -1,5 +1,6 @@
-import { Helmet } from "react-helmet-async";
 import { ToolLayout } from "@/components/ToolLayout";
+import { SEOHead } from "@/components/SEOHead";
+import { getSEOConfig } from "@/lib/seo-config";
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
@@ -15,6 +16,7 @@ import jsPDF from "jspdf";
 import { useToast } from "@/hooks/use-toast";
 
 export default function ImageToPdf() {
+  const seoConfig = getSEOConfig("image-to-pdf");
   const [images, setImages] = useState<File[]>([]);
   const [processing, setProcessing] = useState(false);
   const [dragActive, setDragActive] = useState(false);
@@ -235,17 +237,7 @@ export default function ImageToPdf() {
 
   return (
     <>
-      <Helmet>
-        <title>Image to PDF Converter - Free Online Tool</title>
-        <meta
-          name="description"
-          content="Convert multiple images to PDF online for free. No registration required. Fast, secure, and easy to use image to PDF converter."
-        />
-        <meta
-          name="keywords"
-          content="image to pdf, convert images, pdf converter, free tool, online converter"
-        />
-      </Helmet>
+      <SEOHead config={seoConfig} />
 
       <ToolLayout>
         <div className="container mx-auto px-4 py-8">

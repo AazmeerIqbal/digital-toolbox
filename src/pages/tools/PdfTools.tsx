@@ -1,6 +1,7 @@
-import { Helmet } from "react-helmet-async";
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
+import { SEOHead } from "@/components/SEOHead";
+import { getSEOConfig } from "@/lib/seo-config";
 import {
   Card,
   CardContent,
@@ -27,6 +28,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ToolLayout } from "@/components/ToolLayout";
 
 export default function PdfTools() {
+  const seoConfig = getSEOConfig("pdf-tools");
   const [activeTab, setActiveTab] = useState<string>("merge");
   const [files, setFiles] = useState<File[]>([]);
   const [processing, setProcessing] = useState(false);
@@ -338,17 +340,7 @@ export default function PdfTools() {
 
   return (
     <>
-      <Helmet>
-        <title>PDF Tools Suite - Free Online PDF Editor</title>
-        <meta
-          name="description"
-          content="Complete PDF toolkit: merge, split, rotate, compress and extract content from PDFs. Free online PDF tools with no registration required."
-        />
-        <meta
-          name="keywords"
-          content="pdf tools, merge pdf, split pdf, rotate pdf, compress pdf, pdf editor"
-        />
-      </Helmet>
+      <SEOHead config={seoConfig} />
 
       <ToolLayout>
         <div className="container mx-auto px-4 py-8">
