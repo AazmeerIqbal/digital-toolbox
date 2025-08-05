@@ -161,7 +161,7 @@ export default function ImageToPdf() {
                     <Button
                       onClick={convertToPdf}
                       disabled={processing}
-                      className="bg-gradient-primary text-primary-foreground"
+                      className="bg-primary text-primary-foreground hover:bg-primary/90"
                     >
                       {processing ? (
                         "Converting..."
