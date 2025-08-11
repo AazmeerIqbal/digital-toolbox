@@ -18,6 +18,8 @@ import { Sparkles, Zap, Shield, Smartphone } from "lucide-react";
 const Index = () => {
   const seoConfig = getSEOConfig("home");
 
+  const currentYear = new Date().getFullYear();
+
   return (
     <>
       <SEOHead config={seoConfig} />
@@ -191,8 +193,8 @@ const Index = () => {
         <footer className="bg-foreground/5 py-8 mt-16">
           <div className="container mx-auto px-4 text-center">
             <p className="text-muted-foreground">
-              © 2024 Digital Toolbox. All tools are free to use. No registration
-              required.
+              © {currentYear} Digital Toolbox. All tools are free to use. No
+              registration required.
             </p>
             <div className="mt-4 space-x-6 text-sm">
               <a
