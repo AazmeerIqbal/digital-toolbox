@@ -26,7 +26,6 @@ function SideAd({ side }: { side: Side }) {
       style={{ zIndex: 20 }}
       aria-hidden="false"
     >
-      asdasd
       <div className="w-[160px] 2xl:w-[300px]">
         <ins
           className="adsbygoogle"
