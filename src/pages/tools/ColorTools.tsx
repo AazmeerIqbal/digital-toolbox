@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import {
   Card,
@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function ColorTools() {
   const seoConfig = getSEOConfig("color-tools");
@@ -92,12 +93,193 @@ export default function ColorTools() {
     navigator.clipboard.writeText(value);
     toast({
       title: "Copied!",
-      description: `${format} value copied to clipboard`,
+      description: `${format} copied to clipboard`,
     });
   };
 
   const rgb = hexToRgb(selectedColor);
   const hsl = hexToHsl(selectedColor);
+
+  // Gradient gallery data and helpers
+  type Gradient = {
+    name: string;
+    colors: string[]; // hex stops
+    direction:
+      | "to-r"
+      | "to-l"
+      | "to-b"
+      | "to-t"
+      | "to-tr"
+      | "to-tl"
+      | "to-br"
+      | "to-bl";
+    category: string;
+  };
+
+  const gradients: Gradient[] = useMemo(
+    () => [
+      {
+        name: "Sunset",
+        colors: ["#ef4444", "#f59e0b"],
+        direction: "to-r",
+        category: "Warm",
+      },
+      {
+        name: "Ocean",
+        colors: ["#0ea5e9", "#7c3aed"],
+        direction: "to-r",
+        category: "Cool",
+      },
+      {
+        name: "Dusk",
+        colors: ["#8b5cf6", "#ec4899"],
+        direction: "to-r",
+        category: "Purple",
+      },
+      {
+        name: "Sunrise",
+        colors: ["#ec4899", "#ef4444", "#f97316"],
+        direction: "to-r",
+        category: "Warm",
+      },
+      {
+        name: "Cool Water",
+        colors: ["#06b6d4", "#60a5fa", "#93c5fd"],
+        direction: "to-r",
+        category: "Cool",
+      },
+      {
+        name: "Warm Sand",
+        colors: ["#f59e0b", "#ef4444"],
+        direction: "to-r",
+        category: "Earth",
+      },
+      {
+        name: "Tropical Rainforest",
+        colors: ["#10b981", "#14b8a6"],
+        direction: "to-r",
+        category: "Nature",
+      },
+      {
+        name: "Desert",
+        colors: ["#f59e0b", "#ef4444"],
+        direction: "to-r",
+        category: "Earth",
+      },
+      {
+        name: "Iceberg",
+        colors: ["#3b82f6", "#14b8a6"],
+        direction: "to-r",
+        category: "Cool",
+      },
+      {
+        name: "Aurora",
+        colors: ["#22c55e", "#10b981", "#06b6d4"],
+        direction: "to-tr",
+        category: "Nature",
+      },
+      {
+        name: "Lavender",
+        colors: ["#a78bfa", "#f0abfc"],
+        direction: "to-r",
+        category: "Pastel",
+      },
+      {
+        name: "Peach",
+        colors: ["#fb923c", "#fda4af"],
+        direction: "to-r",
+        category: "Pastel",
+      },
+      {
+        name: "Berry",
+        colors: ["#ec4899", "#8b5cf6"],
+        direction: "to-tr",
+        category: "Purple",
+      },
+      {
+        name: "Forest",
+        colors: ["#14532d", "#16a34a"],
+        direction: "to-r",
+        category: "Nature",
+      },
+      {
+        name: "Sky",
+        colors: ["#38bdf8", "#818cf8"],
+        direction: "to-r",
+        category: "Cool",
+      },
+      {
+        name: "Neon",
+        colors: ["#22d3ee", "#a3e635", "#fb7185"],
+        direction: "to-r",
+        category: "Neon",
+      },
+      {
+        name: "Fire",
+        colors: ["#ef4444", "#f97316", "#f59e0b"],
+        direction: "to-r",
+        category: "Warm",
+      },
+      {
+        name: "Mint",
+        colors: ["#99f6e4", "#34d399"],
+        direction: "to-r",
+        category: "Pastel",
+      },
+    ],
+    []
+  );
+
+  const categories = useMemo(
+    () => ["All", ...Array.from(new Set(gradients.map((g) => g.category)))],
+    [gradients]
+  );
+  const [activeCategory, setActiveCategory] = useState<string>("All");
+
+  const directionToCss: Record<Gradient["direction"], string> = {
+    "to-r": "to right",
+    "to-l": "to left",
+    "to-b": "to bottom",
+    "to-t": "to top",
+    "to-tr": "to top right",
+    "to-tl": "to top left",
+    "to-br": "to bottom right",
+    "to-bl": "to bottom left",
+  };
+
+  const directionToTw: Record<Gradient["direction"], string> = {
+    "to-r": "bg-gradient-to-r",
+    "to-l": "bg-gradient-to-l",
+    "to-b": "bg-gradient-to-b",
+    "to-t": "bg-gradient-to-t",
+    "to-tr": "bg-gradient-to-tr",
+    "to-tl": "bg-gradient-to-tl",
+    "to-br": "bg-gradient-to-br",
+    "to-bl": "bg-gradient-to-bl",
+  };
+
+  const asCssGradient = (g: Gradient) =>
+    `linear-gradient(${directionToCss[g.direction]}, ${g.colors.join(", ")})`;
+  const asTailwindUtilities = (g: Gradient) => {
+    const stops = [
+      `from-[${g.colors[0]}]`,
+      ...(g.colors.length === 3 ? [`via-[${g.colors[1]}]`] : []),
+      `to-[${g.colors[g.colors.length - 1]}]`,
+    ];
+    return `${directionToTw[g.direction]} ${stops.join(" ")}`;
+  };
+  const asTailwindArbitrary = (g: Gradient) => {
+    const css = asCssGradient(g).replace(/ /g, "_").replace(/,/g, ",_");
+    return `bg-[${css}]`;
+  };
+
+  const visibleGradients = useMemo(
+    () =>
+      gradients.filter(
+        (g) => activeCategory === "All" || g.category === activeCategory
+      ),
+    [gradients, activeCategory]
+  );
 
   return (
     <>
@@ -174,7 +356,9 @@ export default function ColorTools() {
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => copyToClipboard(selectedColor, "HEX")}
+                        onClick={() =>
+                          copyToClipboard(selectedColor, "HEX value")
+                        }
                       >
                         <Copy className="h-4 w-4" />
                       </Button>
@@ -194,7 +378,7 @@ export default function ColorTools() {
                           onClick={() =>
                             copyToClipboard(
                               `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
-                              "RGB"
+                              "RGB value"
                             )
                           }
                         >
@@ -217,7 +401,7 @@ export default function ColorTools() {
                           onClick={() =>
                             copyToClipboard(
                               `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`,
-                              "HSL"
+                              "HSL value"
                             )
                           }
                         >
@@ -252,7 +436,7 @@ export default function ColorTools() {
                           key={index}
                           className="h-20 rounded-lg border border-border cursor-pointer flex items-end justify-center pb-2"
                           style={{ backgroundColor: color }}
-                          onClick={() => copyToClipboard(color, "Color")}
+                          onClick={() => copyToClipboard(color, "Color value")}
                         >
                           <span className="text-xs text-white bg-black/50 px-2 py-1 rounded">
                             Click to copy
@@ -262,6 +446,77 @@ export default function ColorTools() {
                     </div>
                   )}
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Gradient Gallery */}
+            <Card className="mt-8">
+              <CardHeader>
+                <CardTitle>Gradient Gallery</CardTitle>
+                <CardDescription>
+                  Beautiful, widely used gradients. Filter by category and copy
+                  in CSS or Tailwind.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Tabs value={activeCategory} onValueChange={setActiveCategory}>
+                  <TabsList className="flex flex-wrap gap-2">
+                    {categories.map((c) => (
+                      <TabsTrigger key={c} value={c} className="capitalize">
+                        {c}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+
+                  {categories.map((c) => (
+                    <TabsContent key={c} value={c} className="mt-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {visibleGradients.map((g) => (
+                          <div
+                            key={`${c}-${g.name}`}
+                            className="rounded-xl overflow-hidden border"
+                          >
+                            <div
+                              className="h-28"
+                              style={{
+                                backgroundImage: asCssGradient(g),
+                              }}
+                            />
+                            <div className="px-4 py-3 bg-muted/60 backdrop-blur flex items-center justify-between">
+                              <div className="font-medium">{g.name}</div>
+                              <div className="flex gap-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() =>
+                                    copyToClipboard(
+                                      asCssGradient(g),
+                                      `${g.name} (CSS gradient)`
+                                    )
+                                  }
+                                >
+                                  CSS
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() =>
+                                    copyToClipboard(
+                                      asTailwindUtilities(g),
+                                      `${g.name} (Tailwind gradient)`
+                                    )
+                                  }
+                                >
+                                  TW
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </TabsContent>
+                  ))}
+                </Tabs>
               </CardContent>
             </Card>
           </motion.div>
