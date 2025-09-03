@@ -19,6 +19,8 @@ import { TopBannerAd, InContentAd, BottomBannerAd } from "@/components/AdSense";
 const Index = () => {
   const seoConfig = getSEOConfig("home");
 
+  const currentYear = new Date().getFullYear();
+
   return (
     <>
       <SEOHead config={seoConfig} />
@@ -204,6 +206,39 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <BottomBannerAd />
         </div>
+<<<<<<< HEAD
+=======
+
+        {/* Footer */}
+        <footer className="bg-foreground/5 py-8 mt-16">
+          <div className="container mx-auto px-4 text-center">
+            <p className="text-muted-foreground">
+              © {currentYear} Digital Toolbox. All tools are free to use. No
+              registration required.
+            </p>
+            <div className="mt-4 space-x-6 text-sm">
+              <a
+                href="#"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                Privacy Policy
+              </a>
+              <a
+                href="#"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                Terms of Service
+              </a>
+              <a
+                href="#"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                Contact
+              </a>
+            </div>
+          </div>
+        </footer>
+>>>>>>> ea05d120b1829d018ce05f6863484e2db7b3e4c0
       </div>
     </>
   );

@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import SideAds from "@/components/SideAds";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
@@ -30,6 +31,7 @@ const App = () => (
     <HelmetProvider>
       <ThemeProvider defaultTheme="light" storageKey="tools-theme">
         <TooltipProvider>
+          <SideAds />
           <Toaster />
           <Sonner />
           <BrowserRouter>
