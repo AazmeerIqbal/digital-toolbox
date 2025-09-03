@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import {
   Card,
@@ -10,7 +10,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { FileUser, Download, Plus, Trash2, Eye } from "lucide-react";
+import {
+  FileUser,
+  Download,
+  Plus,
+  Trash2,
+  Eye,
+  AlertCircle,
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
@@ -41,6 +48,10 @@ interface ResumeData {
   skills: string[];
 }
 
+interface ValidationErrors {
+  [key: string]: string;
+}
+
 export default function ResumeBuilder() {
   const seoConfig = getSEOConfig("resume-builder");
   const [resumeData, setResumeData] = useState<ResumeData>({
@@ -56,19 +67,69 @@ export default function ResumeBuilder() {
 
   const [activeTab, setActiveTab] = useState("personal");
   const [showPreview, setShowPreview] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
+    {}
+  );
   const { toast } = useToast();
 
-  const updatePersonalInfo = (
-    field: keyof Pick<
-      ResumeData,
-      "name" | "email" | "phone" | "address" | "summary"
-    >,
-    value: string
-  ) => {
-    setResumeData((prev) => ({ ...prev, [field]: value }));
-  };
+  // Memoized validation function
+  const validateResume = useCallback((data: ResumeData): ValidationErrors => {
+    const errors: ValidationErrors = {};
 
-  const addExperience = () => {
+    if (!data.name.trim()) errors.name = "Name is required";
+    if (!data.email.trim()) errors.email = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+      errors.email = "Invalid email format";
+    }
+    if (!data.phone.trim()) errors.phone = "Phone is required";
+    if (!data.summary.trim())
+      errors.summary = "Professional summary is required";
+
+    // Validate experience
+    data.experience.forEach((exp, index) => {
+      if (!exp.company.trim())
+        errors[`exp_${index}_company`] = "Company is required";
+      if (!exp.position.trim())
+        errors[`exp_${index}_position`] = "Position is required";
+      if (!exp.duration.trim())
+        errors[`exp_${index}_duration`] = "Duration is required";
+      if (!exp.description.trim())
+        errors[`exp_${index}_description`] = "Description is required";
+    });
+
+    // Validate education
+    data.education.forEach((edu, index) => {
+      if (!edu.institution.trim())
+        errors[`edu_${index}_institution`] = "Institution is required";
+      if (!edu.degree.trim())
+        errors[`edu_${index}_degree`] = "Degree is required";
+      if (!edu.year.trim()) errors[`edu_${index}_year`] = "Year is required";
+    });
+
+    return errors;
+  }, []);
+
+  // Consolidated state update function
+  const updateResumeData = useCallback((updates: Partial<ResumeData>) => {
+    setResumeData((prev) => ({ ...prev, ...updates }));
+    // Clear validation errors when data changes
+    setValidationErrors({});
+  }, []);
+
+  const updatePersonalInfo = useCallback(
+    (
+      field: keyof Pick<
+        ResumeData,
+        "name" | "email" | "phone" | "address" | "summary"
+      >,
+      value: string
+    ) => {
+      updateResumeData({ [field]: value });
+    },
+    [updateResumeData]
+  );
+
+  const addExperience = useCallback(() => {
     setResumeData((prev) => ({
       ...prev,
       experience: [
@@ -76,168 +137,245 @@ export default function ResumeBuilder() {
         { company: "", position: "", duration: "", description: "" },
       ],
     }));
-  };
+  }, []);
 
-  const updateExperience = (
-    index: number,
-    field: keyof Experience,
-    value: string
-  ) => {
-    setResumeData((prev) => ({
-      ...prev,
-      experience: prev.experience.map((exp, i) =>
-        i === index ? { ...exp, [field]: value } : exp
-      ),
-    }));
-  };
+  const updateExperience = useCallback(
+    (index: number, field: keyof Experience, value: string) => {
+      setResumeData((prev) => ({
+        ...prev,
+        experience: prev.experience.map((exp, i) =>
+          i === index ? { ...exp, [field]: value } : exp
+        ),
+      }));
+    },
+    []
+  );
 
-  const removeExperience = (index: number) => {
+  const removeExperience = useCallback((index: number) => {
     setResumeData((prev) => ({
       ...prev,
       experience: prev.experience.filter((_, i) => i !== index),
     }));
-  };
+  }, []);
 
-  const addEducation = () => {
+  const addEducation = useCallback(() => {
     setResumeData((prev) => ({
       ...prev,
       education: [...prev.education, { institution: "", degree: "", year: "" }],
     }));
-  };
+  }, []);
 
-  const updateEducation = (
-    index: number,
-    field: keyof Education,
-    value: string
-  ) => {
-    setResumeData((prev) => ({
-      ...prev,
-      education: prev.education.map((edu, i) =>
-        i === index ? { ...edu, [field]: value } : edu
-      ),
-    }));
-  };
+  const updateEducation = useCallback(
+    (index: number, field: keyof Education, value: string) => {
+      setResumeData((prev) => ({
+        ...prev,
+        education: prev.education.map((edu, i) =>
+          i === index ? { ...edu, [field]: value } : edu
+        ),
+      }));
+    },
+    []
+  );
 
-  const removeEducation = (index: number) => {
+  const removeEducation = useCallback((index: number) => {
     setResumeData((prev) => ({
       ...prev,
       education: prev.education.filter((_, i) => i !== index),
     }));
-  };
+  }, []);
 
-  const addSkill = () => {
+  const addSkill = useCallback(() => {
     setResumeData((prev) => ({
       ...prev,
       skills: [...prev.skills, ""],
     }));
-  };
+  }, []);
 
-  const updateSkill = (index: number, value: string) => {
+  const updateSkill = useCallback((index: number, value: string) => {
     setResumeData((prev) => ({
       ...prev,
       skills: prev.skills.map((skill, i) => (i === index ? value : skill)),
     }));
-  };
+  }, []);
 
-  const removeSkill = (index: number) => {
+  const removeSkill = useCallback((index: number) => {
     setResumeData((prev) => ({
       ...prev,
       skills: prev.skills.filter((_, i) => i !== index),
     }));
-  };
+  }, []);
 
-  const generatePDF = () => {
-    const pdf = new jsPDF();
-    let yPosition = 20;
+  // Memoized PDF generation function
+  const generatePDF = useCallback(() => {
+    try {
+      const errors = validateResume(resumeData);
+      if (Object.keys(errors).length > 0) {
+        setValidationErrors(errors);
+        toast({
+          title: "Validation Error",
+          description: "Please fill in all required fields correctly.",
+          variant: "destructive",
+        });
+        return;
+      }
 
-    // Header
-    pdf.setFontSize(20);
-    pdf.text(resumeData.name || "Your Name", 20, yPosition);
-    yPosition += 10;
+      const pdf = new jsPDF();
+      const pageWidth = pdf.internal.pageSize.width;
+      const margin = 20;
+      const contentWidth = pageWidth - margin * 2;
+      let yPosition = 20;
+      const lineHeight = 7;
+      const sectionSpacing = 15;
 
-    pdf.setFontSize(12);
-    pdf.text(resumeData.email || "email@example.com", 20, yPosition);
-    yPosition += 6;
-    pdf.text(resumeData.phone || "Phone Number", 20, yPosition);
-    yPosition += 6;
-    pdf.text(resumeData.address || "Address", 20, yPosition);
-    yPosition += 15;
+      // Helper function to add text with overflow handling
+      const addTextWithOverflow = (
+        text: string,
+        fontSize: number,
+        isBold: boolean = false
+      ) => {
+        pdf.setFontSize(fontSize);
+        if (isBold) pdf.setFont(undefined, "bold");
+        else pdf.setFont(undefined, "normal");
 
-    // Summary
-    if (resumeData.summary) {
-      pdf.setFontSize(16);
-      pdf.text("Professional Summary", 20, yPosition);
-      yPosition += 8;
+        const lines = pdf.splitTextToSize(text, contentWidth);
+        if (
+          yPosition + lines.length * lineHeight >
+          pdf.internal.pageSize.height - margin
+        ) {
+          pdf.addPage();
+          yPosition = 20;
+        }
+
+        pdf.text(lines, margin, yPosition);
+        yPosition += lines.length * lineHeight + 2;
+      };
+
+      // Header
+      addTextWithOverflow(resumeData.name, 24, true);
+      yPosition += 5;
+
+      // Contact info
       pdf.setFontSize(12);
-      const summaryLines = pdf.splitTextToSize(resumeData.summary, 170);
-      pdf.text(summaryLines, 20, yPosition);
-      yPosition += summaryLines.length * 6 + 10;
-    }
+      pdf.setFont(undefined, "normal");
+      const contactInfo = [
+        resumeData.email,
+        resumeData.phone,
+        resumeData.address,
+      ]
+        .filter(Boolean)
+        .join(" • ");
 
-    // Experience
-    if (resumeData.experience.some((exp) => exp.company)) {
-      pdf.setFontSize(16);
-      pdf.text("Experience", 20, yPosition);
-      yPosition += 8;
+      if (contactInfo) {
+        addTextWithOverflow(contactInfo, 12);
+      }
+      yPosition += sectionSpacing;
 
-      resumeData.experience.forEach((exp) => {
-        if (exp.company) {
-          pdf.setFontSize(14);
-          pdf.text(`${exp.position} at ${exp.company}`, 20, yPosition);
-          yPosition += 6;
-          pdf.setFontSize(12);
-          pdf.text(exp.duration, 20, yPosition);
-          yPosition += 6;
-          if (exp.description) {
-            const descLines = pdf.splitTextToSize(exp.description, 170);
-            pdf.text(descLines, 20, yPosition);
-            yPosition += descLines.length * 6 + 8;
+      // Summary
+      if (resumeData.summary.trim()) {
+        addTextWithOverflow("PROFESSIONAL SUMMARY", 16, true);
+        yPosition += 5;
+        addTextWithOverflow(resumeData.summary, 12);
+        yPosition += sectionSpacing;
+      }
+
+      // Experience
+      const validExperience = resumeData.experience.filter(
+        (exp) => exp.company.trim() && exp.position.trim()
+      );
+
+      if (validExperience.length > 0) {
+        addTextWithOverflow("PROFESSIONAL EXPERIENCE", 16, true);
+        yPosition += 5;
+
+        validExperience.forEach((exp, index) => {
+          // Position and Company
+          const titleText = `${exp.position} at ${exp.company}`;
+          addTextWithOverflow(titleText, 14, true);
+
+          // Duration
+          if (exp.duration.trim()) {
+            addTextWithOverflow(exp.duration, 12);
           }
-        }
+
+          // Description
+          if (exp.description.trim()) {
+            addTextWithOverflow(exp.description, 12);
+          }
+
+          if (index < validExperience.length - 1) {
+            yPosition += 8;
+          }
+        });
+        yPosition += sectionSpacing;
+      }
+
+      // Education
+      const validEducation = resumeData.education.filter(
+        (edu) => edu.institution.trim() && edu.degree.trim()
+      );
+
+      if (validEducation.length > 0) {
+        addTextWithOverflow("EDUCATION", 16, true);
+        yPosition += 5;
+
+        validEducation.forEach((edu, index) => {
+          const eduText = `${edu.degree} - ${edu.institution} (${edu.year})`;
+          addTextWithOverflow(eduText, 12);
+
+          if (index < validEducation.length - 1) {
+            yPosition += 5;
+          }
+        });
+        yPosition += sectionSpacing;
+      }
+
+      // Skills
+      const validSkills = resumeData.skills.filter((skill) => skill.trim());
+      if (validSkills.length > 0) {
+        addTextWithOverflow("SKILLS", 16, true);
+        yPosition += 5;
+        addTextWithOverflow(validSkills.join(", "), 12);
+      }
+
+      // Save PDF
+      const fileName = resumeData.name.trim()
+        ? `${resumeData.name.replace(/[^a-zA-Z0-9\s]/g, "")}_resume.pdf`
+        : "resume.pdf";
+      pdf.save(fileName);
+
+      toast({
+        title: "Success",
+        description: "Resume downloaded successfully!",
       });
-      yPosition += 5;
-    }
-
-    // Education
-    if (resumeData.education.some((edu) => edu.institution)) {
-      pdf.setFontSize(16);
-      pdf.text("Education", 20, yPosition);
-      yPosition += 8;
-
-      resumeData.education.forEach((edu) => {
-        if (edu.institution) {
-          pdf.setFontSize(12);
-          pdf.text(
-            `${edu.degree} - ${edu.institution} (${edu.year})`,
-            20,
-            yPosition
-          );
-          yPosition += 8;
-        }
+    } catch (error) {
+      console.error("PDF generation error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to generate PDF. Please try again.",
+        variant: "destructive",
       });
-      yPosition += 5;
     }
+  }, [resumeData, validateResume, toast]);
 
-    // Skills
-    const validSkills = resumeData.skills.filter((skill) => skill.trim());
-    if (validSkills.length > 0) {
-      pdf.setFontSize(16);
-      pdf.text("Skills", 20, yPosition);
-      yPosition += 8;
-      pdf.setFontSize(12);
-      pdf.text(validSkills.join(", "), 20, yPosition);
-    }
+  // Memoized tabs array
+  const tabs = useMemo(
+    () => [
+      { id: "personal", label: "Personal Info" },
+      { id: "experience", label: "Experience" },
+      { id: "education", label: "Education" },
+      { id: "skills", label: "Skills" },
+    ],
+    []
+  );
 
-    pdf.save(`${resumeData.name || "resume"}.pdf`);
-    toast({ title: "Success", description: "Resume downloaded successfully!" });
-  };
+  // Memoized validation check
+  const hasErrors = useMemo(
+    () => Object.keys(validationErrors).length > 0,
+    [validationErrors]
+  );
 
-  const tabs = [
-    { id: "personal", label: "Personal Info" },
-    { id: "experience", label: "Experience" },
-    { id: "education", label: "Education" },
-    { id: "skills", label: "Skills" },
-  ];
+  // Helper function to get field error
+  const getFieldError = (field: string) => validationErrors[field] || "";
 
   return (
     <>
@@ -280,6 +418,7 @@ export default function ResumeBuilder() {
                         <Button
                           onClick={generatePDF}
                           className="bg-primary text-primary-foreground hover:bg-primary/90"
+                          disabled={hasErrors}
                         >
                           <Download className="mr-2 h-4 w-4" />
                           Download PDF
@@ -305,7 +444,7 @@ export default function ResumeBuilder() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
                             <label className="text-sm font-medium mb-1 block">
-                              Full Name
+                              Full Name *
                             </label>
                             <Input
                               value={resumeData.name}
@@ -313,11 +452,20 @@ export default function ResumeBuilder() {
                                 updatePersonalInfo("name", e.target.value)
                               }
                               placeholder="John Doe"
+                              className={
+                                getFieldError("name") ? "border-red-500" : ""
+                              }
                             />
+                            {getFieldError("name") && (
+                              <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                <AlertCircle className="h-3 w-3" />
+                                {getFieldError("name")}
+                              </p>
+                            )}
                           </div>
                           <div>
                             <label className="text-sm font-medium mb-1 block">
-                              Email
+                              Email *
                             </label>
                             <Input
                               type="email"
@@ -326,11 +474,20 @@ export default function ResumeBuilder() {
                                 updatePersonalInfo("email", e.target.value)
                               }
                               placeholder="john@example.com"
+                              className={
+                                getFieldError("email") ? "border-red-500" : ""
+                              }
                             />
+                            {getFieldError("email") && (
+                              <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                <AlertCircle className="h-3 w-3" />
+                                {getFieldError("email")}
+                              </p>
+                            )}
                           </div>
                           <div>
                             <label className="text-sm font-medium mb-1 block">
-                              Phone
+                              Phone *
                             </label>
                             <Input
                               value={resumeData.phone}
@@ -338,7 +495,16 @@ export default function ResumeBuilder() {
                                 updatePersonalInfo("phone", e.target.value)
                               }
                               placeholder="+1 (555) 123-4567"
+                              className={
+                                getFieldError("phone") ? "border-red-500" : ""
+                              }
                             />
+                            {getFieldError("phone") && (
+                              <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                <AlertCircle className="h-3 w-3" />
+                                {getFieldError("phone")}
+                              </p>
+                            )}
                           </div>
                           <div>
                             <label className="text-sm font-medium mb-1 block">
@@ -355,7 +521,7 @@ export default function ResumeBuilder() {
                         </div>
                         <div>
                           <label className="text-sm font-medium mb-1 block">
-                            Professional Summary
+                            Professional Summary *
                           </label>
                           <Textarea
                             value={resumeData.summary}
@@ -364,7 +530,16 @@ export default function ResumeBuilder() {
                             }
                             placeholder="Brief professional summary..."
                             rows={4}
+                            className={
+                              getFieldError("summary") ? "border-red-500" : ""
+                            }
                           />
+                          {getFieldError("summary") && (
+                            <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                              <AlertCircle className="h-3 w-3" />
+                              {getFieldError("summary")}
+                            </p>
+                          )}
                         </div>
                       </div>
                     )}
@@ -389,52 +564,104 @@ export default function ResumeBuilder() {
                                 )}
                               </div>
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                <Input
-                                  placeholder="Company Name"
-                                  value={exp.company}
-                                  onChange={(e) =>
-                                    updateExperience(
-                                      index,
-                                      "company",
-                                      e.target.value
-                                    )
-                                  }
-                                />
-                                <Input
-                                  placeholder="Position Title"
-                                  value={exp.position}
-                                  onChange={(e) =>
-                                    updateExperience(
-                                      index,
-                                      "position",
-                                      e.target.value
-                                    )
-                                  }
-                                />
-                                <Input
-                                  placeholder="Duration (e.g., 2020-2023)"
-                                  value={exp.duration}
-                                  onChange={(e) =>
-                                    updateExperience(
-                                      index,
-                                      "duration",
-                                      e.target.value
-                                    )
-                                  }
-                                />
+                                <div>
+                                  <Input
+                                    placeholder="Company Name *"
+                                    value={exp.company}
+                                    onChange={(e) =>
+                                      updateExperience(
+                                        index,
+                                        "company",
+                                        e.target.value
+                                      )
+                                    }
+                                    className={
+                                      getFieldError(`exp_${index}_company`)
+                                        ? "border-red-500"
+                                        : ""
+                                    }
+                                  />
+                                  {getFieldError(`exp_${index}_company`) && (
+                                    <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                      <AlertCircle className="h-3 w-3" />
+                                      {getFieldError(`exp_${index}_company`)}
+                                    </p>
+                                  )}
+                                </div>
+                                <div>
+                                  <Input
+                                    placeholder="Position Title *"
+                                    value={exp.position}
+                                    onChange={(e) =>
+                                      updateExperience(
+                                        index,
+                                        "position",
+                                        e.target.value
+                                      )
+                                    }
+                                    className={
+                                      getFieldError(`exp_${index}_position`)
+                                        ? "border-red-500"
+                                        : ""
+                                    }
+                                  />
+                                  {getFieldError(`exp_${index}_position`) && (
+                                    <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                      <AlertCircle className="h-3 w-3" />
+                                      {getFieldError(`exp_${index}_position`)}
+                                    </p>
+                                  )}
+                                </div>
+                                <div>
+                                  <Input
+                                    placeholder="Duration (e.g., 2020-2023) *"
+                                    value={exp.duration}
+                                    onChange={(e) =>
+                                      updateExperience(
+                                        index,
+                                        "duration",
+                                        e.target.value
+                                      )
+                                    }
+                                    className={
+                                      getFieldError(`exp_${index}_duration`)
+                                        ? "border-red-500"
+                                        : ""
+                                    }
+                                  />
+                                  {getFieldError(`exp_${index}_duration`) && (
+                                    <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                      <AlertCircle className="h-3 w-3" />
+                                      {getFieldError(`exp_${index}_duration`)}
+                                    </p>
+                                  )}
+                                </div>
                               </div>
-                              <Textarea
-                                placeholder="Job description and achievements..."
-                                value={exp.description}
-                                onChange={(e) =>
-                                  updateExperience(
-                                    index,
-                                    "description",
-                                    e.target.value
-                                  )
-                                }
-                                rows={3}
-                              />
+                              <div>
+                                <Textarea
+                                  placeholder="Job description and achievements... *"
+                                  value={exp.description}
+                                  onChange={(e) =>
+                                    updateExperience(
+                                      index,
+                                      "description",
+                                      e.target.value
+                                    )
+                                  }
+                                  rows={3}
+                                  className={
+                                    getFieldError(`exp_${index}_description`)
+                                      ? "border-red-500"
+                                      : ""
+                                  }
+                                />
+                                {getFieldError(`exp_${index}_description`) && (
+                                  <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                    <AlertCircle className="h-3 w-3" />
+                                    {getFieldError(`exp_${index}_description`)}
+                                  </p>
+                                )}
+                              </div>
                             </CardContent>
                           </Card>
                         ))}
@@ -464,35 +691,78 @@ export default function ResumeBuilder() {
                               )}
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                              <Input
-                                placeholder="Institution"
-                                value={edu.institution}
-                                onChange={(e) =>
-                                  updateEducation(
-                                    index,
-                                    "institution",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                              <Input
-                                placeholder="Degree"
-                                value={edu.degree}
-                                onChange={(e) =>
-                                  updateEducation(
-                                    index,
-                                    "degree",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                              <Input
-                                placeholder="Year"
-                                value={edu.year}
-                                onChange={(e) =>
-                                  updateEducation(index, "year", e.target.value)
-                                }
-                              />
+                              <div>
+                                <Input
+                                  placeholder="Institution *"
+                                  value={edu.institution}
+                                  onChange={(e) =>
+                                    updateEducation(
+                                      index,
+                                      "institution",
+                                      e.target.value
+                                    )
+                                  }
+                                  className={
+                                    getFieldError(`edu_${index}_institution`)
+                                      ? "border-red-500"
+                                      : ""
+                                  }
+                                />
+                                {getFieldError(`edu_${index}_institution`) && (
+                                  <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                    <AlertCircle className="h-3 w-3" />
+                                    {getFieldError(`edu_${index}_institution`)}
+                                  </p>
+                                )}
+                              </div>
+                              <div>
+                                <Input
+                                  placeholder="Degree *"
+                                  value={edu.degree}
+                                  onChange={(e) =>
+                                    updateEducation(
+                                      index,
+                                      "degree",
+                                      e.target.value
+                                    )
+                                  }
+                                  className={
+                                    getFieldError(`edu_${index}_degree`)
+                                      ? "border-red-500"
+                                      : ""
+                                  }
+                                />
+                                {getFieldError(`edu_${index}_degree`) && (
+                                  <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                    <AlertCircle className="h-3 w-3" />
+                                    {getFieldError(`edu_${index}_degree`)}
+                                  </p>
+                                )}
+                              </div>
+                              <div>
+                                <Input
+                                  placeholder="Year *"
+                                  value={edu.year}
+                                  onChange={(e) =>
+                                    updateEducation(
+                                      index,
+                                      "year",
+                                      e.target.value
+                                    )
+                                  }
+                                  className={
+                                    getFieldError(`edu_${index}_year`)
+                                      ? "border-red-500"
+                                      : ""
+                                  }
+                                />
+                                {getFieldError(`edu_${index}_year`) && (
+                                  <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                    <AlertCircle className="h-3 w-3" />
+                                    {getFieldError(`edu_${index}_year`)}
+                                  </p>
+                                )}
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -553,9 +823,11 @@ export default function ResumeBuilder() {
                           <p className="text-muted-foreground">
                             {resumeData.phone || "Phone Number"}
                           </p>
-                          <p className="text-muted-foreground">
-                            {resumeData.address || "Address"}
-                          </p>
+                          {resumeData.address && (
+                            <p className="text-muted-foreground">
+                              {resumeData.address}
+                            </p>
+                          )}
                         </div>
 
                         {resumeData.summary && (
@@ -563,6 +835,73 @@ export default function ResumeBuilder() {
                             <h3 className="font-semibold mb-2">Summary</h3>
                             <p className="text-muted-foreground">
                               {resumeData.summary}
+                            </p>
+                          </div>
+                        )}
+
+                        {resumeData.experience.some((exp) =>
+                          exp.company.trim()
+                        ) && (
+                          <div>
+                            <h3 className="font-semibold mb-2">Experience</h3>
+                            <div className="space-y-3">
+                              {resumeData.experience
+                                .filter((exp) => exp.company.trim())
+                                .map((exp, index) => (
+                                  <div
+                                    key={index}
+                                    className="border-l-2 border-primary pl-3"
+                                  >
+                                    <p className="font-medium">
+                                      {exp.position}
+                                    </p>
+                                    <p className="text-muted-foreground">
+                                      {exp.company}
+                                    </p>
+                                    <p className="text-xs text-muted-foreground">
+                                      {exp.duration}
+                                    </p>
+                                    {exp.description && (
+                                      <p className="text-muted-foreground mt-1">
+                                        {exp.description}
+                                      </p>
+                                    )}
+                                  </div>
+                                ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {resumeData.education.some((edu) =>
+                          edu.institution.trim()
+                        ) && (
+                          <div>
+                            <h3 className="font-semibold mb-2">Education</h3>
+                            <div className="space-y-2">
+                              {resumeData.education
+                                .filter((edu) => edu.institution.trim())
+                                .map((edu, index) => (
+                                  <div key={index}>
+                                    <p className="font-medium">{edu.degree}</p>
+                                    <p className="text-muted-foreground">
+                                      {edu.institution}
+                                    </p>
+                                    <p className="text-xs text-muted-foreground">
+                                      {edu.year}
+                                    </p>
+                                  </div>
+                                ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {resumeData.skills.some((skill) => skill.trim()) && (
+                          <div>
+                            <h3 className="font-semibold mb-2">Skills</h3>
+                            <p className="text-muted-foreground">
+                              {resumeData.skills
+                                .filter((skill) => skill.trim())
+                                .join(", ")}
                             </p>
                           </div>
                         )}
