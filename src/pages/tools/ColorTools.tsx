@@ -15,6 +15,7 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { InContentAd } from "@/components/AdSense";
 
 export default function ColorTools() {
   const seoConfig = getSEOConfig("color-tools");
@@ -286,241 +287,242 @@ export default function ColorTools() {
       <SEOHead config={seoConfig} />
 
       <ToolLayout>
-        <div className="container mx-auto px-4 py-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="max-w-4xl mx-auto"
-          >
-            <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold text-foreground mb-4">
-                Color Tools Suite
-              </h1>
-              <p className="text-xl text-muted-foreground">
-                Complete toolkit for working with colors
-              </p>
-            </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="max-w-4xl mx-auto"
+        >
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-foreground mb-2">
+              Color Tools Suite
+            </h1>
+            <p className="text-lg text-muted-foreground">
+              Complete toolkit for working with colors
+            </p>
+          </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-              {/* Color Picker */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Palette className="h-5 w-5" />
-                    Color Picker
-                  </CardTitle>
-                  <CardDescription>
-                    Pick a color and get its values in different formats
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-4">
-                      <input
-                        type="color"
-                        value={selectedColor}
-                        onChange={(e) => setSelectedColor(e.target.value)}
-                        className="w-16 h-16 rounded-lg border border-border cursor-pointer"
-                      />
-                      <div
-                        className="flex-1 h-16 rounded-lg border border-border"
-                        style={{ backgroundColor: selectedColor }}
-                      />
-                    </div>
-
-                    <Input
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {/* Color Picker */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Palette className="h-5 w-5" />
+                  Color Picker
+                </CardTitle>
+                <CardDescription>
+                  Pick a color and get its values in different formats
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <input
+                      type="color"
                       value={selectedColor}
                       onChange={(e) => setSelectedColor(e.target.value)}
-                      placeholder="#000000"
+                      className="w-16 h-16 rounded-lg border border-border cursor-pointer"
+                    />
+                    <div
+                      className="flex-1 h-16 rounded-lg border border-border"
+                      style={{ backgroundColor: selectedColor }}
                     />
                   </div>
-                </CardContent>
-              </Card>
 
-              {/* Color Formats */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Color Formats</CardTitle>
-                  <CardDescription>
-                    Color values in different formats
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
+                  <Input
+                    value={selectedColor}
+                    onChange={(e) => setSelectedColor(e.target.value)}
+                    placeholder="#000000"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Color Formats */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Color Formats</CardTitle>
+                <CardDescription>
+                  Color values in different formats
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <div>
+                      <div className="font-medium">HEX</div>
+                      <div className="text-sm font-mono">{selectedColor}</div>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() =>
+                        copyToClipboard(selectedColor, "HEX value")
+                      }
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  {rgb && (
                     <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
                       <div>
-                        <div className="font-medium">HEX</div>
-                        <div className="text-sm font-mono">{selectedColor}</div>
+                        <div className="font-medium">RGB</div>
+                        <div className="text-sm font-mono">
+                          rgb({rgb.r}, {rgb.g}, {rgb.b})
+                        </div>
                       </div>
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() =>
-                          copyToClipboard(selectedColor, "HEX value")
+                          copyToClipboard(
+                            `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
+                            "RGB value"
+                          )
                         }
                       >
                         <Copy className="h-4 w-4" />
                       </Button>
                     </div>
+                  )}
 
-                    {rgb && (
-                      <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                        <div>
-                          <div className="font-medium">RGB</div>
-                          <div className="text-sm font-mono">
-                            rgb({rgb.r}, {rgb.g}, {rgb.b})
-                          </div>
+                  {hsl && (
+                    <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                      <div>
+                        <div className="font-medium">HSL</div>
+                        <div className="text-sm font-mono">
+                          hsl({hsl.h}, {hsl.s}%, {hsl.l}%)
                         </div>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() =>
-                            copyToClipboard(
-                              `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
-                              "RGB value"
-                            )
-                          }
-                        >
-                          <Copy className="h-4 w-4" />
-                        </Button>
                       </div>
-                    )}
-
-                    {hsl && (
-                      <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                        <div>
-                          <div className="font-medium">HSL</div>
-                          <div className="text-sm font-mono">
-                            hsl({hsl.h}, {hsl.s}%, {hsl.l}%)
-                          </div>
-                        </div>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() =>
-                            copyToClipboard(
-                              `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`,
-                              "HSL value"
-                            )
-                          }
-                        >
-                          <Copy className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Palette Generator */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Palette Generator</CardTitle>
-                <CardDescription>
-                  Generate random color palettes for your projects
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <Button onClick={generatePalette} className="w-full">
-                    <Shuffle className="mr-2 h-4 w-4" />
-                    Generate Random Palette
-                  </Button>
-
-                  {palette.length > 0 && (
-                    <div className="grid grid-cols-5 gap-2">
-                      {palette.map((color, index) => (
-                        <div
-                          key={index}
-                          className="h-20 rounded-lg border border-border cursor-pointer flex items-end justify-center pb-2"
-                          style={{ backgroundColor: color }}
-                          onClick={() => copyToClipboard(color, "Color value")}
-                        >
-                          <span className="text-xs text-white bg-black/50 px-2 py-1 rounded">
-                            Click to copy
-                          </span>
-                        </div>
-                      ))}
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                          copyToClipboard(
+                            `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`,
+                            "HSL value"
+                          )
+                        }
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
                     </div>
                   )}
                 </div>
               </CardContent>
             </Card>
+          </div>
 
-            {/* Gradient Gallery */}
-            <Card className="mt-8">
-              <CardHeader>
-                <CardTitle>Gradient Gallery</CardTitle>
-                <CardDescription>
-                  Beautiful, widely used gradients. Filter by category and copy
-                  in CSS or Tailwind.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Tabs value={activeCategory} onValueChange={setActiveCategory}>
-                  <TabsList className="flex flex-wrap gap-2">
-                    {categories.map((c) => (
-                      <TabsTrigger key={c} value={c} className="capitalize">
-                        {c}
-                      </TabsTrigger>
+          {/* In-Content Ad */}
+          <InContentAd />
+
+          {/* Palette Generator */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Palette Generator</CardTitle>
+              <CardDescription>
+                Generate random color palettes for your projects
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <Button onClick={generatePalette} className="w-full">
+                  <Shuffle className="mr-2 h-4 w-4" />
+                  Generate Random Palette
+                </Button>
+
+                {palette.length > 0 && (
+                  <div className="grid grid-cols-5 gap-2">
+                    {palette.map((color, index) => (
+                      <div
+                        key={index}
+                        className="h-20 rounded-lg border border-border cursor-pointer flex items-end justify-center pb-2"
+                        style={{ backgroundColor: color }}
+                        onClick={() => copyToClipboard(color, "Color value")}
+                      >
+                        <span className="text-xs text-white bg-black/50 px-2 py-1 rounded">
+                          Click to copy
+                        </span>
+                      </div>
                     ))}
-                  </TabsList>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
 
+          {/* Gradient Gallery */}
+          <Card className="mt-8">
+            <CardHeader>
+              <CardTitle>Gradient Gallery</CardTitle>
+              <CardDescription>
+                Beautiful, widely used gradients. Filter by category and copy in
+                CSS or Tailwind.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Tabs value={activeCategory} onValueChange={setActiveCategory}>
+                <TabsList className="flex flex-wrap gap-2">
                   {categories.map((c) => (
-                    <TabsContent key={c} value={c} className="mt-4">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {visibleGradients.map((g) => (
+                    <TabsTrigger key={c} value={c} className="capitalize">
+                      {c}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+
+                {categories.map((c) => (
+                  <TabsContent key={c} value={c} className="mt-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {visibleGradients.map((g) => (
+                        <div
+                          key={`${c}-${g.name}`}
+                          className="rounded-xl overflow-hidden border"
+                        >
                           <div
-                            key={`${c}-${g.name}`}
-                            className="rounded-xl overflow-hidden border"
-                          >
-                            <div
-                              className="h-28"
-                              style={{
-                                backgroundImage: asCssGradient(g),
-                              }}
-                            />
-                            <div className="px-4 py-3 bg-muted/60 backdrop-blur flex items-center justify-between">
-                              <div className="font-medium">{g.name}</div>
-                              <div className="flex gap-2">
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() =>
-                                    copyToClipboard(
-                                      asCssGradient(g),
-                                      `${g.name} (CSS gradient)`
-                                    )
-                                  }
-                                >
-                                  CSS
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() =>
-                                    copyToClipboard(
-                                      asTailwindUtilities(g),
-                                      `${g.name} (Tailwind gradient)`
-                                    )
-                                  }
-                                >
-                                  TW
-                                </Button>
-                              </div>
+                            className="h-28"
+                            style={{
+                              backgroundImage: asCssGradient(g),
+                            }}
+                          />
+                          <div className="px-4 py-3 bg-muted/60 backdrop-blur flex items-center justify-between">
+                            <div className="font-medium">{g.name}</div>
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() =>
+                                  copyToClipboard(
+                                    asCssGradient(g),
+                                    `${g.name} (CSS gradient)`
+                                  )
+                                }
+                              >
+                                CSS
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() =>
+                                  copyToClipboard(
+                                    asTailwindUtilities(g),
+                                    `${g.name} (Tailwind gradient)`
+                                  )
+                                }
+                              >
+                                TW
+                              </Button>
                             </div>
                           </div>
-                        ))}
-                      </div>
-                    </TabsContent>
-                  ))}
-                </Tabs>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </div>
+                        </div>
+                      ))}
+                    </div>
+                  </TabsContent>
+                ))}
+              </Tabs>
+            </CardContent>
+          </Card>
+        </motion.div>
       </ToolLayout>
     </>
   );

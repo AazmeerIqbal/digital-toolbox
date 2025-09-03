@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { InContentAd } from "@/components/AdSense";
 
 interface TestResult {
   rawWpm: number;
@@ -239,274 +240,273 @@ export default function TypingTest() {
       <SEOHead config={seoConfig} />
 
       <ToolLayout>
-        <div className="container mx-auto px-4 py-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="max-w-4xl mx-auto"
-          >
-            <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold text-foreground mb-2">
-                Typing Speed Test
-              </h1>
-              <p className="text-lg text-muted-foreground">
-                Measure your typing speed and accuracy using industry-standard
-                calculations
-              </p>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="max-w-4xl mx-auto"
+        >
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-foreground mb-2">
+              Typing Speed Test
+            </h1>
+            <p className="text-lg text-muted-foreground">
+              Measure your typing speed and accuracy using industry-standard
+              calculations
+            </p>
+          </div>
+
+          {!testResult && (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <Card>
+                <CardContent className="p-4">
+                  <div className="text-center">
+                    <Clock className="h-6 w-6 text-primary mx-auto mb-2" />
+                    <div className="text-2xl font-bold">{timeLeft}s</div>
+                    <div className="text-sm text-muted-foreground">
+                      Time Left
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-4">
+                  <div className="text-center">
+                    <Zap className="h-6 w-6 text-primary mx-auto mb-2" />
+                    <div className="text-2xl font-bold">{liveStats.wpm}</div>
+                    <div className="text-sm text-muted-foreground">
+                      WPM (net)
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-4">
+                  <div className="text-center">
+                    <Target className="h-6 w-6 text-primary mx-auto mb-2" />
+                    <div className="text-2xl font-bold">
+                      {liveStats.accuracy}%
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Accuracy
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-red-500">
+                      {errors}
+                    </div>
+                    <div className="text-sm text-muted-foreground">Errors</div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
+          )}
 
-            {!testResult && (
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <Card>
-                  <CardContent className="p-4">
-                    <div className="text-center">
-                      <Clock className="h-6 w-6 text-primary mx-auto mb-2" />
-                      <div className="text-2xl font-bold">{timeLeft}s</div>
-                      <div className="text-sm text-muted-foreground">
-                        Time Left
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+          {/* In-Content Ad */}
+          {!testResult && <InContentAd />}
 
-                <Card>
-                  <CardContent className="p-4">
-                    <div className="text-center">
-                      <Zap className="h-6 w-6 text-primary mx-auto mb-2" />
-                      <div className="text-2xl font-bold">{liveStats.wpm}</div>
-                      <div className="text-sm text-muted-foreground">
-                        WPM (net)
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+          <Card className="mb-6">
+            <CardHeader>
+              <div className="flex items-center justify-between gap-2 flex-wrap">
+                <CardTitle className="flex items-center gap-2">
+                  <Keyboard className="h-5 w-5" />
+                  Typing Test
+                </CardTitle>
+                <div className="flex items-center gap-2">
+                  <Select
+                    value={String(testDuration)}
+                    onValueChange={(val) => setTestDuration(Number(val))}
+                    disabled={isActive}
+                  >
+                    <SelectTrigger className="w-[160px]">
+                      <SelectValue placeholder="Duration" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="15">15 seconds</SelectItem>
+                      <SelectItem value="30">30 seconds</SelectItem>
+                      <SelectItem value="60">60 seconds</SelectItem>
+                      <SelectItem value="120">120 seconds</SelectItem>
+                    </SelectContent>
+                  </Select>
 
-                <Card>
-                  <CardContent className="p-4">
-                    <div className="text-center">
-                      <Target className="h-6 w-6 text-primary mx-auto mb-2" />
-                      <div className="text-2xl font-bold">
-                        {liveStats.accuracy}%
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        Accuracy
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                  <Button
+                    variant="outline"
+                    onClick={() =>
+                      setCurrentText(
+                        sampleTexts[
+                          Math.floor(Math.random() * sampleTexts.length)
+                        ]
+                      )
+                    }
+                    disabled={isActive}
+                  >
+                    <Shuffle className="mr-2 h-4 w-4" />
+                    New Text
+                  </Button>
 
-                <Card>
-                  <CardContent className="p-4">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-red-500">
-                        {errors}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        Errors
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-
-            <Card className="mb-6">
-              <CardHeader>
-                <div className="flex items-center justify-between gap-2 flex-wrap">
-                  <CardTitle className="flex items-center gap-2">
-                    <Keyboard className="h-5 w-5" />
-                    Typing Test
-                  </CardTitle>
-                  <div className="flex items-center gap-2">
-                    <Select
-                      value={String(testDuration)}
-                      onValueChange={(val) => setTestDuration(Number(val))}
-                      disabled={isActive}
-                    >
-                      <SelectTrigger className="w-[160px]">
-                        <SelectValue placeholder="Duration" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="15">15 seconds</SelectItem>
-                        <SelectItem value="30">30 seconds</SelectItem>
-                        <SelectItem value="60">60 seconds</SelectItem>
-                        <SelectItem value="120">120 seconds</SelectItem>
-                      </SelectContent>
-                    </Select>
-
+                  {!isActive && !testResult && (
                     <Button
-                      variant="outline"
-                      onClick={() =>
-                        setCurrentText(
-                          sampleTexts[
-                            Math.floor(Math.random() * sampleTexts.length)
-                          ]
-                        )
-                      }
-                      disabled={isActive}
+                      onClick={startTest}
+                      className="bg-primary text-primary-foreground hover:bg-primary/90"
                     >
-                      <Shuffle className="mr-2 h-4 w-4" />
-                      New Text
+                      Start Test
                     </Button>
+                  )}
+                  <Button variant="outline" onClick={resetTest}>
+                    <RotateCcw className="mr-2 h-4 w-4" />
+                    Reset
+                  </Button>
+                </div>
+              </div>
+              {isActive && (
+                <div className="mt-4">
+                  <Progress value={progress} className="w-full" />
+                </div>
+              )}
+            </CardHeader>
+            <CardContent>
+              {!testResult ? (
+                <>
+                  <div className="text-lg leading-relaxed mb-6 p-4 border rounded-lg font-mono bg-card text-card-foreground dark:bg-card dark:text-card-foreground">
+                    {renderText()}
+                  </div>
 
-                    {!isActive && !testResult && (
-                      <Button
-                        onClick={startTest}
-                        className="bg-primary text-primary-foreground hover:bg-primary/90"
-                      >
-                        Start Test
-                      </Button>
-                    )}
-                    <Button variant="outline" onClick={resetTest}>
-                      <RotateCcw className="mr-2 h-4 w-4" />
-                      Reset
-                    </Button>
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={userInput}
+                    onChange={handleInputChange}
+                    onPaste={preventPaste}
+                    disabled={!isActive}
+                    placeholder={
+                      isActive
+                        ? "Start typing..."
+                        : "Click 'Start Test' to begin"
+                    }
+                    className="w-full p-3 border rounded-lg text-lg font-mono focus:outline-none focus:ring-2 focus:ring-primary disabled:bg-muted bg-background text-foreground"
+                    autoCorrect="off"
+                    autoCapitalize="none"
+                    autoComplete="off"
+                    spellCheck={false}
+                    maxLength={currentText.length}
+                  />
+                </>
+              ) : (
+                <div className="text-center py-8">
+                  <Trophy className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
+                  <h2 className="text-2xl font-bold mb-6">Test Complete!</h2>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-3xl mx-auto">
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="text-center">
+                          <div className="text-3xl font-bold text-primary">
+                            {testResult.netWpm}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            WPM (net)
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="text-center">
+                          <div className="text-3xl font-bold text-blue-600">
+                            {testResult.rawWpm}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            WPM (raw)
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="text-center">
+                          <div className="text-3xl font-bold text-green-600">
+                            {testResult.accuracy}%
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            Accuracy
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="text-center">
+                          <div className="text-3xl font-bold text-purple-600">
+                            {testResult.time}s
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            Time
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto mt-4">
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="text-center">
+                          <div className="text-xl font-semibold">
+                            {testResult.correctCharacters}/
+                            {testResult.totalCharacters}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            Correct / Typed
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="text-center">
+                          <div className="text-xl font-semibold text-red-500">
+                            {testResult.errors}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            Uncorrected Errors
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="text-center">
+                          <div className="text-xl font-semibold">
+                            {Math.max(
+                              testResult.totalCharacters -
+                                testResult.correctCharacters,
+                              0
+                            )}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            Incorrect Keystrokes
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
                   </div>
                 </div>
-                {isActive && (
-                  <div className="mt-4">
-                    <Progress value={progress} className="w-full" />
-                  </div>
-                )}
-              </CardHeader>
-              <CardContent>
-                {!testResult ? (
-                  <>
-                    <div className="text-lg leading-relaxed mb-6 p-4 border rounded-lg font-mono bg-card text-card-foreground dark:bg-card dark:text-card-foreground">
-                      {renderText()}
-                    </div>
-
-                    <input
-                      ref={inputRef}
-                      type="text"
-                      value={userInput}
-                      onChange={handleInputChange}
-                      onPaste={preventPaste}
-                      disabled={!isActive}
-                      placeholder={
-                        isActive
-                          ? "Start typing..."
-                          : "Click 'Start Test' to begin"
-                      }
-                      className="w-full p-3 border rounded-lg text-lg font-mono focus:outline-none focus:ring-2 focus:ring-primary disabled:bg-muted bg-background text-foreground"
-                      autoCorrect="off"
-                      autoCapitalize="none"
-                      autoComplete="off"
-                      spellCheck={false}
-                      maxLength={currentText.length}
-                    />
-                  </>
-                ) : (
-                  <div className="text-center py-8">
-                    <Trophy className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
-                    <h2 className="text-2xl font-bold mb-6">Test Complete!</h2>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-3xl mx-auto">
-                      <Card>
-                        <CardContent className="p-4">
-                          <div className="text-center">
-                            <div className="text-3xl font-bold text-primary">
-                              {testResult.netWpm}
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              WPM (net)
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      <Card>
-                        <CardContent className="p-4">
-                          <div className="text-center">
-                            <div className="text-3xl font-bold text-blue-600">
-                              {testResult.rawWpm}
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              WPM (raw)
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      <Card>
-                        <CardContent className="p-4">
-                          <div className="text-center">
-                            <div className="text-3xl font-bold text-green-600">
-                              {testResult.accuracy}%
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              Accuracy
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      <Card>
-                        <CardContent className="p-4">
-                          <div className="text-center">
-                            <div className="text-3xl font-bold text-purple-600">
-                              {testResult.time}s
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              Time
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto mt-4">
-                      <Card>
-                        <CardContent className="p-4">
-                          <div className="text-center">
-                            <div className="text-xl font-semibold">
-                              {testResult.correctCharacters}/
-                              {testResult.totalCharacters}
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              Correct / Typed
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      <Card>
-                        <CardContent className="p-4">
-                          <div className="text-center">
-                            <div className="text-xl font-semibold text-red-500">
-                              {testResult.errors}
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              Uncorrected Errors
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      <Card>
-                        <CardContent className="p-4">
-                          <div className="text-center">
-                            <div className="text-xl font-semibold">
-                              {Math.max(
-                                testResult.totalCharacters -
-                                  testResult.correctCharacters,
-                                0
-                              )}
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              Incorrect Keystrokes
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </motion.div>
-        </div>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
       </ToolLayout>
     </>
   );
