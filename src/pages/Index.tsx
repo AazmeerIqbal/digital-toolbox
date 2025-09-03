@@ -206,8 +206,6 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <BottomBannerAd />
         </div>
-<<<<<<< HEAD
-=======
 
         {/* Footer */}
         <footer className="bg-foreground/5 py-8 mt-16">
@@ -238,7 +236,6 @@ const Index = () => {
             </div>
           </div>
         </footer>
->>>>>>> ea05d120b1829d018ce05f6863484e2db7b3e4c0
       </div>
     </>
   );
