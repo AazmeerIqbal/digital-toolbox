@@ -9,6 +9,12 @@ import SideAds from "@/components/SideAds";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
+// Legal page imports
+import About from "./pages/legal/About";
+import Privacy from "./pages/legal/Privacy";
+import Terms from "./pages/legal/Terms";
+import Contact from "./pages/legal/Contact";
+
 // Tool imports
 import ImageToPdf from "./pages/tools/ImageToPdf";
 import PdfTools from "./pages/tools/PdfTools";
@@ -37,6 +43,12 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
+
+              {/* Legal Pages */}
+              <Route path="/about" element={<About />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/contact" element={<Contact />} />
 
               {/* Tool Routes */}
               <Route path="/tools/image-to-pdf" element={<ImageToPdf />} />

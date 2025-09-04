@@ -9,6 +9,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -19,6 +25,13 @@ import {
   Square,
   Copy,
   Check,
+  Zap,
+  Shield,
+  Smartphone,
+  HelpCircle,
+  Link,
+  MessageSquare,
+  Mail
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { Html5QrcodeScanner } from "html5-qrcode";
@@ -66,35 +79,55 @@ export default function QrTools() {
           stopScanner();
         },
         (error) => {
-          // Error handling is optional
+          // Handle scan error (optional)
+          console.warn("QR scan error:", error);
         }
       );
     }
   };
 
   const stopScanner = () => {
-    if (scannerRef.current && isScanning) {
+    if (scannerRef.current) {
       scannerRef.current.clear();
       scannerRef.current = null;
-      setIsScanning(false);
     }
+    setIsScanning(false);
   };
 
   const copyToClipboard = async () => {
-    if (scannedResult) {
-      try {
-        await navigator.clipboard.writeText(scannedResult);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      } catch (err) {
-        console.error("Failed to copy text: ", err);
-      }
+    try {
+      await navigator.clipboard.writeText(scannedResult);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+  };
+
+  const generateSampleQR = (type: string) => {
+    switch (type) {
+      case 'url':
+        setText('https://example.com');
+        break;
+      case 'email':
+        setText('mailto:contact@example.com');
+        break;
+      case 'sms':
+        setText('sms:+1234567890');
+        break;
+      case 'wifi':
+        setText('WIFI:T:WPA;S:MyNetwork;P:MyPassword;;');
+        break;
+      default:
+        setText('Hello, World!');
     }
   };
 
   useEffect(() => {
     return () => {
-      stopScanner();
+      if (scannerRef.current) {
+        scannerRef.current.clear();
+      }
     };
   }, []);
 
@@ -108,18 +141,20 @@ export default function QrTools() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="max-w-4xl mx-auto"
+            className="max-w-6xl mx-auto"
           >
+            {/* Header */}
             <div className="text-center mb-8">
               <h1 className="text-4xl font-bold text-foreground mb-4">
-                QR Code Tools
+                QR Code Generator & Scanner
               </h1>
               <p className="text-xl text-muted-foreground">
-                Generate and scan QR codes instantly
+                Create and scan QR codes instantly with our free online tool
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Main Tools */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
               {/* QR Generator */}
               <Card>
                 <CardHeader>
@@ -134,11 +169,51 @@ export default function QrTools() {
                 <CardContent>
                   <div className="space-y-4">
                     <Textarea
-                      placeholder="Enter text, URL, or any data to generate QR code..."
+                      placeholder="Enter text, URL, email, phone number, or any data to generate QR code..."
                       value={text}
                       onChange={(e) => setText(e.target.value)}
                       className="min-h-[100px]"
                     />
+
+                    {/* Quick Templates */}
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">
+                        Quick Templates
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => generateSampleQR('url')}
+                        >
+                          <Link className="h-3 w-3 mr-1" />
+                          URL
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => generateSampleQR('email')}
+                        >
+                          <Mail className="h-3 w-3 mr-1" />
+                          Email
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => generateSampleQR('sms')}
+                        >
+                          <MessageSquare className="h-3 w-3 mr-1" />
+                          SMS
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => generateSampleQR('wifi')}
+                        >
+                          WiFi
+                        </Button>
+                      </div>
+                    </div>
 
                     <div>
                       <label className="text-sm font-medium mb-2 block">
@@ -249,6 +324,254 @@ export default function QrTools() {
                 </CardContent>
               </Card>
             </div>
+
+            {/* About This Tool */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="mb-8"
+            >
+              <Card>
+                <CardHeader>
+                  <CardTitle>About QR Code Tools</CardTitle>
+                </CardHeader>
+                <CardContent className="prose prose-sm max-w-none text-muted-foreground">
+                  <p>
+                    Our comprehensive QR Code Tools provide everything you need to generate and scan QR codes 
+                    quickly and efficiently. Whether you're creating QR codes for websites, contact information, 
+                    WiFi credentials, or any other data, our generator supports all standard QR code formats 
+                    and produces high-quality, scannable codes.
+                  </p>
+                  <p>
+                    The built-in scanner uses your device's camera to instantly decode QR codes, making it 
+                    perfect for accessing websites, saving contact information, connecting to WiFi networks, 
+                    or reading any encoded data. Both tools work entirely in your browser, ensuring your 
+                    data remains private and secure.
+                  </p>
+                  <p>
+                    QR codes (Quick Response codes) have become essential in our digital world, bridging the 
+                    gap between physical and digital experiences. From restaurant menus and event tickets to 
+                    marketing campaigns and contactless payments, QR codes provide a fast and convenient way 
+                    to share information.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Features */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="mb-8"
+            >
+              <Card>
+                <CardHeader>
+                  <CardTitle>Why Choose Our QR Code Tools?</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="text-center">
+                      <Zap className="h-8 w-8 text-primary mx-auto mb-3" />
+                      <h3 className="font-semibold mb-2">Instant Generation</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Generate QR codes instantly as you type. No waiting, no processing delays.
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <Shield className="h-8 w-8 text-primary mx-auto mb-3" />
+                      <h3 className="font-semibold mb-2">Privacy Focused</h3>
+                      <p className="text-sm text-muted-foreground">
+                        All processing happens locally. Your data never leaves your device.
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <Smartphone className="h-8 w-8 text-primary mx-auto mb-3" />
+                      <h3 className="font-semibold mb-2">Mobile Optimized</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Perfect for mobile devices with camera access for scanning.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* How to Use */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="mb-8"
+            >
+              <Card>
+                <CardHeader>
+                  <CardTitle>How to Use QR Code Tools</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* Generator Instructions */}
+                    <div>
+                      <h3 className="font-semibold mb-4 text-primary">QR Code Generator</h3>
+                      <div className="space-y-3">
+                        <div className="flex items-start gap-3">
+                          <div className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-semibold">
+                            1
+                          </div>
+                          <div>
+                            <h4 className="font-medium text-sm mb-1">Enter Your Data</h4>
+                            <p className="text-xs text-muted-foreground">
+                              Type or paste any text, URL, email, or data you want to encode.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3">
+                          <div className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-semibold">
+                            2
+                          </div>
+                          <div>
+                            <h4 className="font-medium text-sm mb-1">Choose Size</h4>
+                            <p className="text-xs text-muted-foreground">
+                              Select the appropriate size for your intended use.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3">
+                          <div className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-semibold">
+                            3
+                          </div>
+                          <div>
+                            <h4 className="font-medium text-sm mb-1">Download</h4>
+                            <p className="text-xs text-muted-foreground">
+                              Click download to save your QR code as a PNG image.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Scanner Instructions */}
+                    <div>
+                      <h3 className="font-semibold mb-4 text-primary">QR Code Scanner</h3>
+                      <div className="space-y-3">
+                        <div className="flex items-start gap-3">
+                          <div className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-semibold">
+                            1
+                          </div>
+                          <div>
+                            <h4 className="font-medium text-sm mb-1">Start Scanner</h4>
+                            <p className="text-xs text-muted-foreground">
+                              Click "Start Scanner" and allow camera access when prompted.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3">
+                          <div className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-semibold">
+                            2
+                          </div>
+                          <div>
+                            <h4 className="font-medium text-sm mb-1">Scan Code</h4>
+                            <p className="text-xs text-muted-foreground">
+                              Point your camera at the QR code and wait for automatic detection.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3">
+                          <div className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-semibold">
+                            3
+                          </div>
+                          <div>
+                            <h4 className="font-medium text-sm mb-1">View Result</h4>
+                            <p className="text-xs text-muted-foreground">
+                              The decoded content will appear below for you to copy or use.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* FAQ */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <HelpCircle className="h-5 w-5" />
+                    Frequently Asked Questions
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Accordion type="single" collapsible className="space-y-2">
+                    <AccordionItem value="item-1" className="border rounded-lg px-4">
+                      <AccordionTrigger className="text-left">
+                        What types of data can I encode in QR codes?
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground">
+                        QR codes can store various types of data including plain text, URLs, email addresses, 
+                        phone numbers, SMS messages, WiFi credentials, contact information (vCard), calendar 
+                        events, and more. The limit is approximately 4,296 alphanumeric characters.
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="item-2" className="border rounded-lg px-4">
+                      <AccordionTrigger className="text-left">
+                        Can I customize the appearance of generated QR codes?
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground">
+                        Currently, our tool generates standard black and white QR codes in three sizes (128px, 
+                        256px, 512px). The codes are optimized for maximum compatibility and scannability across 
+                        all devices and QR code readers.
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="item-3" className="border rounded-lg px-4">
+                      <AccordionTrigger className="text-left">
+                        Do I need to allow camera access for the scanner?
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground">
+                        Yes, the QR code scanner requires camera access to function. When you click "Start Scanner", 
+                        your browser will ask for permission to access your camera. This is completely secure and 
+                        the camera feed is processed locally on your device.
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="item-4" className="border rounded-lg px-4">
+                      <AccordionTrigger className="text-left">
+                        Are the QR codes generated by this tool permanent?
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground">
+                        Yes, QR codes are static and permanent. Once generated, they will always contain the same 
+                        data you encoded. Unlike dynamic QR codes that redirect through a service, these codes 
+                        work independently and don't rely on our service to function.
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="item-5" className="border rounded-lg px-4">
+                      <AccordionTrigger className="text-left">
+                        Can I scan QR codes from images on my device?
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground">
+                        Currently, our scanner works with live camera feed. If you need to scan QR codes from 
+                        saved images, you can display the image on another screen and scan it with the camera, 
+                        or use your device's built-in QR code scanner from the photo gallery.
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </CardContent>
+              </Card>
+            </motion.div>
           </motion.div>
         </div>
       </ToolLayout>

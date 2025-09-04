@@ -649,69 +649,6 @@ export const seoConfigs: Record<string, SEOConfig> = {
       ],
     },
   },
-
-  // Legal Pages
-  about: {
-    title: "About Us - Digital Toolbox | Free Online Tools",
-    description: "Learn about Digital Toolbox, our mission to provide free online tools for everyone, and our commitment to privacy and security.",
-    keywords: ["about digital toolbox", "free online tools", "our mission", "privacy-focused tools", "browser-based tools"],
-    canonical: `${siteConfig.url}/about`,
-    structuredData: {
-      "@context": "https://schema.org",
-      "@type": "AboutPage",
-      name: "About Digital Toolbox",
-      description: "Learn about Digital Toolbox and our mission to provide free online tools",
-      url: `${siteConfig.url}/about`,
-      mainEntity: {
-        "@type": "Organization",
-        name: "Digital Toolbox",
-        description: "Provider of free online productivity and utility tools",
-        url: siteConfig.url,
-      },
-    },
-  },
-
-  privacy: {
-    title: "Privacy Policy - Digital Toolbox | Your Data Security",
-    description: "Learn how Digital Toolbox protects your privacy. All tools work locally in your browser - your files never leave your device.",
-    keywords: ["privacy policy", "data security", "local processing", "browser tools", "no data collection"],
-    canonical: `${siteConfig.url}/privacy`,
-    structuredData: {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      name: "Privacy Policy",
-      description: "Digital Toolbox Privacy Policy - Local processing ensures your data never leaves your device",
-      url: `${siteConfig.url}/privacy`,
-    },
-  },
-
-  terms: {
-    title: "Terms of Service - Digital Toolbox | Usage Terms & Conditions",
-    description: "Read our Terms of Service to understand the rules and guidelines for using Digital Toolbox tools and services.",
-    keywords: ["terms of service", "usage terms", "terms and conditions", "digital toolbox rules", "user agreement"],
-    canonical: `${siteConfig.url}/terms`,
-    structuredData: {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      name: "Terms of Service",
-      description: "Digital Toolbox Terms of Service and usage guidelines",
-      url: `${siteConfig.url}/terms`,
-    },
-  },
-
-  contact: {
-    title: "Contact Us - Digital Toolbox | Get in Touch",
-    description: "Contact Digital Toolbox for support, feedback, bug reports, or feature requests. We're here to help improve your experience.",
-    keywords: ["contact digital toolbox", "support", "feedback", "bug report", "feature request", "help"],
-    canonical: `${siteConfig.url}/contact`,
-    structuredData: {
-      "@context": "https://schema.org",
-      "@type": "ContactPage",
-      name: "Contact Digital Toolbox",
-      description: "Contact us for support, feedback, and feature requests",
-      url: `${siteConfig.url}/contact`,
-    },
-  },
 };
 
 export const getSEOConfig = (toolId: string): SEOConfig => {
