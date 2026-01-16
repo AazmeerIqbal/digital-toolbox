@@ -1,0 +1,5 @@
+# Netlify redirects file
+# This ensures all routes are handled by React Router (SPA fallback)
+
+/*    /index.html   200
+

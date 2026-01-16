@@ -19,4 +19,6 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  // Ensure public files (like _redirects, .htaccess) are copied to dist
+  publicDir: 'public',
 }));
