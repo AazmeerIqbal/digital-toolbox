@@ -30,6 +30,9 @@ import {
   HelpCircle 
 } from "lucide-react";
 import { TopBannerAd, InContentAd, BottomBannerAd } from "@/components/AdSense";
+import { BlogCard } from "@/components/BlogCard";
+import { blogs } from "@/data/blogs";
+import { BookOpen } from "lucide-react";
 
 const Index = () => {
   const seoConfig = getSEOConfig("home");
@@ -423,6 +426,35 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <BottomBannerAd />
         </div>
+
+        {/* Blogs Section */}
+        <section id="blogs" className="py-16 bg-background/50">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <BookOpen className="h-8 w-8 text-primary" />
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+                  Latest Blogs & Guides
+                </h2>
+              </div>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                Discover helpful guides, tips, and insights to boost your productivity and make the most of our tools
+              </p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+              {blogs.map((blog, index) => (
+                <BlogCard key={blog.id} blog={blog} index={index} />
+              ))}
+            </div>
+          </div>
+        </section>
 
         {/* Footer */}
         <footer className="bg-foreground/5 py-12 mt-16">

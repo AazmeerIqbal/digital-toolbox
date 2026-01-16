@@ -29,6 +29,7 @@ import FakeDataGenerator from "./pages/tools/FakeDataGenerator";
 import ImageCompressor from "./pages/tools/ImageCompressor";
 import AgeCalculator from "./pages/tools/AgeCalculator";
 import TypingTest from "./pages/tools/TypingTest";
+import BlogPost from "./pages/BlogPost";
 
 const queryClient = new QueryClient();
 
@@ -73,6 +74,9 @@ const App = () => (
               />
               <Route path="/tools/age-calculator" element={<AgeCalculator />} />
               <Route path="/tools/typing-test" element={<TypingTest />} />
+
+              {/* Blog Routes */}
+              <Route path="/blog/:slug" element={<BlogPost />} />
 
               {/* Catch-all for 404 */}
               <Route path="*" element={<NotFound />} />

@@ -712,6 +712,117 @@ export const seoConfigs: Record<string, SEOConfig> = {
       url: `${siteConfig.url}/contact`,
     },
   },
+
+  // Blog Posts
+  "blog-10-essential-productivity-tools-2024": {
+    title: "10 Essential Productivity Tools Every Professional Should Know in 2024 | Digital Toolbox",
+    description: "Discover the top 10 free productivity tools that can transform your workflow and boost efficiency in 2024. From PDF converters to time management apps.",
+    keywords: ["productivity tools", "workflow optimization", "time management", "professional tools", "efficiency", "productivity tips", "free tools", "work tools"],
+    canonical: `${siteConfig.url}/blog/10-essential-productivity-tools-2024`,
+    ogTitle: "10 Essential Productivity Tools Every Professional Should Know in 2024",
+    ogDescription: "Discover the top 10 free productivity tools that can transform your workflow and boost efficiency in 2024.",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: "10 Essential Productivity Tools Every Professional Should Know in 2024",
+      description: "Discover the top 10 free productivity tools that can transform your workflow and boost efficiency in 2024.",
+      url: `${siteConfig.url}/blog/10-essential-productivity-tools-2024`,
+      author: {
+        "@type": "Organization",
+        name: "Digital Toolbox Team",
+      },
+      datePublished: "2024-01-15",
+      dateModified: "2024-01-15",
+    },
+  },
+
+  "blog-ultimate-guide-pdf-management": {
+    title: "The Ultimate Guide to PDF Management: Tips, Tricks, and Best Practices | Digital Toolbox",
+    description: "Master PDF management with our comprehensive guide. Learn how to convert, merge, split, and optimize PDFs like a pro. Essential tips for professionals.",
+    keywords: ["PDF management", "PDF converter", "merge PDF", "split PDF", "PDF tips", "document management", "PDF tools", "PDF guide"],
+    canonical: `${siteConfig.url}/blog/ultimate-guide-pdf-management`,
+    ogTitle: "The Ultimate Guide to PDF Management: Tips, Tricks, and Best Practices",
+    ogDescription: "Master PDF management with our comprehensive guide. Learn how to convert, merge, split, and optimize PDFs like a pro.",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: "The Ultimate Guide to PDF Management: Tips, Tricks, and Best Practices",
+      description: "Master PDF management with our comprehensive guide. Learn how to convert, merge, split, and optimize PDFs like a pro.",
+      url: `${siteConfig.url}/blog/ultimate-guide-pdf-management`,
+      author: {
+        "@type": "Organization",
+        name: "Digital Toolbox Team",
+      },
+      datePublished: "2024-01-22",
+      dateModified: "2024-01-22",
+    },
+  },
+
+  "blog-pomodoro-technique-science-focus": {
+    title: "Boost Your Focus: The Science Behind the Pomodoro Technique | Digital Toolbox",
+    description: "Discover how the Pomodoro Technique can dramatically improve your focus and productivity. Learn the science, benefits, and practical implementation tips.",
+    keywords: ["Pomodoro technique", "time management", "focus", "productivity", "concentration", "work efficiency", "focus techniques", "productivity methods"],
+    canonical: `${siteConfig.url}/blog/pomodoro-technique-science-focus`,
+    ogTitle: "Boost Your Focus: The Science Behind the Pomodoro Technique",
+    ogDescription: "Discover how the Pomodoro Technique can dramatically improve your focus and productivity. Learn the science, benefits, and practical implementation tips.",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: "Boost Your Focus: The Science Behind the Pomodoro Technique",
+      description: "Discover how the Pomodoro Technique can dramatically improve your focus and productivity.",
+      url: `${siteConfig.url}/blog/pomodoro-technique-science-focus`,
+      author: {
+        "@type": "Organization",
+        name: "Digital Toolbox Team",
+      },
+      datePublished: "2024-02-01",
+      dateModified: "2024-02-01",
+    },
+  },
+
+  "blog-image-optimization-web-performance": {
+    title: "Image Optimization for Web: A Complete Guide to Faster Loading Times | Digital Toolbox",
+    description: "Learn how to optimize images for web performance. Discover compression techniques, format choices, and best practices for faster page loads and better SEO.",
+    keywords: ["image optimization", "web performance", "image compression", "page speed", "SEO", "web development", "website optimization", "image formats"],
+    canonical: `${siteConfig.url}/blog/image-optimization-web-performance`,
+    ogTitle: "Image Optimization for Web: A Complete Guide to Faster Loading Times",
+    ogDescription: "Learn how to optimize images for web performance. Discover compression techniques, format choices, and best practices for faster page loads.",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: "Image Optimization for Web: A Complete Guide to Faster Loading Times",
+      description: "Learn how to optimize images for web performance. Discover compression techniques, format choices, and best practices.",
+      url: `${siteConfig.url}/blog/image-optimization-web-performance`,
+      author: {
+        "@type": "Organization",
+        name: "Digital Toolbox Team",
+      },
+      datePublished: "2024-02-10",
+      dateModified: "2024-02-10",
+    },
+  },
+
+  "blog-privacy-first-tools-local-processing": {
+    title: "Privacy-First Tools: Why Local Processing Matters in 2024 | Digital Toolbox",
+    description: "Discover why privacy-first tools with local processing are essential in 2024. Learn about data security, privacy benefits, and how to choose secure tools.",
+    keywords: ["privacy", "data security", "local processing", "privacy tools", "data protection", "browser tools", "privacy first", "secure tools"],
+    canonical: `${siteConfig.url}/blog/privacy-first-tools-local-processing`,
+    ogTitle: "Privacy-First Tools: Why Local Processing Matters in 2024",
+    ogDescription: "Discover why privacy-first tools with local processing are essential in 2024. Learn about data security, privacy benefits, and how to choose secure tools.",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: "Privacy-First Tools: Why Local Processing Matters in 2024",
+      description: "Discover why privacy-first tools with local processing are essential in 2024. Learn about data security and privacy benefits.",
+      url: `${siteConfig.url}/blog/privacy-first-tools-local-processing`,
+      author: {
+        "@type": "Organization",
+        name: "Digital Toolbox Team",
+      },
+      datePublished: "2024-02-18",
+      dateModified: "2024-02-18",
+    },
+  },
 };
 
 export const getSEOConfig = (toolId: string): SEOConfig => {
