@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
+import { ToolExplanation } from "@/components/ToolExplanation";
 
 type DataType = 'person' | 'address' | 'contact' | 'lorem' | 'json';
 
@@ -254,8 +255,41 @@ export default function FakeDataGenerator() {
                 </CardContent>
               </Card>
             )}
+
+            <ToolExplanation
+              title="Fake Data Generator"
+              description="Toolzaply's free online Fake Data Generator is a developer-focused utility designed to quickly compile randomized placeholder datasets including mock user profiles, street addresses, email contacts, product catalogs, and raw Lorem Ipsum texts. It supports instant data counts up to 100 entries and exports directly as JSON or text format. All mock libraries are generated purely client-side using JavaScript, which guarantees that zero user specifications are ever sent to an external database."
+              howToUse={[
+                "Select your desired data schema type (e.g., Person, Address, Contact Info, Lorem Ipsum, Product JSON).",
+                "Enter the number of items or paragraphs you wish to output (between 1 and 100).",
+                "Click 'Generate Data' to execute the mock data compiler.",
+                "Examine the generated dataset in the syntax-highlighted editor box.",
+                "Click 'Copy' to copy the dataset to your clipboard, or click 'Download' to save the file locally as a .json or .txt file."
+              ]}
+              features={[
+                "Generates detailed nested user schemas including names, UUIDs, addresses, and careers.",
+                "Generates standard geographic locations and geo-coordinates.",
+                "Generates commerce objects with prices, inventory booleans, and custom parameters.",
+                "Single-click copy-to-clipboard and local file downloading.",
+                "100% browser-based generation powered by the Faker engine; works entirely offline."
+              ]}
+              faqs={[
+                {
+                  question: "What format is the output data provided in?",
+                  answer: "All structured schemas (People, Addresses, Contacts, Products) are generated as valid, pretty-printed JSON arrays. The Lorem Ipsum generator outputs raw plain text paragraphs."
+                },
+                {
+                  question: "Is there any risk of exposing real user information?",
+                  answer: "No. The Faker library compiles data using predefined token patterns and dictionary maps. None of the details represent actual individuals, emails, addresses, or phone numbers."
+                },
+                {
+                  question: "Can I use this generated data for commercial testing?",
+                  answer: "Yes, the generated data is completely license-free and can be used in commercial mock APIs, unit testing suites, database seeding, or design mockups without restriction."
+                }
+              ]}
+            />
           </motion.div>
-                </div>
+        </div>
       </ToolLayout>
     </>
   );

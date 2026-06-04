@@ -50,7 +50,7 @@ const Index = () => {
         {/* Hero Section */}
         <Hero />
 
-        {/* About Digital Toolbox Section */}
+        {/* About Toolzaply Section */}
         <section className="py-16">
           <div className="container mx-auto px-4">
             <motion.div
@@ -62,11 +62,11 @@ const Index = () => {
             >
               <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-                  About Digital Toolbox
+                  About Toolzaply
                 </h2>
                 <div className="prose prose-lg max-w-none text-muted-foreground">
                   <p className="text-xl leading-relaxed mb-6">
-                    Digital Toolbox is your comprehensive collection of free online tools designed to 
+                    Toolzaply is your comprehensive collection of free online tools designed to 
                     simplify everyday digital tasks. We believe that powerful productivity tools should 
                     be accessible to everyone, which is why all our tools are completely free and require 
                     no registration.
@@ -364,7 +364,7 @@ const Index = () => {
                     <h3 className="font-semibold text-lg">Are all tools completely free to use?</h3>
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">
-                    Yes, absolutely! All tools on Digital Toolbox are completely free to use with no hidden 
+                    Yes, absolutely! All tools on Toolzaply are completely free to use with no hidden 
                     costs, subscription fees, or premium tiers. We believe that essential productivity tools 
                     should be accessible to everyone. You can use any tool as many times as you want without 
                     any limitations.
@@ -461,7 +461,7 @@ const Index = () => {
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
               <div className="md:col-span-2">
-                <h3 className="text-xl font-bold text-foreground mb-4">Digital Toolbox</h3>
+                <h3 className="text-xl font-bold text-foreground mb-4">Toolzaply</h3>
                 <p className="text-muted-foreground mb-4">
                   Your one-stop destination for free online productivity tools. 
                   Secure, fast, and user-friendly tools that work entirely in your browser.
@@ -493,7 +493,7 @@ const Index = () => {
             
             <div className="border-t border-border pt-8 text-center">
               <p className="text-muted-foreground">
-                © {currentYear} Digital Toolbox. All tools are free to use. No registration required.
+                © {currentYear} Toolzaply. All tools are free to use. No registration required.
               </p>
             </div>
           </div>

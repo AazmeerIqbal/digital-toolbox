@@ -16,7 +16,7 @@ const NotFound = () => {
   return (
     <>
       <Helmet>
-        <title>Digital Toolbox - Page Not Found</title>
+        <title>Toolzaply - Page Not Found</title>
         <meta
           name="description"
           content="The page you're looking for doesn't exist."

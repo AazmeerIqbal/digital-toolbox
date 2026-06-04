@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
+import { ToolExplanation } from "@/components/ToolExplanation";
 import {
   Card,
   CardContent,
@@ -929,6 +930,40 @@ export default function PdfTools() {
                 )}
               </CardContent>
             </Card>
+
+            <ToolExplanation
+              title="PDF Tools Suite"
+              description="Toolzaply's PDF Tools Suite is a comprehensive, browser-based document processing toolkit that allows you to merge, split, rotate, compress, and extract content from PDF files without installing any desktop software. Every operation uses the industry-standard pdf-lib library running entirely within your web browser, which means your sensitive documents are never uploaded to remote servers. Whether you are a student merging scanned assignments, a professional compressing reports for email delivery, or a developer extracting embedded image assets, this suite handles it all securely and instantly."
+              howToUse={[
+                "Select the operation you want to perform by clicking one of the six tool cards (Merge, Split, Rotate, Compress, Extract Text, Extract Images).",
+                "Upload one or more PDF files using the drag-and-drop zone or the 'Choose PDF Files' button.",
+                "For Merge: upload at least 2 PDFs. For all other operations: upload exactly 1 PDF.",
+                "Adjust compression settings (quality sliders, metadata removal) if using the Compress tool.",
+                "Click the action button to process. The result downloads automatically to your device."
+              ]}
+              features={[
+                "Merge: combine unlimited PDF files into a single document preserving page order.",
+                "Split: break a multi-page PDF into individual single-page files.",
+                "Rotate: rotate all pages 90° clockwise for scanned or mis-oriented documents.",
+                "Compress: reduce file size using object streams and optional metadata stripping.",
+                "Extract Text and Extract Images: pull embedded text and image assets from any PDF.",
+                "100% client-side processing via pdf-lib — your files never leave your device."
+              ]}
+              faqs={[
+                {
+                  question: "What is the maximum PDF file size I can upload?",
+                  answer: "Each individual PDF file is limited to 50MB for optimal browser memory performance. If you need to process larger files, consider splitting them first using a desktop PDF editor."
+                },
+                {
+                  question: "Are my PDF files uploaded to Toolzaply's servers?",
+                  answer: "No. All processing is performed locally in your web browser using the pdf-lib JavaScript library. Your documents never leave your device, ensuring complete privacy and compliance with data protection regulations."
+                },
+                {
+                  question: "Why does text extraction show a limited result?",
+                  answer: "The current text extraction engine uses pdf-lib, which has limited text parsing capabilities. For full OCR-level text extraction from scanned PDFs, a dedicated library like pdfjs-dist or a server-side OCR engine would be required."
+                }
+              ]}
+            />
           </motion.div>
         </div>
       </ToolLayout>

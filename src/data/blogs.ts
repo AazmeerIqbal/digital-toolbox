@@ -149,7 +149,7 @@ The right productivity tools can transform how you work, saving time and improvi
 
 Remember, the best productivity tool is the one you actually use consistently. Choose tools that fit naturally into your routine and watch your efficiency soar.
     `,
-    author: "Digital Toolbox Team",
+    author: "Toolzaply Team",
     date: "2024-01-15",
     category: "Productivity",
     readTime: "8 min read",
@@ -309,7 +309,7 @@ Mastering PDF management is an essential skill for modern professionals. By unde
 
 Start implementing these tips today and transform how you work with PDFs. Your productivity and professionalism will thank you.
     `,
-    author: "Digital Toolbox Team",
+    author: "Toolzaply Team",
     date: "2024-01-22",
     category: "Tutorials",
     readTime: "7 min read",
@@ -488,7 +488,7 @@ The Pomodoro Technique isn't just a time management hack—it's a scientifically
 
 Start with just one pomodoro today. Set a timer, choose a task, and experience the power of focused work. Your productivity and focus will thank you.
     `,
-    author: "Digital Toolbox Team",
+    author: "Toolzaply Team",
     date: "2024-02-01",
     category: "Productivity",
     readTime: "9 min read",
@@ -752,7 +752,7 @@ Image optimization is not optional—it's essential for modern web development. 
 
 Start optimizing your images today. Your users, search engines, and bottom line will thank you. Remember, every kilobyte saved contributes to a faster, better web experience.
     `,
-    author: "Digital Toolbox Team",
+    author: "Toolzaply Team",
     date: "2024-02-10",
     category: "Web Development",
     readTime: "10 min read",
@@ -973,7 +973,7 @@ Privacy-first tools with local processing represent the future of secure, user-f
 
 Make privacy a priority in your tool selection. Your data, your privacy, and your peace of mind are worth it. Choose tools that work for you, not against you.
     `,
-    author: "Digital Toolbox Team",
+    author: "Toolzaply Team",
     date: "2024-02-18",
     category: "Privacy",
     readTime: "8 min read",

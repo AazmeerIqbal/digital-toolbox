@@ -28,7 +28,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({ config, children }) => {
         <meta property="og:url" content={config.canonical} />
       )}
       {config.ogImage && <meta property="og:image" content={config.ogImage} />}
-      <meta property="og:site_name" content="Digital Toolbox" />
+      <meta property="og:site_name" content="Toolzaply" />
 
       {/* Twitter Card Meta Tags */}
       <meta name="twitter:card" content="summary_large_image" />

@@ -1,8 +1,8 @@
-# SEO Optimization Guide for Digital Toolbox
+# SEO Optimization Guide for Toolzaply
 
 ## Overview
 
-This document outlines the comprehensive SEO optimizations implemented for the Digital Toolbox project to improve search engine rankings and user discoverability.
+This document outlines the comprehensive SEO optimizations implemented for the Toolzaply project to improve search engine rankings and user discoverability.
 
 ## 🎯 SEO Improvements Implemented
 

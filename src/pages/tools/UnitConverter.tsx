@@ -1,6 +1,7 @@
 import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
+import { ToolExplanation } from "@/components/ToolExplanation";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -219,8 +220,41 @@ export default function UnitConverter() {
                 </CardContent>
               </Card>
             )}
+
+            <ToolExplanation
+              title="Unit Converter"
+              description="Toolzaply's free online Unit Converter supports three major measurement categories — Length, Weight, and Temperature — enabling instant, precise conversions between all standard metric and imperial units. Whether you're an engineer computing material tolerances, a traveler converting miles to kilometers, or a chef adjusting a recipe between Celsius and Fahrenheit, this tool delivers accurate 6-decimal-point results instantly. Like all tools on Toolzaply, all calculations run entirely within your browser."
+              howToUse={[
+                "Select the measurement category by clicking one of the three cards: Length, Weight, or Temperature.",
+                "Enter the numerical value you wish to convert in the 'Value' input field.",
+                "Select the 'From' unit using the first dropdown selector.",
+                "Select the 'To' unit using the second dropdown selector.",
+                "The converted result appears instantly in the read-only 'Result' field."
+              ]}
+              features={[
+                "Length: supports meters, kilometers, centimeters, millimeters, inches, feet, yards, and miles.",
+                "Weight: supports kilograms, grams, pounds, ounces, and metric tons.",
+                "Temperature: supports Celsius, Fahrenheit, and Kelvin with non-linear formula conversion.",
+                "Precise 6-decimal output to maintain accuracy for scientific and engineering use.",
+                "Instant calculation — updates the result automatically as you type or change units."
+              ]}
+              faqs={[
+                {
+                  question: "How does temperature conversion differ from other unit types?",
+                  answer: "Unlike length or weight, temperature units (Celsius, Fahrenheit, Kelvin) use non-linear formulas rather than simple multiplication factors. For example, °F to °C uses (°F − 32) × 5/9, not a direct ratio. This tool handles those formulas automatically."
+                },
+                {
+                  question: "How accurate are the conversion results?",
+                  answer: "Results are calculated using standard SI conversion factors and displayed to 6 decimal places. For most professional and everyday use cases, this precision is more than sufficient."
+                },
+                {
+                  question: "Will you add currency or data storage conversions?",
+                  answer: "We plan to expand the Unit Converter with more categories including area, speed, data storage, and energy. Currency conversion requires real-time exchange rates and would depend on a live data feed."
+                }
+              ]}
+            />
           </motion.div>
-                </div>
+        </div>
       </ToolLayout>
     </>
   );

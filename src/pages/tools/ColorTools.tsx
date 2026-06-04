@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
+import { ToolExplanation } from "@/components/ToolExplanation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { InContentAd } from "@/components/AdSense";
 
@@ -521,6 +522,39 @@ export default function ColorTools() {
                 ))}
               </Tabs>
             </CardContent>
+
+            <ToolExplanation
+              title="Color Tools Suite"
+              description="Toolzaply's Color Tools Suite is an all-in-one design companion that combines a precise color picker, multiple layout conversions (HEX, RGB, HSL), a random palette generator, and an extensive collection of CSS and Tailwind gradients. Perfect for front-end developers, web designers, and digital artists, it provides immediate codes to copy with one click. Like all Toolzaply utilities, all calculations and code generation occur entirely in your local browser, ensuring maximum privacy and no background data tracking."
+              howToUse={[
+                "Pick a color using the native browser picker or enter a HEX color code in the input field.",
+                "Instantly read and copy the converted RGB or HSL equivalent.",
+                "Use the 'Palette Generator' to generate cohesive color themes randomly.",
+                "Browse the Gradient Gallery and filter by categories like Warm, Cool, Purple, or Pastel.",
+                "Click 'CSS' or 'TW' on any gradient to copy the exact style rules to your clipboard."
+              ]}
+              features={[
+                "Interactive color wheel picker supporting HEX inputs.",
+                "Instant conversion to RGB and HSL color models.",
+                "Dynamic random palette generator with visual preview tiles.",
+                "Filtered gradient gallery supporting CSS standard syntax and Tailwind class codes.",
+                "Zero server requests: runs client-side for maximum rendering speed and privacy."
+              ]}
+              faqs={[
+                {
+                  question: "What is the difference between HEX, RGB, and HSL?",
+                  answer: "HEX is a hexadecimal representation of Red, Green, and Blue channels. RGB defines them with numbers (0-255). HSL defines Hue (angle on color wheel), Saturation (color intensity), and Lightness (luminance), which is often more intuitive for designers."
+                },
+                {
+                  question: "What does the 'TW' copy button on gradients do?",
+                  answer: "It copies the Tailwind CSS classes required to render that exact gradient, such as 'bg-gradient-to-r from-[#ef4444] to-[#f59e0b]'."
+                },
+                {
+                  question: "Do I need to install any plugin to use this picker?",
+                  answer: "No, this tool uses standard browser APIs. It is fully compatible with modern browsers on both desktop and mobile devices without any extension or plugin."
+                }
+              ]}
+            />
           </Card>
         </motion.div>
       </ToolLayout>

@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
+import { ToolExplanation } from "@/components/ToolExplanation";
 
 export default function MarkdownEditor() {
   const seoConfig = getSEOConfig("markdown-editor");
@@ -202,6 +203,39 @@ Write your markdown here...
                 </div>
               </CardContent>
             </Card>
+
+            <ToolExplanation
+              title="Markdown Notepad"
+              description="Toolzaply's free online Markdown Notepad is a browser-based writing environment that renders Markdown syntax into live HTML preview in real time. It is ideal for developers writing documentation, technical bloggers drafting posts, and students taking structured notes. Your work is auto-saved to your local browser storage between sessions, so you never lose progress. There is no account, no cloud sync, and no data tracking — your drafts stay completely private on your device."
+              howToUse={[
+                "Start typing in the left-hand 'Editor' panel using standard Markdown syntax.",
+                "Watch the right-hand 'Preview' panel render your formatted document live.",
+                "Click 'Save' to persist your current content into your browser's local storage.",
+                "Click '.md' to export a standard Markdown file, or '.txt' to save as plain text.",
+                "Content is automatically reloaded from local storage when you revisit the page."
+              ]}
+              features={[
+                "Live dual-pane rendering: editor on the left, real-time preview on the right.",
+                "Supports headings (H1–H3), bold, italic, and hyperlinks out of the box.",
+                "Persistent local browser storage so your drafts survive page refreshes.",
+                "Export to .md or .txt format with a single click.",
+                "No account required, no cloud upload, zero data collection."
+              ]}
+              faqs={[
+                {
+                  question: "Does the Markdown Notepad support tables and code blocks?",
+                  answer: "The built-in renderer currently supports headings, bold, italic, links, and line breaks. For advanced Markdown features like tables and fenced code blocks, you can export the file and render it in a full Markdown engine like VS Code or GitHub."
+                },
+                {
+                  question: "Will I lose my content if I close the browser tab?",
+                  answer: "Not if you click 'Save' first. Your content is stored using the browser's localStorage API, which persists between sessions on the same device and browser."
+                },
+                {
+                  question: "Can I import an existing .md file into the editor?",
+                  answer: "Currently the editor accepts manual input or pasting. You can open your .md file in any text editor, copy its contents, and paste them directly into the Toolzaply Markdown Notepad."
+                }
+              ]}
+            />
           </motion.div>
         </div>
       </ToolLayout>

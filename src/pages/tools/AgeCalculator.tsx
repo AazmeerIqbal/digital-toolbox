@@ -1,6 +1,7 @@
 import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
+import { ToolExplanation } from "@/components/ToolExplanation";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -256,8 +257,41 @@ export default function AgeCalculator() {
                 </div>
               </>
             )}
+
+            <ToolExplanation
+              title="Age Calculator"
+              description="Toolzaply's free online Age Calculator is a highly versatile utility designed to compute your exact age down to the minute. In addition to calculating your age in years, months, and days, it determines your zodiac sign, elemental association, day of birth, and counts down the exact number of days remaining until your next birthday. Designed with privacy in mind, all operations are executed strictly within your local web browser, meaning your personal date of birth is never uploaded or shared with any third party."
+              howToUse={[
+                "Locate the 'Enter Your Birth Date' card on the page.",
+                "Click on the date input field to display the calendar selector.",
+                "Select your year, month, and day of birth.",
+                "Click the 'Calculate Age' button to run the processing algorithm.",
+                "Examine the detailed metrics card, fun facts section, and countdown cards."
+              ]}
+              features={[
+                "Precise breakdown of your age in years, months, days, hours, and minutes.",
+                "Displays day of birth (e.g., Monday, Sunday) and zodiac sign symbol.",
+                "Calculates the exact number of days left until your next birthday.",
+                "100% private: Date parsing runs client-side using JavaScript APIs; no server logs are created.",
+                "Fully responsive layout optimized for mobile screens, tablets, and desktop displays."
+              ]}
+              faqs={[
+                {
+                  question: "Is my birth date sent to any server?",
+                  answer: "No, absolutely not. Toolzaply prioritizes user privacy. All calculations are performed inside your browser's execution engine. Your date of birth is never transmitted over the internet."
+                },
+                {
+                  question: "How does the tool calculate the days to the next birthday?",
+                  answer: "The tool compares today's date with your upcoming birth anniversary in the current or next calendar year, factoring in leap years to calculate the exact calendar days remaining."
+                },
+                {
+                  question: "Is there a limit on how many times I can use the tool?",
+                  answer: "No. All tools on Toolzaply are completely free and unlimited. You do not need to register an account or pay a fee."
+                }
+              ]}
+            />
           </motion.div>
-                </div>
+        </div>
       </ToolLayout>
     </>
   );

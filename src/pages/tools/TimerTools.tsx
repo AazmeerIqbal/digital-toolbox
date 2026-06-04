@@ -13,6 +13,7 @@ import { Timer, Clock, Play, Pause, RotateCcw } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
+import { ToolExplanation } from "@/components/ToolExplanation";
 
 export default function TimerTools() {
   const seoConfig = getSEOConfig("timertools");
@@ -263,6 +264,38 @@ export default function TimerTools() {
                 </CardContent>
               </Card>
             </div>
+
+            <ToolExplanation
+              title="Pomodoro Timer & Stopwatch"
+              description="Toolzaply's Timer Tools suite combines three essential time-management instruments in one page: a classic Pomodoro Timer, a precision Stopwatch, and a fully customizable Countdown Timer. The Pomodoro technique, developed by Francesco Cirillo, structures work into focused 25-minute intervals followed by short rest breaks, which scientific research shows reduces mental fatigue and increases sustained concentration. All timers run locally in your browser with no background processes required."
+              howToUse={[
+                "Pomodoro: Click the Play button to start a 25-minute focus session. When the timer reaches zero, it's time for a break. Click Reset to restart.",
+                "Stopwatch: Click Play to begin counting elapsed time. Click Pause to hold, and Reset to return to zero.",
+                "Countdown: Enter the number of minutes you want in the input field, then click Play. The timer will count down and stop at zero.",
+                "Run multiple timers simultaneously if needed — each operates independently."
+              ]}
+              features={[
+                "Classic Pomodoro Timer set to the standard 25-minute focus interval.",
+                "Precision Stopwatch for tracking elapsed time in any activity.",
+                "Custom Countdown Timer: enter any duration from 1–60 minutes.",
+                "Visual red-alert color when under 60 seconds on Pomodoro and Countdown.",
+                "Zero installation required — runs entirely in browser with JavaScript intervals."
+              ]}
+              faqs={[
+                {
+                  question: "What is the Pomodoro Technique?",
+                  answer: "The Pomodoro Technique is a time management method invented by Francesco Cirillo in the late 1980s. You work on a single task for 25 minutes (one 'Pomodoro'), then take a 5-minute break. After completing four Pomodoros, you take a longer 15–30 minute break."
+                },
+                {
+                  question: "Does the timer continue running if I switch browser tabs?",
+                  answer: "Yes. The timer uses JavaScript's setInterval API which continues counting even when the tab is not in focus. However, some mobile browsers may throttle or pause inactive tabs to save battery."
+                },
+                {
+                  question: "Can I customize the Pomodoro duration?",
+                  answer: "The default Pomodoro is set to the standard 25 minutes. If you need a custom duration, you can use the Countdown Timer card and set it to your preferred work interval."
+                }
+              ]}
+            />
           </motion.div>
         </div>
       </ToolLayout>

@@ -6,7 +6,7 @@ Disallow: /admin/
 Disallow: /private/
 
 # Sitemap location
-Sitemap: https://digitaltoolbox.com/sitemap.xml
+Sitemap: https://toolzaply.com/sitemap.xml
 
 # Crawl-delay for respectful crawling
 Crawl-delay: 1

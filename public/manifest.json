@@ -1,6 +1,6 @@
 {
-  "name": "Digital Toolbox - Free Online Tools",
-  "short_name": "Digital Toolbox",
+  "name": "Toolzaply - Free Online Tools",
+  "short_name": "Toolzaply",
   "description": "Collection of 13+ free online tools for PDF conversion, image processing, text manipulation, and more",
   "start_url": "/",
   "display": "standalone",

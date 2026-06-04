@@ -7,10 +7,10 @@ import { Users, Target, Heart, Lightbulb } from "lucide-react";
 
 const About = () => {
   const seoConfig = {
-    title: "About Us - Digital Toolbox | Free Online Tools",
-    description: "Learn about Digital Toolbox, our mission to provide free online tools for everyone, and our commitment to privacy and security.",
-    keywords: ["about digital toolbox", "free online tools", "our mission", "privacy-focused tools", "browser-based tools"],
-    canonical: "https://digitaltoolbox.com/about"
+    title: "About Us - Toolzaply | Free Online Tools",
+    description: "Learn about Toolzaply, our mission to provide free online tools for everyone, and our commitment to privacy and security.",
+    keywords: ["about toolzaply", "free online tools", "our mission", "privacy-focused tools", "browser-based tools"],
+    canonical: "https://toolzaply.com/about"
   };
 
   return (
@@ -29,7 +29,7 @@ const About = () => {
           >
             <div className="text-center mb-12">
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-                About Digital Toolbox
+                About Toolzaply
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
                 Empowering users worldwide with free, secure, and powerful online tools
@@ -71,7 +71,7 @@ const About = () => {
             </div>
 
             <div className="prose prose-lg max-w-none text-muted-foreground mb-12">
-              <h2 className="text-2xl font-bold text-foreground mb-4">Why We Built Digital Toolbox</h2>
+              <h2 className="text-2xl font-bold text-foreground mb-4">Why We Built Toolzaply</h2>
               <p className="mb-6">
                 In today's digital world, we often need quick access to various tools for different tasks. 
                 Whether it's converting an image to PDF, compressing files, generating QR codes, or testing 
@@ -83,7 +83,7 @@ const About = () => {
                 available instantly, securely, and completely free.
               </p>
               <p className="mb-6">
-                Digital Toolbox was born from the idea that powerful productivity tools should be accessible 
+                Toolzaply was born from the idea that powerful productivity tools should be accessible 
                 to everyone, regardless of their technical expertise or budget. We've carefully crafted each 
                 tool to be intuitive, fast, and reliable.
               </p>
@@ -119,7 +119,7 @@ const About = () => {
                 <div className="text-center">
                   <h3 className="text-2xl font-bold text-foreground mb-4">Join Our Community</h3>
                   <p className="text-muted-foreground mb-6">
-                    Digital Toolbox serves thousands of users worldwide who rely on our tools for their 
+                    Toolzaply serves thousands of users worldwide who rely on our tools for their 
                     daily digital tasks. Join our growing community and experience the convenience of 
                     having all essential tools in one place.
                   </p>

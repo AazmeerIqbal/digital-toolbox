@@ -11,8 +11,8 @@ export interface SEOConfig {
 }
 
 export const siteConfig = {
-  name: "Digital Toolbox",
-  url: "https://digitaltoolbox.com", // Replace with your actual domain
+  name: "Toolzaply",
+  url: "https://toolzaply.com", // Replace with your actual domain
   description:
     "Free online tools for productivity, conversion, and utility tasks",
   keywords: [
@@ -30,7 +30,7 @@ export const siteConfig = {
 export const seoConfigs: Record<string, SEOConfig> = {
   // Homepage
   home: {
-    title: "Digital Toolbox - Free Online Tools for Productivity & Conversion",
+    title: "Toolzaply - Free Online Tools for Productivity & Conversion",
     description:
       "Collection of 13+ free online tools for PDF conversion, image processing, text manipulation, color tools, timers and more. No registration required.",
     keywords: [
@@ -45,14 +45,14 @@ export const seoConfigs: Record<string, SEOConfig> = {
       "no registration",
       "free tools",
     ],
-    ogTitle: "Digital Toolbox - Free Online Tools",
+    ogTitle: "Toolzaply - Free Online Tools",
     ogDescription:
       "13+ powerful free tools for PDF conversion, image processing, text manipulation and more. All in your browser.",
     canonical: siteConfig.url,
     structuredData: {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      name: "Digital Toolbox",
+      name: "Toolzaply",
       description:
         "Collection of free online tools for productivity and conversion",
       url: siteConfig.url,
@@ -652,19 +652,19 @@ export const seoConfigs: Record<string, SEOConfig> = {
 
   // Legal Pages
   about: {
-    title: "About Us - Digital Toolbox | Free Online Tools",
-    description: "Learn about Digital Toolbox, our mission to provide free online tools for everyone, and our commitment to privacy and security.",
-    keywords: ["about digital toolbox", "free online tools", "our mission", "privacy-focused tools", "browser-based tools"],
+    title: "About Us - Toolzaply | Free Online Tools",
+    description: "Learn about Toolzaply, our mission to provide free online tools for everyone, and our commitment to privacy and security.",
+    keywords: ["about toolzaply", "free online tools", "our mission", "privacy-focused tools", "browser-based tools"],
     canonical: `${siteConfig.url}/about`,
     structuredData: {
       "@context": "https://schema.org",
       "@type": "AboutPage",
-      name: "About Digital Toolbox",
-      description: "Learn about Digital Toolbox and our mission to provide free online tools",
+      name: "About Toolzaply",
+      description: "Learn about Toolzaply and our mission to provide free online tools",
       url: `${siteConfig.url}/about`,
       mainEntity: {
         "@type": "Organization",
-        name: "Digital Toolbox",
+        name: "Toolzaply",
         description: "Provider of free online productivity and utility tools",
         url: siteConfig.url,
       },
@@ -672,42 +672,42 @@ export const seoConfigs: Record<string, SEOConfig> = {
   },
 
   privacy: {
-    title: "Privacy Policy - Digital Toolbox | Your Data Security",
-    description: "Learn how Digital Toolbox protects your privacy. All tools work locally in your browser - your files never leave your device.",
+    title: "Privacy Policy - Toolzaply | Your Data Security",
+    description: "Learn how Toolzaply protects your privacy. All tools work locally in your browser - your files never leave your device.",
     keywords: ["privacy policy", "data security", "local processing", "browser tools", "no data collection"],
     canonical: `${siteConfig.url}/privacy`,
     structuredData: {
       "@context": "https://schema.org",
       "@type": "WebPage",
       name: "Privacy Policy",
-      description: "Digital Toolbox Privacy Policy - Local processing ensures your data never leaves your device",
+      description: "Toolzaply Privacy Policy - Local processing ensures your data never leaves your device",
       url: `${siteConfig.url}/privacy`,
     },
   },
 
   terms: {
-    title: "Terms of Service - Digital Toolbox | Usage Terms & Conditions",
-    description: "Read our Terms of Service to understand the rules and guidelines for using Digital Toolbox tools and services.",
-    keywords: ["terms of service", "usage terms", "terms and conditions", "digital toolbox rules", "user agreement"],
+    title: "Terms of Service - Toolzaply | Usage Terms & Conditions",
+    description: "Read our Terms of Service to understand the rules and guidelines for using Toolzaply tools and services.",
+    keywords: ["terms of service", "usage terms", "terms and conditions", "toolzaply rules", "user agreement"],
     canonical: `${siteConfig.url}/terms`,
     structuredData: {
       "@context": "https://schema.org",
       "@type": "WebPage",
       name: "Terms of Service",
-      description: "Digital Toolbox Terms of Service and usage guidelines",
+      description: "Toolzaply Terms of Service and usage guidelines",
       url: `${siteConfig.url}/terms`,
     },
   },
 
   contact: {
-    title: "Contact Us - Digital Toolbox | Get in Touch",
-    description: "Contact Digital Toolbox for support, feedback, bug reports, or feature requests. We're here to help improve your experience.",
-    keywords: ["contact digital toolbox", "support", "feedback", "bug report", "feature request", "help"],
+    title: "Contact Us - Toolzaply | Get in Touch",
+    description: "Contact Toolzaply for support, feedback, bug reports, or feature requests. We're here to help improve your experience.",
+    keywords: ["contact toolzaply", "support", "feedback", "bug report", "feature request", "help"],
     canonical: `${siteConfig.url}/contact`,
     structuredData: {
       "@context": "https://schema.org",
       "@type": "ContactPage",
-      name: "Contact Digital Toolbox",
+      name: "Contact Toolzaply",
       description: "Contact us for support, feedback, and feature requests",
       url: `${siteConfig.url}/contact`,
     },
@@ -715,7 +715,7 @@ export const seoConfigs: Record<string, SEOConfig> = {
 
   // Blog Posts
   "blog-10-essential-productivity-tools-2024": {
-    title: "10 Essential Productivity Tools Every Professional Should Know in 2024 | Digital Toolbox",
+    title: "10 Essential Productivity Tools Every Professional Should Know in 2024 | Toolzaply",
     description: "Discover the top 10 free productivity tools that can transform your workflow and boost efficiency in 2024. From PDF converters to time management apps.",
     keywords: ["productivity tools", "workflow optimization", "time management", "professional tools", "efficiency", "productivity tips", "free tools", "work tools"],
     canonical: `${siteConfig.url}/blog/10-essential-productivity-tools-2024`,
@@ -729,7 +729,7 @@ export const seoConfigs: Record<string, SEOConfig> = {
       url: `${siteConfig.url}/blog/10-essential-productivity-tools-2024`,
       author: {
         "@type": "Organization",
-        name: "Digital Toolbox Team",
+        name: "Toolzaply Team",
       },
       datePublished: "2024-01-15",
       dateModified: "2024-01-15",
@@ -737,7 +737,7 @@ export const seoConfigs: Record<string, SEOConfig> = {
   },
 
   "blog-ultimate-guide-pdf-management": {
-    title: "The Ultimate Guide to PDF Management: Tips, Tricks, and Best Practices | Digital Toolbox",
+    title: "The Ultimate Guide to PDF Management: Tips, Tricks, and Best Practices | Toolzaply",
     description: "Master PDF management with our comprehensive guide. Learn how to convert, merge, split, and optimize PDFs like a pro. Essential tips for professionals.",
     keywords: ["PDF management", "PDF converter", "merge PDF", "split PDF", "PDF tips", "document management", "PDF tools", "PDF guide"],
     canonical: `${siteConfig.url}/blog/ultimate-guide-pdf-management`,
@@ -751,7 +751,7 @@ export const seoConfigs: Record<string, SEOConfig> = {
       url: `${siteConfig.url}/blog/ultimate-guide-pdf-management`,
       author: {
         "@type": "Organization",
-        name: "Digital Toolbox Team",
+        name: "Toolzaply Team",
       },
       datePublished: "2024-01-22",
       dateModified: "2024-01-22",
@@ -759,7 +759,7 @@ export const seoConfigs: Record<string, SEOConfig> = {
   },
 
   "blog-pomodoro-technique-science-focus": {
-    title: "Boost Your Focus: The Science Behind the Pomodoro Technique | Digital Toolbox",
+    title: "Boost Your Focus: The Science Behind the Pomodoro Technique | Toolzaply",
     description: "Discover how the Pomodoro Technique can dramatically improve your focus and productivity. Learn the science, benefits, and practical implementation tips.",
     keywords: ["Pomodoro technique", "time management", "focus", "productivity", "concentration", "work efficiency", "focus techniques", "productivity methods"],
     canonical: `${siteConfig.url}/blog/pomodoro-technique-science-focus`,
@@ -773,7 +773,7 @@ export const seoConfigs: Record<string, SEOConfig> = {
       url: `${siteConfig.url}/blog/pomodoro-technique-science-focus`,
       author: {
         "@type": "Organization",
-        name: "Digital Toolbox Team",
+        name: "Toolzaply Team",
       },
       datePublished: "2024-02-01",
       dateModified: "2024-02-01",
@@ -781,7 +781,7 @@ export const seoConfigs: Record<string, SEOConfig> = {
   },
 
   "blog-image-optimization-web-performance": {
-    title: "Image Optimization for Web: A Complete Guide to Faster Loading Times | Digital Toolbox",
+    title: "Image Optimization for Web: A Complete Guide to Faster Loading Times | Toolzaply",
     description: "Learn how to optimize images for web performance. Discover compression techniques, format choices, and best practices for faster page loads and better SEO.",
     keywords: ["image optimization", "web performance", "image compression", "page speed", "SEO", "web development", "website optimization", "image formats"],
     canonical: `${siteConfig.url}/blog/image-optimization-web-performance`,
@@ -795,7 +795,7 @@ export const seoConfigs: Record<string, SEOConfig> = {
       url: `${siteConfig.url}/blog/image-optimization-web-performance`,
       author: {
         "@type": "Organization",
-        name: "Digital Toolbox Team",
+        name: "Toolzaply Team",
       },
       datePublished: "2024-02-10",
       dateModified: "2024-02-10",
@@ -803,7 +803,7 @@ export const seoConfigs: Record<string, SEOConfig> = {
   },
 
   "blog-privacy-first-tools-local-processing": {
-    title: "Privacy-First Tools: Why Local Processing Matters in 2024 | Digital Toolbox",
+    title: "Privacy-First Tools: Why Local Processing Matters in 2024 | Toolzaply",
     description: "Discover why privacy-first tools with local processing are essential in 2024. Learn about data security, privacy benefits, and how to choose secure tools.",
     keywords: ["privacy", "data security", "local processing", "privacy tools", "data protection", "browser tools", "privacy first", "secure tools"],
     canonical: `${siteConfig.url}/blog/privacy-first-tools-local-processing`,
@@ -817,7 +817,7 @@ export const seoConfigs: Record<string, SEOConfig> = {
       url: `${siteConfig.url}/blog/privacy-first-tools-local-processing`,
       author: {
         "@type": "Organization",
-        name: "Digital Toolbox Team",
+        name: "Toolzaply Team",
       },
       datePublished: "2024-02-18",
       dateModified: "2024-02-18",

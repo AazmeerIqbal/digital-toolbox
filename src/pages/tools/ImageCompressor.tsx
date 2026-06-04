@@ -16,6 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
+import { ToolExplanation } from "@/components/ToolExplanation";
 
 interface CompressedImage {
   original: File;
@@ -423,6 +424,39 @@ export default function ImageCompressor() {
                 </CardContent>
               </Card>
             )}
+
+            <ToolExplanation
+              title="Image Compressor"
+              description="Toolzaply's free online Image Compressor is an optimized, privacy-first image shrinker designed to reduce file sizes of JPEG, PNG, WebP, and GIF images without sacrificing layout clarity. It offers fine-grained control over file compression parameters, allowing users to define exact maximum target widths, heights, and compression ratios. All calculations are executed directly in your browser, ensuring your original image files never leave your computer."
+              howToUse={[
+                "Configure your desired quality ratio (e.g., 80% is the recommended sweet spot for web use) using the slider.",
+                "Define the maximum width and height bounds in pixels if resizing is needed.",
+                "Click 'Choose Images' to select files, or drag and drop images directly into the upload area.",
+                "Review the output size metrics showing file savings and compression percentages.",
+                "Download individual images or select 'Download All' to save all compressed files instantly."
+              ]}
+              features={[
+                "Adjustable quality scales from 10% to 100% to balance file size and visual sharpness.",
+                "Custom resolution constraints to resize oversized digital camera photos.",
+                "Accurate file comparisons displaying old size, new size, and saving percentages.",
+                "Batch operations to compress multiple images simultaneously.",
+                "100% client-side compression: processes files in-browser using local web workers."
+              ]}
+              faqs={[
+                {
+                  question: "Does image compression affect image quality?",
+                  answer: "Yes, if using lossy compression (standard for JPEGs). However, at 75%-85% quality, the visual differences are virtually indistinguishable to the human eye, while the file size is often reduced by 70% or more."
+                },
+                {
+                  question: "Is there a limit on file size uploads?",
+                  answer: "Yes, the maximum file size per image is restricted to 10MB to maintain smooth browser memory performance."
+                },
+                {
+                  question: "Are my images uploaded to Toolzaply's servers?",
+                  answer: "No. Unlike other compression tools, Toolzaply uses browser JavaScript and Web Worker APIs. Your images are compressed locally in your web browser and never sent to our servers."
+                }
+              ]}
+            />
           </motion.div>
         </div>
       </ToolLayout>

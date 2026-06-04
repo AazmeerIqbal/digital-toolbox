@@ -22,6 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
+import { ToolExplanation } from "@/components/ToolExplanation";
 import jsPDF from "jspdf";
 
 interface Experience {
@@ -911,6 +912,40 @@ export default function ResumeBuilder() {
                 </div>
               )}
             </div>
+
+            <ToolExplanation
+              title="Resume Builder"
+              description="Toolzaply's free online Resume Builder helps job seekers create polished, professional resumes in minutes. It provides a structured form covering all essential resume sections — personal information, professional summary, work experience, education, and skills — with built-in field validation to ensure completeness. The finished resume exports directly as a clean, well-formatted PDF file ready for job applications. No account, no watermark, and no data storage — your resume information stays entirely within your browser session."
+              howToUse={[
+                "Navigate through the four tabs: Personal Info, Experience, Education, and Skills.",
+                "Fill in your full name, email, phone, and professional summary in the Personal Info tab.",
+                "Add your work experience entries with company name, position, duration, and description.",
+                "Add your educational background with institution, degree, and graduation year.",
+                "List your technical and soft skills, then click 'Download PDF' to export your resume."
+              ]}
+              features={[
+                "Structured multi-tab form with Personal Info, Experience, Education, and Skills sections.",
+                "Built-in validation with real-time error highlighting for required fields.",
+                "Live preview panel to see your resume layout before downloading.",
+                "Direct PDF export using jsPDF with professional formatting and proper page overflow handling.",
+                "Add unlimited experience entries, education records, and skills.",
+                "Zero data persistence — nothing is saved to any server or cloud storage."
+              ]}
+              faqs={[
+                {
+                  question: "Is the generated resume ATS-friendly?",
+                  answer: "Yes. The PDF output uses standard fonts and a clean single-column layout, which is optimized for Applicant Tracking Systems (ATS). It avoids graphics, tables, and multi-column layouts that ATS parsers often struggle with."
+                },
+                {
+                  question: "Can I save my progress and come back later?",
+                  answer: "Currently the form data is not persisted between sessions. We recommend filling in all sections in one sitting and downloading the PDF immediately. You can always re-enter information and generate a new version."
+                },
+                {
+                  question: "Is my personal information stored on your servers?",
+                  answer: "Absolutely not. All form data and PDF generation happen entirely within your browser using JavaScript. No personal data, contact details, or resume content is ever transmitted to Toolzaply's servers."
+                }
+              ]}
+            />
           </motion.div>
         </div>
       </ToolLayout>

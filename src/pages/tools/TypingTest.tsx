@@ -1,6 +1,7 @@
 import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
+import { ToolExplanation } from "@/components/ToolExplanation";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -506,6 +507,40 @@ export default function TypingTest() {
               )}
             </CardContent>
           </Card>
+
+          <ToolExplanation
+            title="Typing Speed Test"
+            description="Toolzaply's free Typing Speed Test measures your typing speed in Words Per Minute (WPM) and accuracy percentage using industry-standard formulas. It supports configurable test durations of 15, 30, 60, or 120 seconds, and provides detailed post-test analytics including raw WPM, net WPM (adjusted for errors), total characters typed, correct keystrokes, and uncorrected error count. The test uses randomized sample paragraphs covering diverse topics to simulate real-world typing scenarios. All calculations run entirely client-side with no data logging."
+            howToUse={[
+              "Select your preferred test duration from the dropdown (15s, 30s, 60s, or 120s).",
+              "Click 'New Text' to shuffle the sample paragraph if desired.",
+              "Click 'Start Test' to begin the countdown and activate the input field.",
+              "Type the displayed text as quickly and accurately as possible.",
+              "When the timer expires, review your detailed results including net WPM, accuracy, and error breakdown."
+            ]}
+            features={[
+              "Industry-standard WPM calculation: (characters typed ÷ 5) ÷ minutes elapsed.",
+              "Net WPM metric that subtracts uncorrected errors for a true speed measurement.",
+              "Live real-time statistics updating as you type (WPM, accuracy, error count).",
+              "Color-coded character feedback: green for correct, red for incorrect, blue for current position.",
+              "Configurable test durations: 15, 30, 60, or 120 seconds.",
+              "Anti-cheat: paste is disabled to ensure authentic typing measurement."
+            ]}
+            faqs={[
+              {
+                question: "How is WPM (Words Per Minute) calculated?",
+                answer: "WPM is calculated using the standard formula: (total characters typed ÷ 5) ÷ elapsed time in minutes. The divisor of 5 represents the average English word length. Net WPM further subtracts uncorrected errors from the character count."
+              },
+              {
+                question: "What is the difference between raw WPM and net WPM?",
+                answer: "Raw WPM counts every keystroke regardless of accuracy. Net WPM subtracts the characters that were typed incorrectly and not corrected, giving a more realistic measure of effective typing speed."
+              },
+              {
+                question: "Can I use my own text for the typing test?",
+                answer: "Currently the test uses a curated set of sample paragraphs. You can shuffle between them using the 'New Text' button. Custom text input may be added in a future update."
+              }
+            ]}
+          />
         </motion.div>
       </ToolLayout>
     </>

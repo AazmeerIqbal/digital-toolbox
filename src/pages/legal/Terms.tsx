@@ -6,10 +6,10 @@ import { FileText, AlertTriangle, CheckCircle, XCircle } from "lucide-react";
 
 const Terms = () => {
   const seoConfig = {
-    title: "Terms of Service - Digital Toolbox | Usage Terms & Conditions",
-    description: "Read our Terms of Service to understand the rules and guidelines for using Digital Toolbox tools and services.",
-    keywords: ["terms of service", "usage terms", "terms and conditions", "digital toolbox rules", "user agreement"],
-    canonical: "https://digitaltoolbox.com/terms"
+    title: "Terms of Service - Toolzaply | Usage Terms & Conditions",
+    description: "Read our Terms of Service to understand the rules and guidelines for using Toolzaply tools and services.",
+    keywords: ["terms of service", "usage terms", "terms and conditions", "toolzaply rules", "user agreement"],
+    canonical: "https://toolzaply.com/terms"
   };
 
   const currentYear = new Date().getFullYear();
@@ -51,7 +51,7 @@ const Terms = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    By accessing and using Digital Toolbox, you accept and agree to be bound by the 
+                    By accessing and using Toolzaply, you accept and agree to be bound by the 
                     terms and provision of this agreement. If you do not agree to abide by the above, 
                     please do not use this service.
                   </p>
@@ -64,7 +64,7 @@ const Terms = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-muted-foreground">
-                    Digital Toolbox provides a collection of free online tools for various digital 
+                    Toolzaply provides a collection of free online tools for various digital 
                     tasks including but not limited to file conversion, image processing, text 
                     manipulation, and productivity enhancement.
                   </p>
@@ -164,7 +164,7 @@ const Terms = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-muted-foreground">
-                    The Digital Toolbox website, including its design, code, and content, is protected 
+                    The Toolzaply website, including its design, code, and content, is protected 
                     by intellectual property laws. While the tools are free to use, the underlying 
                     code and design remain our property.
                   </p>
@@ -181,7 +181,7 @@ const Terms = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Digital Toolbox is provided "as is" without warranties of any kind. We shall not 
+                    Toolzaply is provided "as is" without warranties of any kind. We shall not 
                     be liable for any direct, indirect, incidental, or consequential damages resulting 
                     from the use or inability to use our services. Users assume full responsibility 
                     for their use of the tools and any results obtained.

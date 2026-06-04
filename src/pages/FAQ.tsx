@@ -18,31 +18,31 @@ import { Header } from "@/components/Header";
 
 export default function FAQ() {
   const seoConfig = {
-    title: "FAQ - Frequently Asked Questions - Digital Toolbox",
+    title: "FAQ - Frequently Asked Questions - Toolzaply",
     description:
       "Find answers to common questions about our free online tools. Learn how to use PDF converters, image tools, text converters and more.",
     keywords: [
-      "digital toolbox faq",
+      "toolzaply faq",
       "online tools help",
       "pdf converter questions",
       "image tools support",
       "free tools guide",
       "how to use online tools",
     ],
-    ogTitle: "FAQ - Digital Toolbox Help & Support",
+    ogTitle: "FAQ - Toolzaply Help & Support",
     ogDescription:
       "Get help with our free online tools. Common questions and answers about PDF conversion, image processing, and more.",
-    canonical: "https://digitaltoolbox.com/faq",
+    canonical: "https://toolzaply.com/faq",
     structuredData: {
       "@context": "https://schema.org",
       "@type": "FAQPage",
       mainEntity: [
         {
           "@type": "Question",
-          name: "Are all tools in Digital Toolbox free to use?",
+          name: "Are all tools in Toolzaply free to use?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Yes, all tools in Digital Toolbox are completely free to use. No registration, subscription, or payment required.",
+            text: "Yes, all tools in Toolzaply are completely free to use. No registration, subscription, or payment required.",
           },
         },
         {
@@ -70,9 +70,9 @@ export default function FAQ() {
       category: "General Questions",
       items: [
         {
-          question: "Are all tools in Digital Toolbox free to use?",
+          question: "Are all tools in Toolzaply free to use?",
           answer:
-            "Yes, all tools in Digital Toolbox are completely free to use. No registration, subscription, or payment required. We believe in providing valuable tools without any cost barriers.",
+            "Yes, all tools in Toolzaply are completely free to use. No registration, subscription, or payment required. We believe in providing valuable tools without any cost barriers.",
         },
         {
           question: "Do I need to create an account to use the tools?",

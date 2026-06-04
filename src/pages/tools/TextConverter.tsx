@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
+import { ToolExplanation } from "@/components/ToolExplanation";
 
 export default function TextConverter() {
   const seoConfig = getSEOConfig("text-converter");
@@ -185,6 +186,39 @@ export default function TextConverter() {
                 ))}
               </div>
             )}
+
+            <ToolExplanation
+              title="Text Case Converter"
+              description="Toolzaply's free Text Case Converter is an instant text transformation tool that converts any input string into eight different case formats: UPPERCASE, lowercase, Title Case, camelCase, snake_case, kebab-case, Sentence case, and aLtErNaTiNg CaSe. It also provides live word and character count statistics and includes a utility to strip extra whitespace from messy copied text. All transformations run entirely in your browser without submitting any data to a server."
+              howToUse={[
+                "Paste or type any text into the large input box at the top of the page.",
+                "Observe the word count, character count, and character count without spaces update live.",
+                "Scroll down to see all eight conversion output cards rendered instantly.",
+                "Click the 'Copy' button on any card to copy that specific format to your clipboard.",
+                "Use 'Remove Extra Spaces' to clean up messy pasted text, or 'Clear' to start fresh."
+              ]}
+              features={[
+                "Eight case formats: UPPERCASE, lowercase, Title Case, camelCase, snake_case, kebab-case, Sentence case, and aLtErNaTiNg CaSe.",
+                "Live word and character count statistics including count without whitespace.",
+                "Whitespace cleanup utility to normalize multi-space pasted text.",
+                "Per-result clipboard copy button for instant use in your code or documents.",
+                "Completely client-side processing with no data sent to any server."
+              ]}
+              faqs={[
+                {
+                  question: "What is the difference between camelCase and PascalCase?",
+                  answer: "camelCase starts with a lowercase letter (e.g., myVariableName) and is used in JavaScript variables and function names. PascalCase (also called UpperCamelCase) starts with an uppercase letter (e.g., MyVariableName) and is used for class names and React components."
+                },
+                {
+                  question: "What is kebab-case used for?",
+                  answer: "kebab-case joins words with hyphens and uses all lowercase letters (e.g., my-css-class). It is the standard format for CSS class names, HTML attributes, and URL slugs."
+                },
+                {
+                  question: "Is there a character limit on the input?",
+                  answer: "No strict limit is enforced. However, for very large texts (e.g., tens of thousands of characters), browser rendering performance may affect the speed of live updates."
+                }
+              ]}
+            />
           </motion.div>
         </div>
       </ToolLayout>

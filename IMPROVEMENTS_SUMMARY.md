@@ -1,11 +1,11 @@
-# Digital Toolbox - AdSense Approval Improvements
+# Toolzaply - AdSense Approval Improvements
 
 ## Summary of Enhancements Made
 
 ### 1. Content Expansion ✅
 
 #### Homepage Enhancements:
-- **About Digital Toolbox Section**: Added comprehensive information about who we are, what the site offers, and why it's valuable
+- **About Toolzaply Section**: Added comprehensive information about who we are, what the site offers, and why it's valuable
 - **Enhanced Features Section**: Expanded with detailed benefits and feature highlights
 - **FAQ Section**: Added 5 comprehensive questions and answers about usage, safety, free access, etc.
 - **Professional Footer**: Enhanced with organized links and company information
@@ -28,7 +28,7 @@
 - **Structured Data**: JSON-LD schema markup for better search engine understanding
 
 #### Legal Pages Created:
-- **About Us**: Comprehensive page about Digital Toolbox mission and values
+- **About Us**: Comprehensive page about Toolzaply mission and values
 - **Privacy Policy**: Detailed privacy policy emphasizing local processing and data security
 - **Terms of Service**: Complete terms and conditions with usage guidelines
 - **Contact Us**: Professional contact page with form and helpful information

@@ -6,10 +6,10 @@ import { Shield, Eye, Lock, Server } from "lucide-react";
 
 const Privacy = () => {
   const seoConfig = {
-    title: "Privacy Policy - Digital Toolbox | Your Data Security",
-    description: "Learn how Digital Toolbox protects your privacy. All tools work locally in your browser - your files never leave your device.",
+    title: "Privacy Policy - Toolzaply | Your Data Security",
+    description: "Learn how Toolzaply protects your privacy. All tools work locally in your browser - your files never leave your device.",
     keywords: ["privacy policy", "data security", "local processing", "browser tools", "no data collection"],
-    canonical: "https://digitaltoolbox.com/privacy"
+    canonical: "https://toolzaply.com/privacy"
   };
 
   const currentYear = new Date().getFullYear();
@@ -51,7 +51,7 @@ const Privacy = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-muted-foreground">
-                    <strong>Local Processing Only:</strong> All tools on Digital Toolbox work entirely 
+                    <strong>Local Processing Only:</strong> All tools on Toolzaply work entirely 
                     within your browser using client-side JavaScript. Your files, documents, images, 
                     and any data you process never leave your device or get uploaded to our servers.
                   </p>

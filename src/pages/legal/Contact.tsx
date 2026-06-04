@@ -10,10 +10,10 @@ import { useState } from "react";
 
 const Contact = () => {
   const seoConfig = {
-    title: "Contact Us - Digital Toolbox | Get in Touch",
-    description: "Contact Digital Toolbox for support, feedback, bug reports, or feature requests. We're here to help improve your experience.",
-    keywords: ["contact digital toolbox", "support", "feedback", "bug report", "feature request", "help"],
-    canonical: "https://digitaltoolbox.com/contact"
+    title: "Contact Us - Toolzaply | Get in Touch",
+    description: "Contact Toolzaply for support, feedback, bug reports, or feature requests. We're here to help improve your experience.",
+    keywords: ["contact toolzaply", "support", "feedback", "bug report", "feature request", "help"],
+    canonical: "https://toolzaply.com/contact"
   };
 
   const [formData, setFormData] = useState({
