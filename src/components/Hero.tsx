@@ -32,12 +32,12 @@ export const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-5xl md:text-7xl font-bold bg-gradient-hero bg-clip-text text-transparent mb-6 leading-tight"
+            className="text-5xl md:text-7xl font-bold mb-6 leading-tight text-foreground"
           >
-            Your Digital
+            Welcome to
             <br />
-            <span className="relative">
-              Toolbox
+            <span className="relative inline-block">
+              <span className="bg-gradient-hero bg-clip-text text-transparent">Toolzaply</span>
               <motion.div
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}

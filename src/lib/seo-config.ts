@@ -823,6 +823,116 @@ export const seoConfigs: Record<string, SEOConfig> = {
       dateModified: "2024-02-18",
     },
   },
+
+  "blog-optimize-resume-for-ats": {
+    title: "How to Optimize Your Resume for ATS | Toolzaply",
+    description: "Learn how to format your resume to pass through automated ATS filters and get your application seen by human recruiters.",
+    keywords: ["resume optimization", "ATS friendly", "career advice", "job application", "resume builder"],
+    canonical: `${siteConfig.url}/blog/optimize-resume-for-ats`,
+    ogTitle: "How to Optimize Your Resume for ATS",
+    ogDescription: "Learn how to format your resume to pass through automated ATS filters and get your application seen by human recruiters.",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: "How to Optimize Your Resume for Applicant Tracking Systems (ATS)",
+      description: "Learn how to format your resume to pass through automated ATS filters and get your application seen by human recruiters.",
+      url: `${siteConfig.url}/blog/optimize-resume-for-ats`,
+      author: {
+        "@type": "Organization",
+        name: "Toolzaply Team",
+      },
+      datePublished: "2024-03-01",
+      dateModified: "2024-03-01",
+    },
+  },
+
+  "blog-developer-guide-color-theory-css-gradients": {
+    title: "The Developer's Guide to Color Theory and CSS Gradients | Toolzaply",
+    description: "A practical guide for front-end developers on how to apply color theory using modern CSS and Tailwind gradients.",
+    keywords: ["color theory", "CSS gradients", "Tailwind CSS", "web design", "frontend development"],
+    canonical: `${siteConfig.url}/blog/developer-guide-color-theory-css-gradients`,
+    ogTitle: "The Developer's Guide to Color Theory and CSS Gradients",
+    ogDescription: "A practical guide for front-end developers on how to apply color theory using modern CSS and Tailwind gradients.",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: "The Developer's Guide to Color Theory and CSS Gradients",
+      description: "A practical guide for front-end developers on how to apply color theory using modern CSS and Tailwind gradients.",
+      url: `${siteConfig.url}/blog/developer-guide-color-theory-css-gradients`,
+      author: {
+        "@type": "Organization",
+        name: "Toolzaply Team",
+      },
+      datePublished: "2024-03-05",
+      dateModified: "2024-03-05",
+    },
+  },
+
+  "blog-fake-data-generation-software-testing": {
+    title: "Why Fake Data Generation is Crucial for Software Testing | Toolzaply",
+    description: "Explore why generating realistic fake data is essential for modern software development, testing, and privacy compliance.",
+    keywords: ["fake data", "software testing", "QA", "data privacy", "synthetic data"],
+    canonical: `${siteConfig.url}/blog/fake-data-generation-software-testing`,
+    ogTitle: "Why Fake Data Generation is Crucial for Software Testing",
+    ogDescription: "Explore why generating realistic fake data is essential for modern software development, testing, and privacy compliance.",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: "Why Fake Data Generation is Crucial for Software Testing",
+      description: "Explore why generating realistic fake data is essential for modern software development, testing, and privacy compliance.",
+      url: `${siteConfig.url}/blog/fake-data-generation-software-testing`,
+      author: {
+        "@type": "Organization",
+        name: "Toolzaply Team",
+      },
+      datePublished: "2024-03-10",
+      dateModified: "2024-03-10",
+    },
+  },
+
+  "blog-mastering-markdown-guide": {
+    title: "Mastering Markdown: The Ultimate Guide | Toolzaply",
+    description: "A comprehensive guide to understanding and utilizing Markdown for efficient writing, documentation, and content creation.",
+    keywords: ["markdown", "writing", "documentation", "web formatting", "github flavored markdown"],
+    canonical: `${siteConfig.url}/blog/mastering-markdown-guide`,
+    ogTitle: "Mastering Markdown: The Ultimate Guide",
+    ogDescription: "A comprehensive guide to understanding and utilizing Markdown for efficient writing, documentation, and content creation.",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: "Mastering Markdown: The Ultimate Guide for Writers and Developers",
+      description: "A comprehensive guide to understanding and utilizing Markdown for efficient writing, documentation, and content creation.",
+      url: `${siteConfig.url}/blog/mastering-markdown-guide`,
+      author: {
+        "@type": "Organization",
+        name: "Toolzaply Team",
+      },
+      datePublished: "2024-03-15",
+      dateModified: "2024-03-15",
+    },
+  },
+
+  "blog-improve-typing-speed-accuracy-30-days": {
+    title: "How to Improve Your Typing Speed and Accuracy in 30 Days | Toolzaply",
+    description: "Actionable tips and ergonomic advice to increase your WPM (Words Per Minute) and reduce typing errors.",
+    keywords: ["typing speed", "WPM", "touch typing", "productivity", "accuracy"],
+    canonical: `${siteConfig.url}/blog/improve-typing-speed-accuracy-30-days`,
+    ogTitle: "How to Improve Your Typing Speed and Accuracy in 30 Days",
+    ogDescription: "Actionable tips and ergonomic advice to increase your WPM (Words Per Minute) and reduce typing errors.",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: "How to Improve Your Typing Speed and Accuracy in 30 Days",
+      description: "Actionable tips and ergonomic advice to increase your WPM (Words Per Minute) and reduce typing errors.",
+      url: `${siteConfig.url}/blog/improve-typing-speed-accuracy-30-days`,
+      author: {
+        "@type": "Organization",
+        name: "Toolzaply Team",
+      },
+      datePublished: "2024-03-20",
+      dateModified: "2024-03-20",
+    },
+  }
 };
 
 export const getSEOConfig = (toolId: string): SEOConfig => {
