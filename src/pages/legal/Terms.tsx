@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Header } from "@/components/Header";
 import { SEOHead } from "@/components/SEOHead";
 import { FileText, AlertTriangle, CheckCircle, XCircle } from "lucide-react";
+import { Footer } from "@/components/Footer";
 
 const Terms = () => {
   const seoConfig = {
@@ -18,10 +19,10 @@ const Terms = () => {
     <>
       <SEOHead config={seoConfig} />
       
-      <div className="min-h-screen bg-gradient-subtle">
+      <div className="min-h-screen bg-gradient-subtle flex flex-col">
         <Header />
         
-        <div className="container mx-auto px-4 py-16">
+        <div className="flex-1 container mx-auto px-4 py-16">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -211,6 +212,8 @@ const Terms = () => {
             </div>
           </motion.div>
         </div>
+
+        <Footer />
       </div>
     </>
   );

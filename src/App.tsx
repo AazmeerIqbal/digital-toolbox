@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import SideAds from "@/components/SideAds";
+import { CookieConsent } from "@/components/CookieConsent";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
@@ -39,6 +40,7 @@ const App = () => (
       <ThemeProvider defaultTheme="light" storageKey="tools-theme">
         <TooltipProvider>
           <SideAds />
+          <CookieConsent />
           <Toaster />
           <Sonner />
           <BrowserRouter>

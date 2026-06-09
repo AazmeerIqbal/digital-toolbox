@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { SidebarAd } from "@/components/AdSense";
 
 interface ToolLayoutProps {
@@ -8,9 +9,9 @@ interface ToolLayoutProps {
 
 export const ToolLayout = ({ children }: ToolLayoutProps) => {
   return (
-    <div className="min-h-screen bg-gradient-subtle">
+    <div className="min-h-screen bg-gradient-subtle flex flex-col">
       <Header />
-      <div className="container mx-auto px-4 py-8">
+      <div className="flex-1 container mx-auto px-4 py-8">
         <div className="flex gap-8">
           {/* Main Content */}
           <div className="flex-1">{children}</div>
@@ -23,6 +24,7 @@ export const ToolLayout = ({ children }: ToolLayoutProps) => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
