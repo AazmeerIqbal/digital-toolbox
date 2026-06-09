@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Cookie, X } from "lucide-react";
-import { Link } from "react-router-dom";
 
 const STORAGE_KEY = "toolzaply-cookie-consent";
 
@@ -42,9 +41,9 @@ export const CookieConsent = () => {
             We use cookies to improve your experience and to serve relevant advertisements through
             Google AdSense. By clicking "Accept", you consent to our use of cookies as described in
             our{" "}
-            <Link to="/privacy" className="text-primary underline underline-offset-2 hover:text-primary/80">
+            <a href="/privacy" className="text-primary underline underline-offset-2 hover:text-primary/80">
               Privacy Policy
-            </Link>
+            </a>
             . You can manage your preferences at any time.
           </p>
           <div className="flex items-center gap-2 flex-shrink-0">

@@ -40,10 +40,10 @@ const App = () => (
       <ThemeProvider defaultTheme="light" storageKey="tools-theme">
         <TooltipProvider>
           <SideAds />
-          <CookieConsent />
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <CookieConsent />
             <Routes>
               <Route path="/" element={<Index />} />
 
