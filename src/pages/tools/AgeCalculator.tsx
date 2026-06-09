@@ -92,11 +92,15 @@ export default function AgeCalculator() {
     const minutes = Math.floor((now.getTime() - birth.getTime()) / (1000 * 60)) % 60;
 
     // Next birthday calculation
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const nextBirthday = new Date(now.getFullYear(), birth.getMonth(), birth.getDate());
-    if (nextBirthday < now) {
+    const isBirthdayToday = nextBirthday.getTime() === today.getTime();
+    if (!isBirthdayToday && nextBirthday < today) {
       nextBirthday.setFullYear(now.getFullYear() + 1);
     }
-    const daysToNextBirthday = Math.ceil((nextBirthday.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    const daysToNextBirthday = isBirthdayToday
+      ? 0
+      : Math.ceil((nextBirthday.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
     const zodiacSign = getZodiacSign(birth.getMonth() + 1, birth.getDate());
     const dayOfWeek = getDayOfWeek(birth);

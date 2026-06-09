@@ -26,53 +26,40 @@ export default function TimerTools() {
   const [countdownRunning, setCountdownRunning] = useState(false);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-
-    if (pomodoroRunning && pomodoroTime > 0) {
-      interval = setInterval(() => {
-        setPomodoroTime((time) => {
-          if (time <= 1) {
-            setPomodoroRunning(false);
-            // You could add notification here
-            return 0;
-          }
-          return time - 1;
-        });
-      }, 1000);
-    }
-
+    if (!pomodoroRunning) return;
+    const interval = setInterval(() => {
+      setPomodoroTime((time) => {
+        if (time <= 1) {
+          setPomodoroRunning(false);
+          return 0;
+        }
+        return time - 1;
+      });
+    }, 1000);
     return () => clearInterval(interval);
-  }, [pomodoroRunning, pomodoroTime]);
+  }, [pomodoroRunning]);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-
-    if (stopwatchRunning) {
-      interval = setInterval(() => {
-        setStopwatchTime((time) => time + 1);
-      }, 1000);
-    }
-
+    if (!stopwatchRunning) return;
+    const interval = setInterval(() => {
+      setStopwatchTime((time) => time + 1);
+    }, 1000);
     return () => clearInterval(interval);
   }, [stopwatchRunning]);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-
-    if (countdownRunning && countdownTime > 0) {
-      interval = setInterval(() => {
-        setCountdownTime((time) => {
-          if (time <= 1) {
-            setCountdownRunning(false);
-            return 0;
-          }
-          return time - 1;
-        });
-      }, 1000);
-    }
-
+    if (!countdownRunning) return;
+    const interval = setInterval(() => {
+      setCountdownTime((time) => {
+        if (time <= 1) {
+          setCountdownRunning(false);
+          return 0;
+        }
+        return time - 1;
+      });
+    }, 1000);
     return () => clearInterval(interval);
-  }, [countdownRunning, countdownTime]);
+  }, [countdownRunning]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);

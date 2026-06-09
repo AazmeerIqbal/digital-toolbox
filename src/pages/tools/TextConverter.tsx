@@ -29,30 +29,38 @@ export default function TextConverter() {
       fn: (text: string) =>
         text.replace(
           /\w\S*/g,
-          (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+          (txt) => txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase()
         ),
     },
     {
       name: "camelCase",
       fn: (text: string) =>
         text
-          .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) =>
-            index === 0 ? word.toLowerCase() : word.toUpperCase()
-          )
-          .replace(/\s+/g, ""),
+          .trim()
+          .split(/[\s\-_]+/)
+          .filter(Boolean)
+          .map((word, index) => {
+            const lower = word.toLowerCase();
+            return index === 0 ? lower : lower.charAt(0).toUpperCase() + lower.slice(1);
+          })
+          .join(""),
     },
     {
       name: "snake_case",
-      fn: (text: string) => text.toLowerCase().replace(/\s+/g, "_"),
+      fn: (text: string) =>
+        text.trim().toLowerCase().replace(/[\s\-]+/g, "_").replace(/[^a-z0-9_]/g, ""),
     },
     {
       name: "kebab-case",
-      fn: (text: string) => text.toLowerCase().replace(/\s+/g, "-"),
+      fn: (text: string) =>
+        text.trim().toLowerCase().replace(/[\s_]+/g, "-").replace(/[^a-z0-9-]/g, ""),
     },
     {
       name: "Sentence case",
       fn: (text: string) =>
-        text.charAt(0).toUpperCase() + text.slice(1).toLowerCase(),
+        text
+          .toLowerCase()
+          .replace(/(^\s*\w|[.!?]\s+\w)/g, (c) => c.toUpperCase()),
     },
     {
       name: "aLtErNaTiNg CaSe",

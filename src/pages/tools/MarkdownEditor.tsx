@@ -31,16 +31,72 @@ export default function MarkdownEditor() {
   }, []);
 
   useEffect(() => {
-    // Simple markdown to HTML conversion
     const convertMarkdown = (text: string) => {
-      return text
-        .replace(/^# (.*$)/gim, "<h1>$1</h1>")
-        .replace(/^## (.*$)/gim, "<h2>$1</h2>")
-        .replace(/^### (.*$)/gim, "<h3>$1</h3>")
-        .replace(/\*\*(.*)\*\*/gim, "<strong>$1</strong>")
-        .replace(/\*(.*)\*/gim, "<em>$1</em>")
-        .replace(/\[([^\]]*)\]\(([^\)]*)\)/gim, '<a href="$2">$1</a>')
-        .replace(/\n/gim, "<br>");
+      const lines = text.split("\n");
+      const html: string[] = [];
+      let inUl = false;
+      let inOl = false;
+
+      const closeList = () => {
+        if (inUl) { html.push("</ul>"); inUl = false; }
+        if (inOl) { html.push("</ol>"); inOl = false; }
+      };
+
+      const processInline = (line: string) =>
+        line
+          // Code spans (before bold/italic to avoid interfering)
+          .replace(/`([^`]+)`/g, "<code>$1</code>")
+          // Bold (non-greedy, same line only)
+          .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+          // Italic (non-greedy, same line only, not adjacent to *)
+          .replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, "<em>$1</em>")
+          // Links
+          .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+      for (const rawLine of lines) {
+        // Fenced code block — simple single-line code (full fenced blocks need more state)
+        if (/^```/.test(rawLine)) {
+          closeList();
+          html.push(rawLine.startsWith("```") && rawLine.length > 3
+            ? `<pre><code>${rawLine.slice(3)}</code></pre>`
+            : "<hr>");
+          continue;
+        }
+        // Headings
+        if (/^### /.test(rawLine)) { closeList(); html.push(`<h3>${processInline(rawLine.slice(4))}</h3>`); continue; }
+        if (/^## /.test(rawLine))  { closeList(); html.push(`<h2>${processInline(rawLine.slice(3))}</h2>`); continue; }
+        if (/^# /.test(rawLine))   { closeList(); html.push(`<h1>${processInline(rawLine.slice(2))}</h1>`); continue; }
+        // Blockquote
+        if (/^> /.test(rawLine)) { closeList(); html.push(`<blockquote>${processInline(rawLine.slice(2))}</blockquote>`); continue; }
+        // Horizontal rule
+        if (/^---+$/.test(rawLine.trim())) { closeList(); html.push("<hr>"); continue; }
+        // Unordered list
+        if (/^[-*] /.test(rawLine)) {
+          if (inOl) { html.push("</ol>"); inOl = false; }
+          if (!inUl) { html.push("<ul>"); inUl = true; }
+          html.push(`<li>${processInline(rawLine.slice(2))}</li>`);
+          continue;
+        }
+        // Ordered list
+        if (/^\d+\. /.test(rawLine)) {
+          if (inUl) { html.push("</ul>"); inUl = false; }
+          if (!inOl) { html.push("<ol>"); inOl = true; }
+          html.push(`<li>${processInline(rawLine.replace(/^\d+\. /, ""))}</li>`);
+          continue;
+        }
+        // Empty line
+        if (rawLine.trim() === "") {
+          closeList();
+          html.push("<br>");
+          continue;
+        }
+        // Paragraph
+        closeList();
+        html.push(`<p>${processInline(rawLine)}</p>`);
+      }
+
+      closeList();
+      return html.join("\n");
     };
 
     setPreview(convertMarkdown(markdown));
@@ -181,24 +237,32 @@ Write your markdown here...
                   <div>
                     <h4 className="font-semibold mb-2">Headers</h4>
                     <code className="text-xs">
-                      # H1
-                      <br />
-                      ## H2
-                      <br />
-                      ### H3
+                      # H1<br />## H2<br />### H3
                     </code>
                   </div>
                   <div>
                     <h4 className="font-semibold mb-2">Emphasis</h4>
                     <code className="text-xs">
-                      **bold**
-                      <br />
-                      *italic*
+                      **bold**<br />*italic*<br />`inline code`
                     </code>
                   </div>
                   <div>
                     <h4 className="font-semibold mb-2">Links</h4>
                     <code className="text-xs">[text](url)</code>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-2">Lists</h4>
+                    <code className="text-xs">
+                      - item (unordered)<br />1. item (ordered)
+                    </code>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-2">Blockquote</h4>
+                    <code className="text-xs">{"> quoted text"}</code>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-2">Divider</h4>
+                    <code className="text-xs">---</code>
                   </div>
                 </div>
               </CardContent>

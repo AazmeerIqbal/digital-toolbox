@@ -38,14 +38,10 @@ export default function ImageCompressor() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const handleFileSelect = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const files = Array.from(event.target.files || []);
-    if (files.length === 0) return;
+  const MAX_FILE_SIZE_MB = 10;
 
-    // Validate file types
-    const validFiles = files.filter((file) => {
+  const validateAndFilterFiles = (files: File[]): File[] => {
+    return files.filter((file) => {
       if (!file.type.startsWith("image/")) {
         toast({
           title: "Invalid file type",
@@ -54,13 +50,23 @@ export default function ImageCompressor() {
         });
         return false;
       }
+      if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: `${file.name} exceeds the ${MAX_FILE_SIZE_MB}MB limit`,
+          variant: "destructive",
+        });
+        return false;
+      }
       return true;
     });
+  };
 
+  const compressFiles = async (files: File[]) => {
+    const validFiles = validateAndFilterFiles(files);
     if (validFiles.length === 0) return;
 
     setProcessing(true);
-
     try {
       const compressedImages: CompressedImage[] = [];
 
@@ -74,14 +80,14 @@ export default function ImageCompressor() {
 
         const compressedFile = await imageCompression(file, options);
         const previewUrl = URL.createObjectURL(compressedFile);
+        const ratio = ((file.size - compressedFile.size) / file.size) * 100;
 
         compressedImages.push({
           original: file,
           compressed: compressedFile,
           originalSize: file.size,
           compressedSize: compressedFile.size,
-          compressionRatio:
-            ((file.size - compressedFile.size) / file.size) * 100,
+          compressionRatio: ratio,
           previewUrl,
         });
       }
@@ -89,7 +95,7 @@ export default function ImageCompressor() {
       setImages((prev) => [...prev, ...compressedImages]);
       toast({
         title: "Success",
-        description: `${validFiles.length} image(s) compressed successfully!`,
+        description: `${validFiles.length} image(s) processed successfully!`,
       });
     } catch (error) {
       console.error("Compression error:", error);
@@ -100,10 +106,15 @@ export default function ImageCompressor() {
       });
     } finally {
       setProcessing(false);
-      // Reset the input value to allow selecting the same file again
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
+    }
+  };
+
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+    if (files.length === 0) return;
+    await compressFiles(files);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
@@ -121,67 +132,9 @@ export default function ImageCompressor() {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-
     const files = Array.from(e.dataTransfer.files);
     if (files.length === 0) return;
-
-    // Validate file types
-    const validFiles = files.filter((file) => {
-      if (!file.type.startsWith("image/")) {
-        toast({
-          title: "Invalid file type",
-          description: `${file.name} is not an image file`,
-          variant: "destructive",
-        });
-        return false;
-      }
-      return true;
-    });
-
-    if (validFiles.length === 0) return;
-
-    setProcessing(true);
-
-    try {
-      const compressedImages: CompressedImage[] = [];
-
-      for (const file of validFiles) {
-        const options = {
-          maxSizeMB: 1,
-          maxWidthOrHeight: Math.max(maxWidth, maxHeight),
-          useWebWorker: true,
-          quality: quality[0],
-        };
-
-        const compressedFile = await imageCompression(file, options);
-        const previewUrl = URL.createObjectURL(compressedFile);
-
-        compressedImages.push({
-          original: file,
-          compressed: compressedFile,
-          originalSize: file.size,
-          compressedSize: compressedFile.size,
-          compressionRatio:
-            ((file.size - compressedFile.size) / file.size) * 100,
-          previewUrl,
-        });
-      }
-
-      setImages((prev) => [...prev, ...compressedImages]);
-      toast({
-        title: "Success",
-        description: `${validFiles.length} image(s) compressed successfully!`,
-      });
-    } catch (error) {
-      console.error("Compression error:", error);
-      toast({
-        title: "Error",
-        description: "Failed to compress some images. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setProcessing(false);
-    }
+    await compressFiles(files);
   };
 
   const removeImage = (index: number) => {
@@ -395,9 +348,15 @@ export default function ImageCompressor() {
                                 Compressed:{" "}
                                 {formatFileSize(image.compressedSize)}
                               </p>
-                              <p className="text-green-600">
-                                Reduced by {image.compressionRatio.toFixed(1)}%
-                              </p>
+                              {image.compressionRatio > 0 ? (
+                                <p className="text-green-600">
+                                  Reduced by {image.compressionRatio.toFixed(1)}%
+                                </p>
+                              ) : (
+                                <p className="text-yellow-600">
+                                  Already optimized (no size reduction)
+                                </p>
+                              )}
                             </div>
                           </div>
 

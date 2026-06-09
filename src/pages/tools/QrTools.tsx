@@ -33,7 +33,7 @@ import {
   MessageSquare,
   Mail
 } from "lucide-react";
-import { QRCodeSVG } from "qrcode.react";
+import { QRCodeCanvas } from "qrcode.react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import { ToolLayout } from "@/components/ToolLayout";
 
@@ -47,10 +47,12 @@ export default function QrTools() {
   const scannerRef = useRef<Html5QrcodeScanner | null>(null);
   const scannerContainerRef = useRef<HTMLDivElement>(null);
 
+  const qrCanvasRef = useRef<HTMLCanvasElement>(null);
+
   const downloadQR = () => {
-    const canvas = document.querySelector("canvas");
+    const canvas = qrCanvasRef.current?.querySelector("canvas") ?? document.querySelector("#qr-code-container canvas");
     if (canvas) {
-      const url = canvas.toDataURL("image/png");
+      const url = (canvas as HTMLCanvasElement).toDataURL("image/png");
       const a = document.createElement("a");
       a.href = url;
       a.download = "qrcode.png";
@@ -232,8 +234,8 @@ export default function QrTools() {
 
                     {text && (
                       <div className="text-center space-y-4">
-                        <div className="inline-block p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-                          <QRCodeSVG
+                        <div id="qr-code-container" ref={qrCanvasRef} className="inline-block p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                          <QRCodeCanvas
                             value={text}
                             size={Math.min(size, 300)}
                             level="M"

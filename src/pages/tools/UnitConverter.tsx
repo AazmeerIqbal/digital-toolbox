@@ -2,12 +2,12 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
 import { ToolExplanation } from "@/components/ToolExplanation";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calculator, Ruler, Weight, Thermometer, Clock } from "lucide-react";
+import { Calculator, Ruler, Weight, Thermometer } from "lucide-react";
 
 const conversions = {
   length: {
@@ -49,47 +49,39 @@ export default function UnitConverter() {
   const [fromUnit, setFromUnit] = useState("");
   const [toUnit, setToUnit] = useState("");
   const [inputValue, setInputValue] = useState("");
-  const [result, setResult] = useState("");
 
-  const convert = () => {
-    if (!inputValue || !fromUnit || !toUnit) return;
-    
+  const result = useMemo(() => {
+    if (!inputValue || !fromUnit || !toUnit) return "";
+
     const value = parseFloat(inputValue);
-    if (isNaN(value)) return;
+    if (isNaN(value)) return "";
 
     if (category === "temperature") {
-      // Special handling for temperature conversions
-      let convertedValue = 0;
-      
-      // Convert to Celsius first
       let celsius = value;
       if (fromUnit === "fahrenheit") {
-        celsius = (value - 32) * 5/9;
+        celsius = (value - 32) * 5 / 9;
       } else if (fromUnit === "kelvin") {
         celsius = value - 273.15;
       }
-      
-      // Convert from Celsius to target
-      if (toUnit === "celsius") {
-        convertedValue = celsius;
-      } else if (toUnit === "fahrenheit") {
-        convertedValue = celsius * 9/5 + 32;
+
+      let convertedValue = celsius;
+      if (toUnit === "fahrenheit") {
+        convertedValue = celsius * 9 / 5 + 32;
       } else if (toUnit === "kelvin") {
         convertedValue = celsius + 273.15;
       }
-      
-      setResult(convertedValue.toFixed(4));
+
+      return convertedValue.toFixed(4);
     } else {
-      // Regular unit conversions
-      const fromFactor = conversions[category as keyof typeof conversions].units[fromUnit]?.factor || 1;
-      const toFactor = conversions[category as keyof typeof conversions].units[toUnit]?.factor || 1;
-      
+      const fromFactor = conversions[category as keyof typeof conversions].units[fromUnit as never]?.factor || 1;
+      const toFactor = conversions[category as keyof typeof conversions].units[toUnit as never]?.factor || 1;
+
       const baseValue = value * fromFactor;
       const convertedValue = baseValue / toFactor;
-      
-      setResult(convertedValue.toFixed(6));
+
+      return convertedValue.toFixed(6);
     }
-  };
+  }, [inputValue, fromUnit, toUnit, category]);
 
   return (
     <>
@@ -161,19 +153,13 @@ export default function UnitConverter() {
                         type="number"
                         placeholder="Enter value"
                         value={inputValue}
-                        onChange={(e) => {
-                          setInputValue(e.target.value);
-                          setTimeout(convert, 100);
-                        }}
+                        onChange={(e) => setInputValue(e.target.value)}
                       />
                     </div>
-                    
+
                     <div>
                       <label className="text-sm font-medium mb-2 block">From</label>
-                      <Select value={fromUnit} onValueChange={(value) => {
-                        setFromUnit(value);
-                        setTimeout(convert, 100);
-                      }}>
+                      <Select value={fromUnit} onValueChange={setFromUnit}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select unit" />
                         </SelectTrigger>
@@ -186,13 +172,10 @@ export default function UnitConverter() {
                         </SelectContent>
                       </Select>
                     </div>
-                    
+
                     <div>
                       <label className="text-sm font-medium mb-2 block">To</label>
-                      <Select value={toUnit} onValueChange={(value) => {
-                        setToUnit(value);
-                        setTimeout(convert, 100);
-                      }}>
+                      <Select value={toUnit} onValueChange={setToUnit}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select unit" />
                         </SelectTrigger>

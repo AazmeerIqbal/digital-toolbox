@@ -218,7 +218,7 @@ export default function FakeDataGenerator() {
                       min="1"
                       max="100"
                       value={count}
-                      onChange={(e) => setCount(parseInt(e.target.value) || 1)}
+                      onChange={(e) => setCount(Math.min(100, Math.max(1, parseInt(e.target.value) || 1)))}
                     />
                   </div>
                 </div>
