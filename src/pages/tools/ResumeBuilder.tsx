@@ -110,7 +110,7 @@ function ModernTemplate({ data, color }: { data: ResumeData; color: ThemeColor }
   );
 
   return (
-    <div style={{ display: "flex", width: "100%", minHeight: "100%", fontFamily: "'Segoe UI', Arial, sans-serif", fontSize: 11 }}>
+    <div style={{ display: "flex", width: "100%", minHeight: "100%", flex: 1, alignItems: "stretch", fontFamily: "'Segoe UI', Arial, sans-serif", fontSize: 11 }}>
       {/* Sidebar */}
       <div style={sidebar}>
         {/* Photo */}
@@ -587,6 +587,7 @@ export default function ResumeBuilder() {
   const [tab, setTab] = useState("personal");
   const [downloading, setDownloading] = useState(false);
   const captureRef = useRef<HTMLDivElement>(null);
+  const exportRef = useRef<HTMLDivElement>(null);
   const photoInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -632,38 +633,46 @@ export default function ResumeBuilder() {
   // ─── PDF download ──────────────────────────────────────────────────────────
 
   const downloadPDF = useCallback(async () => {
-    const el = captureRef.current;
+    const el = exportRef.current;
     if (!el) return;
     setDownloading(true);
     try {
+      // Wait a frame so the off-screen export node reflects the latest state
+      await new Promise((r) => requestAnimationFrame(() => setTimeout(r, 50)));
+
+      // Capture the UNSCALED off-screen copy — capturing the visible preview
+      // (which sits inside a transform: scale() wrapper) corrupts the layout.
+      const contentH = Math.max(el.scrollHeight, 1123);
       const canvas = await html2canvas(el, {
         scale: 2,
         useCORS: true,
         backgroundColor: "#ffffff",
         logging: false,
         width: 794,
-        height: el.scrollHeight,
+        height: contentH,
+        windowWidth: 794,
+        windowHeight: contentH,
       });
 
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
       const pdfW = pdf.internal.pageSize.getWidth();
       const pdfH = pdf.internal.pageSize.getHeight();
-      const imgH = (canvas.height * pdfW) / canvas.width;
-      let yOffset = 0;
-      let remaining = imgH;
+      // Pixels of source canvas that correspond to one full A4 page
+      const pageHpx = (pdfH / pdfW) * canvas.width;
+      const pageCount = Math.max(1, Math.ceil(canvas.height / pageHpx - 0.02)); // ignore tiny overflow → no blank trailing page
 
-      while (remaining > 0) {
-        const sliceH = Math.min(pdfH, remaining);
+      for (let p = 0; p < pageCount; p++) {
         const sliceCanvas = document.createElement("canvas");
         sliceCanvas.width = canvas.width;
-        sliceCanvas.height = (sliceH / pdfW) * canvas.width;
+        sliceCanvas.height = Math.round(pageHpx);
         const ctx = sliceCanvas.getContext("2d")!;
-        ctx.drawImage(canvas, 0, -(yOffset / pdfW) * canvas.width);
-        const imgData = sliceCanvas.toDataURL("image/jpeg", 0.97);
-        if (yOffset > 0) pdf.addPage();
-        pdf.addImage(imgData, "JPEG", 0, 0, pdfW, sliceH);
-        yOffset += sliceH;
-        remaining -= sliceH;
+        // White background so partial last pages don't render black
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
+        ctx.drawImage(canvas, 0, -Math.round(p * pageHpx));
+        const imgData = sliceCanvas.toDataURL("image/jpeg", 0.95);
+        if (p > 0) pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, 0, pdfW, pdfH);
       }
 
       const fname = (data.name || "resume").replace(/[^a-zA-Z0-9\s]/g, "").trim().replace(/\s+/g, "_");
@@ -996,7 +1005,16 @@ export default function ResumeBuilder() {
                     {/* Scaled preview wrapper */}
                     <div className="overflow-auto bg-gray-100 rounded-lg p-2" style={{ maxHeight: "80vh" }}>
                       <div style={{ width: 794, transformOrigin: "top left", transform: `scale(${Math.min(1, (window.innerWidth > 1280 ? 580 : window.innerWidth > 768 ? 420 : 320) / 794)})` }}>
-                        <div ref={captureRef} style={{ width: 794, minHeight: 1123, background: "#fff", boxShadow: "0 4px 24px rgba(0,0,0,0.12)" }}>
+                        <div ref={captureRef} style={{ width: 794, minHeight: 1123, background: "#fff", boxShadow: "0 4px 24px rgba(0,0,0,0.12)", display: "flex", flexDirection: "column" }}>
+                          <ResumeCanvas data={data} template={template} color={color} />
+                        </div>
+                      </div>
+                    </div>
+                    {/* Hidden UNSCALED copy used for PDF capture — html2canvas breaks
+                        when the target sits inside a transform: scale() wrapper */}
+                    <div style={{ position: "fixed", left: "-10000px", top: 0, pointerEvents: "none" }} aria-hidden="true">
+                      <div ref={exportRef} style={{ width: 794, minHeight: 1123, background: "#fff", display: "flex", flexDirection: "column" }}>
+                        <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
                           <ResumeCanvas data={data} template={template} color={color} />
                         </div>
                       </div>
