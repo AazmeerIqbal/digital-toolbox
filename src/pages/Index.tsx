@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Card,
@@ -38,6 +39,20 @@ const Index = () => {
   const seoConfig = getSEOConfig("home");
 
   const currentYear = new Date().getFullYear();
+
+  // Scroll to #featured / #tools when arriving with a hash (e.g. from another page)
+  useEffect(() => {
+    const hash = window.location.hash.replace("#", "");
+    if (!hash) return;
+    // Scroll twice: once when content renders, again after late-loading
+    // content (ads, images) may have shifted the layout
+    const timers = [300, 1000].map((delay) =>
+      setTimeout(() => {
+        document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" });
+      }, delay)
+    );
+    return () => timers.forEach(clearTimeout);
+  }, []);
 
   return (
     <>
@@ -249,7 +264,7 @@ const Index = () => {
         </div>
 
         {/* Featured Tools Section */}
-        <section className="py-16">
+        <section id="featured" className="py-16 scroll-mt-20">
           <div className="container mx-auto px-4">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -283,7 +298,7 @@ const Index = () => {
         </section>
 
         {/* All Tools Section */}
-        <section className="py-16 bg-background/50">
+        <section id="tools" className="py-16 bg-background/50 scroll-mt-20">
           <div className="container mx-auto px-4">
             <motion.div
               initial={{ opacity: 0, y: 30 }}

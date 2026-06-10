@@ -28,22 +28,30 @@ export const Header = () => {
               <Home className="h-4 w-4" />
               Home
             </Link>
-            {isHome && (
-              <>
-                <a
-                  href="#featured"
-                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-                >
-                  Featured
-                </a>
-                <a
-                  href="#tools"
-                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-                >
-                  All Tools
-                </a>
-              </>
-            )}
+            <a
+              href="/#featured"
+              onClick={(e) => {
+                if (isHome) {
+                  e.preventDefault();
+                  document.getElementById("featured")?.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+            >
+              Featured
+            </a>
+            <a
+              href="/#tools"
+              onClick={(e) => {
+                if (isHome) {
+                  e.preventDefault();
+                  document.getElementById("tools")?.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+            >
+              All Tools
+            </a>
             <Link
               to="/about"
               className={`text-sm font-medium transition-colors hover:text-primary flex items-center gap-1 ${navLink("/about", "")}`}
