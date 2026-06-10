@@ -15,7 +15,9 @@ export const SEOHead: React.FC<SEOHeadProps> = ({ config, children }) => {
     : [];
 
   return (
-    <Helmet>
+    // defer={false} applies tags synchronously — without it Helmet waits for
+    // requestAnimationFrame, which never fires in background/throttled tabs
+    <Helmet defer={false}>
       <title>{config.title}</title>
       <meta name="description" content={config.description} />
       <meta name="keywords" content={config.keywords.join(", ")} />

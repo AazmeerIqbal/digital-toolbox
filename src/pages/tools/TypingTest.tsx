@@ -2,11 +2,10 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
 import { ToolExplanation } from "@/components/ToolExplanation";
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import {
   Keyboard,
   RotateCcw,
@@ -14,531 +13,501 @@ import {
   Clock,
   Target,
   Zap,
-  Shuffle,
+  Hash,
+  Quote,
+  Type,
 } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { InContentAd } from "@/components/AdSense";
+
+// ─── Word pools ───────────────────────────────────────────────────────────────
+
+const COMMON_WORDS = [
+  "the", "be", "of", "and", "a", "to", "in", "he", "have", "it", "that", "for",
+  "they", "with", "as", "not", "on", "she", "at", "by", "this", "we", "you",
+  "do", "but", "from", "or", "which", "one", "would", "all", "will", "there",
+  "say", "who", "make", "when", "can", "more", "if", "no", "man", "out",
+  "other", "so", "what", "time", "up", "go", "about", "than", "into", "could",
+  "state", "only", "new", "year", "some", "take", "come", "these", "know",
+  "see", "use", "get", "like", "then", "first", "any", "work", "now", "may",
+  "such", "give", "over", "think", "most", "even", "find", "day", "also",
+  "after", "way", "many", "must", "look", "before", "great", "back", "through",
+  "long", "where", "much", "should", "well", "people", "down", "own", "just",
+  "because", "good", "each", "those", "feel", "seem", "how", "high", "too",
+  "place", "little", "world", "very", "still", "nation", "hand", "old", "life",
+  "tell", "write", "become", "here", "show", "house", "both", "between",
+  "need", "mean", "call", "develop", "under", "last", "right", "move", "thing",
+  "general", "school", "never", "same", "another", "begin", "while", "number",
+  "part", "turn", "real", "leave", "might", "want", "point", "form", "off",
+  "child", "few", "small", "since", "against", "ask", "late", "home",
+  "interest", "large", "person", "end", "open", "public", "follow", "during",
+  "present", "without", "again", "hold", "govern", "around", "possible",
+  "head", "consider", "word", "program", "problem", "however", "lead",
+  "system", "set", "order", "eye", "plan", "run", "keep", "face", "fact",
+  "group", "play", "stand", "increase", "early", "course", "change", "help",
+  "line", "city", "put", "close", "case", "force", "meet", "once", "water",
+  "upon", "war", "build", "hear", "light", "unite", "live", "every", "country",
+  "bring", "center", "let", "side", "try", "provide", "continue", "name",
+  "certain", "power", "pay", "result", "question", "study", "woman", "member",
+];
+
+const QUOTES = [
+  "The quick brown fox jumps over the lazy dog. This sentence contains every letter of the alphabet and is commonly used for typing practice.",
+  "Technology has revolutionized the way we communicate, work, and live. From smartphones to artificial intelligence, innovation continues to shape our future.",
+  "Programming is both an art and a science. It requires logical thinking, creativity, and attention to detail to create software that solves real-world problems.",
+  "The beauty of nature never ceases to amaze us. From towering mountains to vast oceans, our planet offers countless wonders to explore and protect.",
+  "Education is the foundation of progress. Through learning and knowledge sharing, we build a better society for current and future generations.",
+  "Success is not final, failure is not fatal: it is the courage to continue that counts. Every setback is a setup for a comeback.",
+  "In the middle of difficulty lies opportunity. The greatest glory in living lies not in never falling, but in rising every time we fall.",
+];
+
+const PUNCT_MARKS = [",", ".", "!", "?", ";", ":"];
+
+// ─── Text generation ──────────────────────────────────────────────────────────
+
+function generateWords(count: number, punctuation: boolean, numbers: boolean): string {
+  const words: string[] = [];
+  let capitalizeNext = true;
+  for (let i = 0; i < count; i++) {
+    let word = COMMON_WORDS[Math.floor(Math.random() * COMMON_WORDS.length)];
+
+    if (numbers && Math.random() < 0.12) {
+      word = String(Math.floor(Math.random() * 9000) + 100);
+    }
+
+    if (punctuation) {
+      if (capitalizeNext && /^[a-z]/.test(word)) {
+        word = word.charAt(0).toUpperCase() + word.slice(1);
+        capitalizeNext = false;
+      }
+      if (Math.random() < 0.15) {
+        const mark = PUNCT_MARKS[Math.floor(Math.random() * PUNCT_MARKS.length)];
+        word += mark;
+        if (mark === "." || mark === "!" || mark === "?") capitalizeNext = true;
+      } else if (Math.random() < 0.04) {
+        word = `"${word}"`;
+      }
+    }
+
+    words.push(word);
+  }
+  return words.join(" ");
+}
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+type Mode = "time" | "words" | "quote";
 
 interface TestResult {
   rawWpm: number;
   netWpm: number;
   accuracy: number;
-  time: number; // seconds
+  time: number;
   errors: number;
   totalCharacters: number;
   correctCharacters: number;
+  consistency: number;
 }
 
+const TIME_OPTIONS = [15, 30, 60, 120];
+const WORD_OPTIONS = [10, 25, 50, 100];
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
 export default function TypingTest() {
-  const seoConfig = getSEOConfig("typingtest");
-  const [isActive, setIsActive] = useState(false);
+  const seoConfig = getSEOConfig("typing-test");
+
+  // Settings
+  const [mode, setMode] = useState<Mode>("time");
+  const [duration, setDuration] = useState(30);
+  const [wordCount, setWordCount] = useState(25);
+  const [punctuation, setPunctuation] = useState(false);
+  const [numbers, setNumbers] = useState(false);
+
+  // Test state
+  const [text, setText] = useState("");
   const [userInput, setUserInput] = useState("");
+  const [started, setStarted] = useState(false);
+  const [finished, setFinished] = useState(false);
   const [startTime, setStartTime] = useState<number | null>(null);
-  const [timeElapsed, setTimeElapsed] = useState(0); // seconds, fractional
-  const [errors, setErrors] = useState(0);
-  const [testResult, setTestResult] = useState<TestResult | null>(null);
-  const [testDuration, setTestDuration] = useState<number>(60);
+  const [elapsed, setElapsed] = useState(0);
+  const [result, setResult] = useState<TestResult | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const userInputRef = useRef<string>("");
-  const errorsRef = useRef<number>(0);
+  const textBoxRef = useRef<HTMLDivElement>(null);
+  const caretRef = useRef<HTMLSpanElement>(null);
+  const wpmSamples = useRef<number[]>([]);
+  const finishedRef = useRef(false);
 
-  const sampleTexts = useMemo(
-    () => [
-      "The quick brown fox jumps over the lazy dog. This sentence contains every letter of the alphabet and is commonly used for typing practice.",
-      "Technology has revolutionized the way we communicate, work, and live. From smartphones to artificial intelligence, innovation continues to shape our future.",
-      "Programming is both an art and a science. It requires logical thinking, creativity, and attention to detail to create software that solves real-world problems.",
-      "The beauty of nature never ceases to amaze us. From towering mountains to vast oceans, our planet offers countless wonders to explore and protect.",
-      "Education is the foundation of progress. Through learning and knowledge sharing, we build a better society for current and future generations.",
-    ],
-    []
-  );
+  // ─── Text generation per settings ──────────────────────────────────────────
 
-  const [currentText, setCurrentText] = useState(
-    sampleTexts[Math.floor(Math.random() * sampleTexts.length)]
-  );
-
-  useEffect(() => {
-    userInputRef.current = userInput;
-  }, [userInput]);
-
-  useEffect(() => {
-    errorsRef.current = errors;
-  }, [errors]);
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout | undefined;
-    if (isActive && startTime) {
-      interval = setInterval(() => {
-        const elapsedSec = (Date.now() - startTime) / 1000;
-        setTimeElapsed(elapsedSec);
-        if (elapsedSec >= testDuration) {
-          finalizeTest(elapsedSec);
-        }
-      }, 100);
+  const makeText = useCallback(() => {
+    if (mode === "quote") {
+      return QUOTES[Math.floor(Math.random() * QUOTES.length)];
     }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [isActive, startTime, testDuration]);
+    if (mode === "words") {
+      return generateWords(wordCount, punctuation, numbers);
+    }
+    // time mode: generate plenty so the user can never run out (~250 wpm ceiling)
+    const needed = Math.max(60, Math.ceil((duration / 60) * 250));
+    return generateWords(needed, punctuation, numbers);
+  }, [mode, wordCount, duration, punctuation, numbers]);
 
-  const computeStats = (
-    typed: string,
-    errorCount: number,
-    elapsedSeconds: number
-  ) => {
-    const totalCharacters = typed.length;
-    const correctCharacters = Math.max(totalCharacters - errorCount, 0);
-    const minutes = Math.max(elapsedSeconds / 60, 1 / 60); // avoid div by zero
-    const rawWpm = totalCharacters > 0 ? totalCharacters / 5 / minutes : 0;
-    const accuracy =
-      totalCharacters > 0 ? correctCharacters / totalCharacters : 1;
-    const netWpm = totalCharacters > 0 ? correctCharacters / 5 / minutes : 0;
-    return {
-      rawWpm,
-      netWpm,
-      accuracyPercent: Math.round(accuracy * 100),
-      accuracyRatio: accuracy,
-      totalCharacters,
-      correctCharacters,
-    };
-  };
-
-  const startTest = () => {
-    const newText = sampleTexts[Math.floor(Math.random() * sampleTexts.length)];
-    setCurrentText(newText);
-    setIsActive(true);
-    const now = Date.now();
-    setStartTime(now);
+  // Regenerate text when settings change
+  useEffect(() => {
+    setText(makeText());
     setUserInput("");
-    setErrors(0);
-    setTimeElapsed(0);
-    setTestResult(null);
-    inputRef.current?.focus();
-  };
-
-  const finalizeTest = (elapsedSeconds?: number) => {
-    if (!startTime) return;
-    const elapsed = Math.min(
-      elapsedSeconds ?? (Date.now() - startTime) / 1000,
-      testDuration
-    );
-    setIsActive(false);
-
-    const typed = userInputRef.current;
-    const err = errorsRef.current;
-
-    const {
-      rawWpm,
-      netWpm,
-      accuracyPercent,
-      totalCharacters,
-      correctCharacters,
-    } = computeStats(typed, err, elapsed);
-
-    setTimeElapsed(elapsed);
-    setTestResult({
-      rawWpm: Math.round(rawWpm),
-      netWpm: Math.round(netWpm),
-      accuracy: Math.round(accuracyPercent),
-      time: Math.round(elapsed),
-      errors: err,
-      totalCharacters,
-      correctCharacters,
-    });
-  };
-
-  const resetTest = () => {
-    setIsActive(false);
-    setUserInput("");
+    setStarted(false);
+    setFinished(false);
+    finishedRef.current = false;
     setStartTime(null);
-    setTimeElapsed(0);
-    setErrors(0);
-    setTestResult(null);
-    setCurrentText(sampleTexts[Math.floor(Math.random() * sampleTexts.length)]);
-  };
+    setElapsed(0);
+    setResult(null);
+    wpmSamples.current = [];
+  }, [makeText]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!isActive || (startTime && timeElapsed >= testDuration)) return;
-    const value = e.target.value;
+  // ─── Stats ─────────────────────────────────────────────────────────────────
 
-    // Limit to current text length to keep metrics consistent
-    const nextValue = value.slice(0, currentText.length);
-    setUserInput(nextValue);
-
-    // Recompute errors based on current value vs target text
-    let errorCount = 0;
-    for (let i = 0; i < nextValue.length; i++) {
-      if (nextValue[i] !== currentText[i]) {
-        errorCount++;
-      }
+  const errors = useMemo(() => {
+    let e = 0;
+    for (let i = 0; i < userInput.length; i++) {
+      if (userInput[i] !== text[i]) e++;
     }
-    setErrors(errorCount);
-  };
+    return e;
+  }, [userInput, text]);
 
-  const preventPaste: React.ClipboardEventHandler<HTMLInputElement> = (e) => {
-    e.preventDefault();
-  };
+  const computeStats = useCallback((typed: string, errCount: number, secs: number) => {
+    const total = typed.length;
+    const correct = Math.max(total - errCount, 0);
+    const minutes = Math.max(secs / 60, 1 / 60);
+    return {
+      rawWpm: Math.round(total / 5 / minutes),
+      netWpm: Math.max(0, Math.round(correct / 5 / minutes)),
+      accuracy: total > 0 ? Math.round((correct / total) * 100) : 100,
+      total,
+      correct,
+    };
+  }, []);
 
-  const renderText = () => {
-    return currentText.split("").map((char, index) => {
-      let className = "transition-colors duration-150 rounded-sm px-0.5 ";
+  // ─── Finish test ───────────────────────────────────────────────────────────
 
-      if (index < userInput.length) {
-        className +=
-          userInput[index] === char
-            ? "bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200"
-            : "bg-red-200 text-red-800 dark:bg-red-800 dark:text-red-200";
-      } else if (index === userInput.length) {
-        className +=
-          "bg-blue-100 text-blue-900 dark:bg-blue-900/50 dark:text-foreground";
-      } else {
-        className += "text-muted-foreground";
-      }
+  const finishTest = useCallback((finalElapsed: number, typed: string, errCount: number) => {
+    if (finishedRef.current) return;
+    finishedRef.current = true;
+    setFinished(true);
+    setStarted(false);
 
-      return (
-        <span key={index} className={className}>
-          {char}
-        </span>
-      );
+    const { rawWpm, netWpm, accuracy, total, correct } = computeStats(typed, errCount, finalElapsed);
+
+    // Consistency: 100 - coefficient of variation of WPM samples
+    const samples = wpmSamples.current.filter((s) => s > 0);
+    let consistency = 100;
+    if (samples.length >= 3) {
+      const mean = samples.reduce((a, b) => a + b, 0) / samples.length;
+      const variance = samples.reduce((a, b) => a + (b - mean) ** 2, 0) / samples.length;
+      const cv = mean > 0 ? Math.sqrt(variance) / mean : 0;
+      consistency = Math.max(0, Math.round((1 - cv) * 100));
+    }
+
+    setResult({
+      rawWpm,
+      netWpm,
+      accuracy,
+      time: Math.round(finalElapsed * 10) / 10,
+      errors: errCount,
+      totalCharacters: total,
+      correctCharacters: correct,
+      consistency,
     });
+  }, [computeStats]);
+
+  // ─── Timer ─────────────────────────────────────────────────────────────────
+
+  useEffect(() => {
+    if (!started || finished || !startTime) return;
+    const interval = setInterval(() => {
+      const secs = (Date.now() - startTime) / 1000;
+      setElapsed(secs);
+
+      // Sample live WPM each tick for consistency metric
+      const { netWpm } = computeStats(userInput, errors, secs);
+      if (secs > 2) wpmSamples.current.push(netWpm);
+
+      // Time-mode end condition
+      if (mode === "time" && secs >= duration) {
+        finishTest(duration, userInput, errors);
+      }
+    }, 200);
+    return () => clearInterval(interval);
+  }, [started, finished, startTime, mode, duration, userInput, errors, computeStats, finishTest]);
+
+  // ─── Input handling — auto-start on first keystroke ──────────────────────────
+
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (finished) return;
+    const value = e.target.value.slice(0, text.length);
+
+    // Auto-start the timer on the first character (monkeytype behavior)
+    let st = startTime;
+    if (!started && value.length > 0) {
+      st = Date.now();
+      setStarted(true);
+      setStartTime(st);
+    }
+
+    setUserInput(value);
+
+    // Completion end condition — typed the entire text (all modes).
+    // THIS is the fix for "timer doesn't stop when I finish typing".
+    if (value.length >= text.length && st) {
+      let errCount = 0;
+      for (let i = 0; i < value.length; i++) if (value[i] !== text[i]) errCount++;
+      const secs = (Date.now() - st) / 1000;
+      finishTest(mode === "time" ? Math.min(secs, duration) : secs, value, errCount);
+    }
   };
 
-  const progress = Math.min((timeElapsed / testDuration) * 100, 100);
+  const restart = useCallback(() => {
+    setText(makeText());
+    setUserInput("");
+    setStarted(false);
+    setFinished(false);
+    finishedRef.current = false;
+    setStartTime(null);
+    setElapsed(0);
+    setResult(null);
+    wpmSamples.current = [];
+    setTimeout(() => inputRef.current?.focus(), 50);
+  }, [makeText]);
+
+  // Tab+Enter / Esc restart shortcut
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        restart();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [restart]);
+
+  // Keep caret visible — scroll text box as the user advances
+  useEffect(() => {
+    caretRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
+  }, [userInput.length]);
+
+  // ─── Live stats ────────────────────────────────────────────────────────────
 
   const liveStats = useMemo(() => {
-    if (!startTime || !isActive) {
-      return {
-        wpm: 0,
-        accuracy:
-          userInput.length > 0
-            ? Math.round(((userInput.length - errors) / userInput.length) * 100)
-            : 100,
-      };
-    }
-    const elapsedSeconds = Math.min(
-      (Date.now() - startTime) / 1000,
-      testDuration
-    );
-    const { netWpm, accuracyPercent } = computeStats(
-      userInput,
-      errors,
-      elapsedSeconds
-    );
-    return { wpm: Math.max(0, Math.round(netWpm)), accuracy: accuracyPercent };
-  }, [startTime, isActive, userInput, errors, testDuration]);
+    if (!started || !startTime) return { wpm: 0, accuracy: 100 };
+    const secs = Math.max((Date.now() - startTime) / 1000, 0.5);
+    const { netWpm, accuracy } = computeStats(userInput, errors, secs);
+    return { wpm: netWpm, accuracy };
+  }, [started, startTime, userInput, errors, elapsed, computeStats]);
 
-  const timeLeft = Math.max(0, testDuration - Math.floor(timeElapsed));
+  const timeLeft = mode === "time" ? Math.max(0, Math.ceil(duration - elapsed)) : null;
+  const wordsTyped = userInput.length === 0 ? 0 : userInput.trimEnd().split(/\s+/).length;
+  const totalWords = text.split(/\s+/).length;
+
+  // ─── Render text with per-char coloring ───────────────────────────────────
+
+  const renderedText = useMemo(() => {
+    return text.split("").map((char, i) => {
+      let cls = "";
+      if (i < userInput.length) {
+        cls = userInput[i] === char
+          ? "text-green-600 dark:text-green-400"
+          : "text-red-500 bg-red-500/10 rounded-sm";
+      } else if (i === userInput.length) {
+        return (
+          <span key={i} ref={caretRef} className="relative text-foreground">
+            <span className="absolute -left-px top-0 bottom-0 w-0.5 bg-primary animate-pulse" />
+            {char}
+          </span>
+        );
+      } else {
+        cls = "text-muted-foreground/60";
+      }
+      return <span key={i} className={cls}>{char}</span>;
+    });
+  }, [text, userInput]);
+
+  // ─── Option button helper ─────────────────────────────────────────────────
+
+  const OptBtn = ({ active, onClick, children, disabled }: { active: boolean; onClick: () => void; children: React.ReactNode; disabled?: boolean }) => (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={`px-3 py-1 rounded-md text-xs font-medium transition-colors disabled:opacity-40 ${active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground hover:bg-muted"}`}
+    >
+      {children}
+    </button>
+  );
 
   return (
     <>
       <SEOHead config={seoConfig} />
-
       <ToolLayout>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="max-w-4xl mx-auto"
-        >
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-foreground mb-2">
-              Typing Speed Test
-            </h1>
-            <p className="text-lg text-muted-foreground">
-              Measure your typing speed and accuracy using industry-standard
-              calculations
-            </p>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="max-w-4xl mx-auto">
+          <div className="text-center mb-6">
+            <h1 className="text-4xl font-bold text-foreground mb-2">Typing Speed Test</h1>
+            <p className="text-lg text-muted-foreground">Test your WPM — start typing to begin, Esc to restart</p>
           </div>
 
-          {!testResult && (
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-              <Card>
-                <CardContent className="p-4">
-                  <div className="text-center">
-                    <Clock className="h-6 w-6 text-primary mx-auto mb-2" />
-                    <div className="text-2xl font-bold">{timeLeft}s</div>
-                    <div className="text-sm text-muted-foreground">
-                      Time Left
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+          {/* ── Settings bar (monkeytype style) ── */}
+          {!result && (
+            <div className="flex flex-wrap items-center justify-center gap-1 mb-6 p-2 rounded-lg bg-muted/50 border">
+              {/* Mode */}
+              <OptBtn active={mode === "time"} onClick={() => setMode("time")} disabled={started}><Clock className="h-3 w-3 inline mr-1" />time</OptBtn>
+              <OptBtn active={mode === "words"} onClick={() => setMode("words")} disabled={started}><Type className="h-3 w-3 inline mr-1" />words</OptBtn>
+              <OptBtn active={mode === "quote"} onClick={() => setMode("quote")} disabled={started}><Quote className="h-3 w-3 inline mr-1" />quote</OptBtn>
 
-              <Card>
-                <CardContent className="p-4">
-                  <div className="text-center">
-                    <Zap className="h-6 w-6 text-primary mx-auto mb-2" />
-                    <div className="text-2xl font-bold">{liveStats.wpm}</div>
-                    <div className="text-sm text-muted-foreground">
-                      WPM (net)
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <span className="mx-2 text-border">|</span>
 
-              <Card>
-                <CardContent className="p-4">
-                  <div className="text-center">
-                    <Target className="h-6 w-6 text-primary mx-auto mb-2" />
-                    <div className="text-2xl font-bold">
-                      {liveStats.accuracy}%
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      Accuracy
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              {/* Duration / word count */}
+              {mode === "time" && TIME_OPTIONS.map((t) => (
+                <OptBtn key={t} active={duration === t} onClick={() => setDuration(t)} disabled={started}>{t}s</OptBtn>
+              ))}
+              {mode === "words" && WORD_OPTIONS.map((w) => (
+                <OptBtn key={w} active={wordCount === w} onClick={() => setWordCount(w)} disabled={started}>{w}</OptBtn>
+              ))}
+              {mode === "quote" && <span className="text-xs text-muted-foreground px-2">random quote</span>}
 
-              <Card>
-                <CardContent className="p-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-red-500">
-                      {errors}
-                    </div>
-                    <div className="text-sm text-muted-foreground">Errors</div>
-                  </div>
-                </CardContent>
-              </Card>
+              {mode !== "quote" && (
+                <>
+                  <span className="mx-2 text-border">|</span>
+                  {/* Modifiers */}
+                  <OptBtn active={punctuation} onClick={() => setPunctuation(!punctuation)} disabled={started}>@ punctuation</OptBtn>
+                  <OptBtn active={numbers} onClick={() => setNumbers(!numbers)} disabled={started}><Hash className="h-3 w-3 inline mr-0.5" />numbers</OptBtn>
+                </>
+              )}
             </div>
           )}
 
-          {/* In-Content Ad */}
-          {!testResult && <InContentAd />}
-
-          <Card className="mb-6">
-            <CardHeader>
-              <div className="flex items-center justify-between gap-2 flex-wrap">
-                <CardTitle className="flex items-center gap-2">
-                  <Keyboard className="h-5 w-5" />
-                  Typing Test
-                </CardTitle>
-                <div className="flex items-center gap-2">
-                  <Select
-                    value={String(testDuration)}
-                    onValueChange={(val) => setTestDuration(Number(val))}
-                    disabled={isActive}
-                  >
-                    <SelectTrigger className="w-[160px]">
-                      <SelectValue placeholder="Duration" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="15">15 seconds</SelectItem>
-                      <SelectItem value="30">30 seconds</SelectItem>
-                      <SelectItem value="60">60 seconds</SelectItem>
-                      <SelectItem value="120">120 seconds</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <Button
-                    variant="outline"
-                    onClick={() =>
-                      setCurrentText(
-                        sampleTexts[
-                          Math.floor(Math.random() * sampleTexts.length)
-                        ]
-                      )
-                    }
-                    disabled={isActive}
-                  >
-                    <Shuffle className="mr-2 h-4 w-4" />
-                    New Text
-                  </Button>
-
-                  {!isActive && !testResult && (
-                    <Button
-                      onClick={startTest}
-                      className="bg-primary text-primary-foreground hover:bg-primary/90"
-                    >
-                      Start Test
-                    </Button>
-                  )}
-                  <Button variant="outline" onClick={resetTest}>
-                    <RotateCcw className="mr-2 h-4 w-4" />
-                    Reset
-                  </Button>
+          {/* ── Live stats ── */}
+          {!result && (
+            <div className="flex items-center justify-center gap-8 mb-4 text-center">
+              <div>
+                <div className="text-3xl font-bold text-primary tabular-nums">
+                  {mode === "time" ? `${timeLeft}` : `${wordsTyped}/${totalWords}`}
                 </div>
+                <div className="text-xs text-muted-foreground">{mode === "time" ? "seconds" : "words"}</div>
               </div>
-              {isActive && (
-                <div className="mt-4">
-                  <Progress value={progress} className="w-full" />
+              <div>
+                <div className="text-3xl font-bold tabular-nums">{liveStats.wpm}</div>
+                <div className="text-xs text-muted-foreground">wpm</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold tabular-nums">{liveStats.accuracy}%</div>
+                <div className="text-xs text-muted-foreground">accuracy</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-red-500 tabular-nums">{errors}</div>
+                <div className="text-xs text-muted-foreground">errors</div>
+              </div>
+            </div>
+          )}
+
+          {/* ── Test area ── */}
+          {!result ? (
+            <Card className="mb-6">
+              <CardContent className="p-6">
+                <div
+                  ref={textBoxRef}
+                  onClick={() => inputRef.current?.focus()}
+                  className="text-xl leading-relaxed font-mono cursor-text select-none mb-4 max-h-40 overflow-hidden"
+                >
+                  {renderedText}
                 </div>
-              )}
-            </CardHeader>
-            <CardContent>
-              {!testResult ? (
-                <>
-                  <div className="text-lg leading-relaxed mb-6 p-4 border rounded-lg font-mono bg-card text-card-foreground dark:bg-card dark:text-card-foreground">
-                    {renderText()}
+
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={userInput}
+                  onChange={handleInput}
+                  onPaste={(e) => e.preventDefault()}
+                  placeholder={started ? "" : "Start typing to begin the test…"}
+                  className="w-full p-3 border rounded-lg text-lg font-mono focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
+                  autoCorrect="off"
+                  autoCapitalize="none"
+                  autoComplete="off"
+                  spellCheck={false}
+                  autoFocus
+                />
+
+                <div className="flex justify-center mt-4">
+                  <Button variant="ghost" size="sm" onClick={restart} className="text-muted-foreground gap-1.5">
+                    <RotateCcw className="h-3.5 w-3.5" /> Restart (Esc)
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            /* ── Results ── */
+            <Card className="mb-6">
+              <CardContent className="p-8 text-center">
+                <Trophy className="h-14 w-14 text-yellow-500 mx-auto mb-3" />
+                <h2 className="text-2xl font-bold mb-6">Test Complete!</h2>
+
+                <div className="flex items-center justify-center gap-10 mb-8">
+                  <div>
+                    <div className="text-6xl font-bold text-primary tabular-nums">{result.netWpm}</div>
+                    <div className="text-sm text-muted-foreground mt-1">wpm</div>
                   </div>
-
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    value={userInput}
-                    onChange={handleInputChange}
-                    onPaste={preventPaste}
-                    disabled={!isActive}
-                    placeholder={
-                      isActive
-                        ? "Start typing..."
-                        : "Click 'Start Test' to begin"
-                    }
-                    className="w-full p-3 border rounded-lg text-lg font-mono focus:outline-none focus:ring-2 focus:ring-primary disabled:bg-muted bg-background text-foreground"
-                    autoCorrect="off"
-                    autoCapitalize="none"
-                    autoComplete="off"
-                    spellCheck={false}
-                    maxLength={currentText.length}
-                  />
-                </>
-              ) : (
-                <div className="text-center py-8">
-                  <Trophy className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
-                  <h2 className="text-2xl font-bold mb-6">Test Complete!</h2>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-3xl mx-auto">
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="text-center">
-                          <div className="text-3xl font-bold text-primary">
-                            {testResult.netWpm}
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            WPM (net)
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="text-center">
-                          <div className="text-3xl font-bold text-blue-600">
-                            {testResult.rawWpm}
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            WPM (raw)
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="text-center">
-                          <div className="text-3xl font-bold text-green-600">
-                            {testResult.accuracy}%
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            Accuracy
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="text-center">
-                          <div className="text-3xl font-bold text-purple-600">
-                            {testResult.time}s
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            Time
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto mt-4">
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="text-center">
-                          <div className="text-xl font-semibold">
-                            {testResult.correctCharacters}/
-                            {testResult.totalCharacters}
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            Correct / Typed
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="text-center">
-                          <div className="text-xl font-semibold text-red-500">
-                            {testResult.errors}
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            Uncorrected Errors
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="text-center">
-                          <div className="text-xl font-semibold">
-                            {Math.max(
-                              testResult.totalCharacters -
-                                testResult.correctCharacters,
-                              0
-                            )}
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            Incorrect Keystrokes
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                  <div>
+                    <div className="text-6xl font-bold text-green-600 tabular-nums">{result.accuracy}%</div>
+                    <div className="text-sm text-muted-foreground mt-1">accuracy</div>
                   </div>
                 </div>
-              )}
-            </CardContent>
-          </Card>
+
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-2xl mx-auto mb-8">
+                  {[
+                    { label: "raw wpm", value: result.rawWpm },
+                    { label: "characters", value: `${result.correctCharacters}/${result.totalCharacters}` },
+                    { label: "errors", value: result.errors, red: true },
+                    { label: "consistency", value: `${result.consistency}%` },
+                    { label: "time", value: `${result.time}s` },
+                  ].map((s, i) => (
+                    <div key={i} className="p-3 rounded-lg bg-muted/50">
+                      <div className={`text-xl font-bold tabular-nums ${s.red ? "text-red-500" : ""}`}>{s.value}</div>
+                      <div className="text-xs text-muted-foreground">{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <Button onClick={restart} size="lg" className="gap-2">
+                  <RotateCcw className="h-4 w-4" /> Try Again
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          <InContentAd />
 
           <ToolExplanation
             title="Typing Speed Test"
-            description="Toolzaply's free Typing Speed Test measures your typing speed in Words Per Minute (WPM) and accuracy percentage using industry-standard formulas. It supports configurable test durations of 15, 30, 60, or 120 seconds, and provides detailed post-test analytics including raw WPM, net WPM (adjusted for errors), total characters typed, correct keystrokes, and uncorrected error count. The test uses randomized sample paragraphs covering diverse topics to simulate real-world typing scenarios. All calculations run entirely client-side with no data logging."
+            description="Toolzaply's free typing test measures your speed in WPM (words per minute) and accuracy, monkeytype-style. Choose time mode (15–120 seconds), words mode (10–100 words), or quote mode, with optional punctuation and numbers. The timer starts automatically on your first keystroke and stops the moment you finish the text or time runs out. Results include net WPM, raw WPM, accuracy, error count, and a consistency score."
             howToUse={[
-              "Select your preferred test duration from the dropdown (15s, 30s, 60s, or 120s).",
-              "Click 'New Text' to shuffle the sample paragraph if desired.",
-              "Click 'Start Test' to begin the countdown and activate the input field.",
-              "Type the displayed text as quickly and accurately as possible.",
-              "When the timer expires, review your detailed results including net WPM, accuracy, and error breakdown."
+              "Pick a mode: time (test ends when the clock runs out), words (ends when you finish the word count), or quote (type a full quote).",
+              "Optionally enable punctuation and numbers for a harder, more realistic test.",
+              "Just start typing — the timer starts automatically on your first keystroke.",
+              "The test ends automatically when time expires or you finish the text.",
+              "Press Esc anytime to restart with fresh words.",
             ]}
             features={[
-              "Industry-standard WPM calculation: (characters typed ÷ 5) ÷ minutes elapsed.",
-              "Net WPM metric that subtracts uncorrected errors for a true speed measurement.",
-              "Live real-time statistics updating as you type (WPM, accuracy, error count).",
-              "Color-coded character feedback: green for correct, red for incorrect, blue for current position.",
-              "Configurable test durations: 15, 30, 60, or 120 seconds.",
-              "Anti-cheat: paste is disabled to ensure authentic typing measurement."
+              "3 test modes: time (15/30/60/120s), words (10/25/50/100), and quote.",
+              "Punctuation and numbers modifiers for realistic difficulty.",
+              "Auto-start on first keystroke — no Start button needed.",
+              "Test ends instantly when you complete the text (timer stops correctly).",
+              "Live WPM, accuracy, and error count while typing.",
+              "Consistency score measuring how steady your speed was.",
+              "Random common-word streams — never the same test twice.",
+              "Esc to instantly restart. Paste blocked for authentic results.",
             ]}
             faqs={[
-              {
-                question: "How is WPM (Words Per Minute) calculated?",
-                answer: "WPM is calculated using the standard formula: (total characters typed ÷ 5) ÷ elapsed time in minutes. The divisor of 5 represents the average English word length. Net WPM further subtracts uncorrected errors from the character count."
-              },
-              {
-                question: "What is the difference between raw WPM and net WPM?",
-                answer: "Raw WPM counts every keystroke regardless of accuracy. Net WPM subtracts the characters that were typed incorrectly and not corrected, giving a more realistic measure of effective typing speed."
-              },
-              {
-                question: "Can I use my own text for the typing test?",
-                answer: "Currently the test uses a curated set of sample paragraphs. You can shuffle between them using the 'New Text' button. Custom text input may be added in a future update."
-              }
+              { question: "How is WPM calculated?", answer: "Net WPM = (correctly typed characters ÷ 5) ÷ minutes elapsed. The divisor 5 is the standard average word length. Raw WPM counts all keystrokes including errors." },
+              { question: "What is the consistency score?", answer: "Consistency measures how steady your typing speed was throughout the test, computed from the variation in your WPM over time. 100% means perfectly steady pace; lower scores mean bursts and pauses." },
+              { question: "What is a good typing speed?", answer: "The average is around 40 WPM. Professional typists reach 65–75 WPM, and top typists exceed 100 WPM. Accuracy above 95% matters more than raw speed when improving." },
             ]}
           />
         </motion.div>
