@@ -464,9 +464,19 @@ const Index = () => {
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-              {blogs.map((blog, index) => (
+              {blogs.slice(0, 6).map((blog, index) => (
                 <BlogCard key={blog.id} blog={blog} index={index} />
               ))}
+            </div>
+
+            <div className="text-center mt-10">
+              <a
+                href="/blog"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+              >
+                <BookOpen className="h-4 w-4" />
+                View all {blogs.length} articles
+              </a>
             </div>
           </div>
         </section>

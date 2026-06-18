@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { Home, Sparkles, BookOpen, Info } from "lucide-react";
+import { Home, Sparkles, BookOpen, Info, Wrench } from "lucide-react";
 
 export const Header = () => {
   const location = useLocation();
@@ -52,6 +52,13 @@ export const Header = () => {
             >
               All Tools
             </a>
+            <Link
+              to="/blog"
+              className={`text-sm font-medium transition-colors hover:text-primary flex items-center gap-1 ${navLink("/blog", "")}`}
+            >
+              <BookOpen className="h-4 w-4" />
+              Blog
+            </Link>
             <Link
               to="/about"
               className={`text-sm font-medium transition-colors hover:text-primary flex items-center gap-1 ${navLink("/about", "")}`}

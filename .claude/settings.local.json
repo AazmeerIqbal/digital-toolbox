@@ -1,7 +1,37 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(Get-ChildItem -Path \"D:\\\\Azmeer Work\\\\digital-toolbox\\\\src\\\\pages\\\\tools\" -File)",
+      "Bash(Select-Object Name)",
+      "Bash(Format-Table -AutoSize)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(npx vite *)",
+      "Bash(Start-Sleep 5)",
+      "Bash(Invoke-WebRequest -Uri \"http://localhost:5174/\" -UseBasicParsing -TimeoutSec 5)",
+      "Bash(Select-Object -ExpandProperty StatusCode)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8082/)",
+      "Bash(cd /tmp)",
+      "Bash(python -c ' *)",
+      "Bash(pip install *)",
+      "Bash(npx tsc *)",
+      "Bash(curl -s http://localhost:4173/tools/typing-test)",
+      "Bash(npm ls *)",
+      "WebFetch(domain:toolzaply.com)",
+      "Bash(curl -s https://toolzaply.com/)",
+      "Bash(curl -s -i https://toolzaply.com/ads.txt)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} -> %{redirect_url}\" https://www.toolzaply.com/ads.txt)",
+      "Bash(curl -s -o /dev/null -w \"http: %{http_code} -> %{redirect_url}\\\\n\" http://www.toolzaply.com/ads.txt)",
+      "Bash(nslookup www.toolzaply.com)",
+      "Bash(curl -sv https://www.toolzaply.com/ -o /dev/null)",
+      "Bash(curl -v https://www.toolzaply.com/ -o /dev/null)",
+      "Bash(openssl s_client -connect www.toolzaply.com:443 -servername www.toolzaply.com)",
+      "Bash(openssl x509 *)",
+      "WebFetch(domain:support.google.com)"
     ]
   }
 }

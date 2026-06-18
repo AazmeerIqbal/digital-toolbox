@@ -1,4 +1,4 @@
-export interface Blog {
+﻿export interface Blog {
   id: string;
   title: string;
   description: string;
@@ -1328,6 +1328,392 @@ Improving your typing speed is one of the highest-ROI investments you can make i
     readTime: "5 min read",
     keywords: ["typing speed", "WPM", "touch typing", "productivity", "accuracy"],
     slug: "improve-typing-speed-accuracy-30-days"
+  },
+  {
+    id: "11",
+    title: "How to Convert Images to PDF: A Complete Step-by-Step Guide",
+    description: "Learn everything about converting images to PDF format — when to do it, the best settings to use, and common pitfalls to avoid for professional results.",
+    excerpt: "Converting images to PDF is one of the most common document tasks, yet many people don't know how to do it correctly. This guide covers everything you need to know.",
+    content: `
+# How to Convert Images to PDF: A Complete Step-by-Step Guide
+
+Converting images to PDF is one of the most frequently performed digital tasks, yet it's often done incorrectly, leading to bloated files, poor quality, or images that don't display properly. Whether you're compiling a photo report, submitting scanned documents, or creating a professional portfolio, understanding how to convert images to PDF properly will save you time and produce better results every time.
+
+## Why Convert Images to PDF?
+
+Before diving into the how, it's worth understanding the why. PDFs offer significant advantages over standalone image files:
+
+- **Universal compatibility:** A PDF displays identically on Windows, macOS, iOS, and Android. An image might render differently depending on the viewer.
+- **Multi-page support:** You can combine dozens of images into a single, organized document. Sending 30 separate JPEGs to a client is unprofessional; a single, well-organized PDF is not.
+- **Smaller file sizes:** A properly compressed PDF containing images can be significantly smaller than the sum of its individual source files, making it easier to email or share.
+- **Print-ready format:** PDFs preserve exact dimensions and resolution, making them the standard format for professional printing.
+- **Non-editable presentation:** Unlike Word documents, PDFs are not easily modified, making them appropriate for contracts, reports, and formal submissions.
+
+## Step 1: Prepare Your Images
+
+The quality of your output PDF is determined almost entirely by the quality of your source images. Before you even open a converter, take a few minutes to prepare your files.
+
+**Sort and rename your images.** Files are typically added to a PDF in alphabetical or numerical order. Rename them sequentially (e.g., 001_cover.jpg, 002_introduction.jpg) to guarantee they appear in the correct order.
+
+**Check image resolution.** For documents intended for print, images should be at least 300 DPI (dots per inch). For documents that will only be viewed on screen, 72-150 DPI is sufficient and will result in smaller file sizes.
+
+**Remove unnecessary images.** It sounds obvious, but reviewing your image set before conversion prevents accidentally including duplicates, test shots, or irrelevant files in your final PDF.
+
+## Step 2: Choose Your Conversion Method
+
+There are several ways to convert images to PDF, each with distinct trade-offs.
+
+### Browser-Based Tools (Recommended for Most Users)
+
+Free, browser-based converters like the one on Toolzaply are the best option for most people. They require no software installation, work on any operating system, and — crucially — process your files entirely within your browser. Your images are never uploaded to a remote server, which is critical if your images contain sensitive, confidential, or personal information.
+
+### Desktop Software
+
+Applications like Adobe Acrobat Pro offer the most control, including advanced compression settings, the ability to add bookmarks and metadata, and PDF/A archival compliance. However, they come at a significant cost and are generally only worth it for high-volume professional use.
+
+### Mobile Apps
+
+If you're working from a smartphone, most iOS and Android devices have built-in PDF creation capabilities within the Files app (iOS) or Google Drive (Android). Third-party apps offer more control but introduce the same privacy concerns as cloud-based web tools.
+
+## Step 3: Optimize for Your Use Case
+
+Once you understand your conversion tool, think about how the PDF will be used.
+
+**For email attachments:** Prioritize file size. Most email servers have a 25MB attachment limit. If your source images are large, look for a tool that offers compression settings, or compress the images separately before conversion.
+
+**For professional printing:** Prioritize quality. Ensure your images are high-resolution and do not compress them aggressively. Discuss the required PDF settings (PDF/X-1a, color profile) with your print shop before submission.
+
+**For archiving:** Use lossless settings to preserve every pixel of the original image. Storage is cheap; lost quality is permanent.
+
+**For web sharing:** A compressed, screen-resolution PDF is ideal. Aim for files under 5MB for a smooth online viewing experience.
+
+## Common Mistakes to Avoid
+
+**Mistake 1: Using screenshots instead of original files.** Screenshots are low-resolution images of images. Always use the original source file (the full-resolution JPG or PNG) rather than a screenshot of it.
+
+**Mistake 2: Not checking the output.** Always open your finished PDF to verify that page order is correct, images are not cut off at the edges, and the file opens without errors before sending it to someone else.
+
+**Mistake 3: Over-compressing.** Heavy compression introduces visible artifacts — blurry patches, color banding, and pixelated edges — especially around text and logos. If your PDF will be reviewed closely, err on the side of larger file size and better quality.
+
+## Conclusion
+
+Converting images to PDF is a straightforward task when approached methodically. Prepare your source files carefully, choose the right tool for your privacy and quality needs, and always verify the output before sharing. By following these steps, you'll produce clean, professional PDF documents every time.
+
+Ready to convert? Try our free [Image to PDF Converter](/tools/image-to-pdf) — it runs entirely in your browser with no uploads required.
+    `,
+    author: "Toolzaply Team",
+    date: "2024-04-01",
+    category: "Tutorials",
+    readTime: "7 min read",
+    keywords: ["image to pdf", "convert images to pdf", "jpg to pdf", "png to pdf", "pdf conversion guide"],
+    slug: "how-to-convert-images-to-pdf-guide"
+  },
+  {
+    id: "12",
+    title: "Understanding Color Formats: HEX, RGB, HSL, and When to Use Each",
+    description: "A practical guide for designers and developers explaining the difference between HEX, RGB, RGBA, HSL, and HSLA color formats and when to use each one.",
+    excerpt: "Every designer and developer needs to understand color formats. HEX, RGB, and HSL each have specific strengths. Here's when to use which one.",
+    content: `
+# Understanding Color Formats: HEX, RGB, HSL, and When to Use Each
+
+If you've ever looked at a color picker and seen multiple formats — #3b82f6, rgb(59, 130, 246), hsl(217, 91%, 60%) — and wondered which one to use, you're not alone. These are simply different ways of representing the exact same color, but each format has specific strengths that make it better suited for certain tasks.
+
+## The Basics: What Is a Color Format?
+
+Computer screens create color by mixing light. Unlike a painter mixing pigments (which uses subtractive color mixing), your monitor uses *additive* color mixing, combining red, green, and blue light at different intensities to produce every visible color. The color formats we'll discuss are all different ways of expressing these red, green, and blue values, plus optional transparency.
+
+---
+
+## HEX (Hexadecimal)
+
+**Format:** \`#RRGGBB\` or \`#RRGGBBAA\` (with alpha/transparency)
+**Example:** \`#3b82f6\`
+
+HEX is the oldest and most widely recognized color format on the web. Each pair of characters represents a color channel (Red, Green, Blue) as a hexadecimal number from 00 (0) to FF (255).
+
+### Why Use HEX?
+- **Compact notation:** Six characters is very concise and easy to copy-paste.
+- **Universal recognition:** Any designer or developer immediately recognizes a HEX code.
+- **Great for static values:** Brand colors, design system tokens, and hardcoded values are typically stored as HEX.
+
+### Limitations
+HEX is not human-readable. Looking at \`#3b82f6\`, you cannot intuitively know it's a bright blue. And manipulating a HEX color — making it lighter or more saturated — requires math or a tool. You cannot simply change one number.
+
+### When to Use HEX
+Use HEX for **final, fixed color values** — particularly brand colors that don't change. It's the standard format in design handoffs, CSS stylesheets, and color documentation.
+
+---
+
+## RGB and RGBA
+
+**Format:** \`rgb(R, G, B)\` or \`rgba(R, G, B, A)\`
+**Example:** \`rgb(59, 130, 246)\` / \`rgba(59, 130, 246, 0.5)\`
+
+RGB expresses each color channel as a decimal number from 0 to 255. The optional "A" in RGBA stands for Alpha, which controls transparency from 0 (fully transparent) to 1 (fully opaque).
+
+### Why Use RGB?
+- **Transparency control:** RGBA is the easiest way to add transparency to a color. \`rgba(0, 0, 0, 0.5)\` is a half-transparent black.
+- **Familiar to non-programmers:** The concept of mixing red, green, and blue light is intuitive.
+- **Good for programmatic manipulation:** If you're generating colors with JavaScript, RGB values are easy to calculate.
+
+### When to Use RGB/RGBA
+Use RGBA whenever you need **semi-transparent colors** for overlays, hover effects, shadows, and backgrounds. It's the clearest way to express transparency in CSS.
+
+---
+
+## HSL and HSLA
+
+**Format:** \`hsl(H, S%, L%)\` or \`hsla(H, S%, L%, A)\`
+**Example:** \`hsl(217, 91%, 60%)\` / \`hsla(217, 91%, 60%, 0.75)\`
+
+HSL (Hue, Saturation, Lightness) is arguably the most **human-readable** color format:
+
+- **Hue (0–360):** The color itself, expressed as a position on the color wheel. 0°/360° is red, 120° is green, 240° is blue.
+- **Saturation (0–100%):** How vivid or washed-out the color is. 100% is pure color; 0% is gray.
+- **Lightness (0–100%):** How light or dark. 0% is black, 100% is white, 50% is the "true" color.
+
+### Why Use HSL?
+HSL is the most powerful format for **generating color palettes programmatically**. Want to create five shades of the same blue for a hover effect? Simply keep the hue and saturation constant and adjust lightness: \`hsl(217, 91%, 40%)\`, \`hsl(217, 91%, 50%)\`, \`hsl(217, 91%, 60%)\`, etc.
+
+This makes HSL indispensable for:
+- **Theme systems:** Defining light and dark mode variants of the same color.
+- **Dynamic styling:** Adjusting color intensity in response to user interaction.
+- **Accessible design:** Ensuring sufficient contrast by controlling lightness precisely.
+
+### When to Use HSL
+Use HSL when you are **creating or manipulating colors** rather than referencing a fixed brand color. It is the format of choice in modern CSS frameworks, design tokens, and component libraries.
+
+---
+
+## Practical Decision Framework
+
+| Scenario | Best Format |
+|---|---|
+| Storing a brand color | HEX |
+| Transparent overlay | RGBA |
+| Generating a color palette | HSL |
+| Dark/light mode variants | HSL |
+| Hover/active state adjustments | HSL |
+| Copying from a design tool | HEX |
+
+---
+
+## Quick Conversions with Color Tools
+
+Manually converting between color formats is tedious. Our free [Color Tools](/tools/color-tools) suite allows you to enter any color in any format and instantly see its equivalent in all other formats. You can also use it to browse curated palettes, generate gradients, and explore color harmonies — all without leaving your browser.
+
+Understanding these formats is the foundation of working confidently with color on the web. Once you know when to reach for HEX vs HSL, you'll spend less time fighting your tools and more time designing.
+    `,
+    author: "Toolzaply Team",
+    date: "2024-04-10",
+    category: "Web Development",
+    readTime: "6 min read",
+    keywords: ["hex color", "rgb color", "hsl color", "color formats", "web design", "css colors"],
+    slug: "understanding-color-formats-hex-rgb-hsl"
+  },
+  {
+    id: "13",
+    title: "QR Codes Explained: How They Work and Real-World Use Cases",
+    description: "A deep dive into QR code technology — how they store and encode data, error correction, and practical applications across industries.",
+    excerpt: "QR codes are everywhere, yet most people have no idea how they actually work. Understanding the technology helps you use it more effectively.",
+    content: `
+# QR Codes Explained: How They Work and Real-World Use Cases
+
+Walk into any restaurant, museum, or retail store and you'll see them — those black-and-white square patterns that your phone can scan in a fraction of a second. QR codes have become ubiquitous in modern life, yet very few people understand the remarkable technology hiding behind those pixelated squares. Understanding how QR codes work not only satisfies intellectual curiosity, but it helps you make smarter decisions when creating and deploying them.
+
+## A Brief History
+
+QR codes — short for Quick Response codes — were invented in 1994 by Masahiro Hara, an engineer at Denso Wave, a subsidiary of Toyota. The original purpose was industrial: they needed a way to track automotive parts through the manufacturing process that could be scanned much faster than traditional barcodes. Traditional barcodes store data in one dimension (horizontal), limiting capacity. The QR code's revolutionary idea was to store data in *two* dimensions, dramatically increasing the amount of information it could hold.
+
+Denso Wave made the format an open standard, publishing it freely without enforcing their patents. This open approach is a significant reason why QR codes achieved global adoption.
+
+## How a QR Code Stores Data
+
+A QR code is essentially a grid of black and white modules (squares) arranged in a specific pattern. Different regions of this grid serve different purposes:
+
+**Finder Patterns:** The three large squares in three corners of every QR code. A scanner uses these to locate the code and determine its orientation — it doesn't matter if the code is upside-down or tilted.
+
+**Alignment Patterns:** Smaller squares that help the scanner correct for distortion, particularly on curved surfaces like bottles or packaging.
+
+**Timing Patterns:** Alternating black and white lines that tell the scanner the size of each module in the grid.
+
+**Data Modules:** The bulk of the code — the actual encoded information. Data is stored using binary encoding (0 for white, 1 for black), and the bits are packed into groups following a specific reading pattern that spirals through the code.
+
+**Error Correction Modules:** A significant portion of a QR code's area is dedicated not to the data itself, but to error correction codes based on Reed-Solomon mathematics — the same algorithm used in CDs and DVDs. This is why you can scan a QR code even if part of it is damaged, dirty, or obscured.
+
+## Error Correction Levels
+
+QR codes have four error correction levels that balance data capacity against resilience:
+
+| Level | Recovery Capability | Best For |
+|---|---|---|
+| L (Low) | Up to 7% damage | Clean, digital-only environments |
+| M (Medium) | Up to 15% damage | General use |
+| Q (Quartile) | Up to 25% damage | Industrial environments |
+| H (High) | Up to 30% damage | Logos overlaid on the code |
+
+This is why you can put a company logo in the center of a QR code and it still scans: the logo destroys some modules, but the error correction algorithm reconstructs the missing data.
+
+## Data Capacity
+
+The capacity of a QR code depends on its version (size), the type of data being encoded, and the error correction level. Higher error correction = more redundant modules = less space for data.
+
+At maximum capacity (Version 40, Low error correction), a QR code can store:
+- **7,089 numeric characters** (digits only)
+- **4,296 alphanumeric characters** (letters and numbers)
+- **2,953 bytes** of raw binary data
+- **1,817 Kanji characters**
+
+For practical purposes, shorter data produces simpler codes that are faster to scan and work at smaller sizes.
+
+## Real-World Applications
+
+QR codes are used across virtually every industry:
+
+**Restaurants and Hospitality:** Digital menus became universally adopted during the COVID-19 pandemic. A single QR code on the table can link to a menu that's updated in real-time, eliminating printing costs.
+
+**Retail and E-commerce:** Product packaging links to how-to videos, ingredient information, or authenticity verification. Fashion brands use QR codes to provide provenance information for sustainable products.
+
+**Healthcare:** Patient wristbands contain QR codes that give medical staff instant access to medication records and allergy information. Vaccine certificates were distributed as QR codes for easy verification.
+
+**Marketing and Advertising:** QR codes on billboards, print ads, and packaging drive users to landing pages, promotional offers, and social media profiles with a single scan.
+
+**Payments:** WeChat Pay, Alipay, and similar systems use QR codes for peer-to-peer and retail payments. The user displays a QR code generated on their phone; the merchant scans it.
+
+**Event Ticketing:** Concert and flight tickets are now almost universally QR codes. They can be revoked, transferred, and verified digitally, eliminating fraud.
+
+**Authentication:** Many two-factor authentication apps like Google Authenticator use QR codes to share secret keys securely during account setup.
+
+## Best Practices for Creating QR Codes
+
+**Test before publishing.** Always scan your generated QR code with at least two different devices before printing it or publishing it. Different apps handle edge cases differently.
+
+**Ensure sufficient quiet zone.** The white border around a QR code (the "quiet zone") must be at least 4 modules wide. Cutting this border off prevents scanners from detecting the code.
+
+**Choose the right size.** The minimum reliable scan size is about 2 cm × 2 cm for codes viewed from 20-30 cm. Scale proportionally for codes designed to be scanned from farther away (e.g., a bus stop poster needs codes that are 10+ cm wide).
+
+**Keep it simple.** The more data you encode, the denser and harder-to-scan the code becomes. Instead of encoding a long URL with tracking parameters, use a URL shortener to keep the code simple.
+
+Ready to create your own? Our free [QR Code Generator](/tools/qr-tools) creates high-quality, immediately downloadable QR codes in your browser — no account required.
+    `,
+    author: "Toolzaply Team",
+    date: "2024-04-20",
+    category: "Technology",
+    readTime: "7 min read",
+    keywords: ["QR code", "how QR codes work", "QR code generator", "QR code technology", "quick response code"],
+    slug: "qr-codes-explained-how-they-work"
+  },
+  {
+    id: "14",
+    title: "The Complete Guide to Unit Conversion: From Metric to Imperial and Beyond",
+    description: "A practical guide to the world's major measurement systems, explaining how unit conversions work, common mistakes, and tips for getting accurate results every time.",
+    excerpt: "Unit conversion errors have caused real disasters — from NASA spacecraft to medication overdoses. Understanding how measurement systems work prevents costly mistakes.",
+    content: `
+# The Complete Guide to Unit Conversion: From Metric to Imperial and Beyond
+
+In 1999, NASA lost the Mars Climate Orbiter — a $327 million spacecraft — because one engineering team sent thruster data in pound-force seconds while another expected Newton-seconds. The two measurement systems differ by a factor of 4.45. A simple unit conversion error destroyed years of work and hundreds of millions of dollars.
+
+Unit conversion errors are more common than most people realize, and the consequences range from recipe disasters to medical emergencies. Understanding how measurement systems work — and how to convert between them accurately — is a fundamental life skill.
+
+## The Two Major Systems
+
+### The International System (SI / Metric)
+
+The metric system, formally called the International System of Units (SI), is used by the vast majority of the world's countries and is the universal language of science. Its defining characteristic is its base-10 structure: every unit is related to every other unit by a power of 10.
+
+**Prefixes define scale:**
+- **kilo-** (k) = × 1,000 — 1 kilometer = 1,000 meters
+- **centi-** (c) = × 0.01 — 1 centimeter = 0.01 meters
+- **milli-** (m) = × 0.001 — 1 millimeter = 0.001 meters
+- **mega-** (M) = × 1,000,000 — 1 megabyte = 1,000,000 bytes
+
+This elegant structure makes mental arithmetic simple: converting 3.7 kilometers to meters is just moving the decimal point (3,700 m). No memorization of arbitrary conversion factors required.
+
+### The Imperial System
+
+The Imperial system — used primarily in the United States and, to a lesser extent, the United Kingdom and a few other countries — evolved organically over centuries. Its units have historical origins in human body measurements, agricultural needs, and trade practices.
+
+The result is a system full of irregular conversion factors:
+- 12 inches in a foot
+- 3 feet in a yard
+- 1,760 yards in a mile
+- 8 pints in a gallon (US) but 8 pints ≠ 1 US gallon in UK pints (they're different volumes)
+
+These irregular factors make mental arithmetic difficult and create significant opportunities for error — especially when mixing Imperial and metric values in the same calculation.
+
+## The Most Important Conversions to Know
+
+### Length / Distance
+
+| From | To | Factor |
+|---|---|---|
+| 1 inch | centimeters | 2.54 |
+| 1 foot | meters | 0.3048 |
+| 1 mile | kilometers | 1.60934 |
+| 1 kilometer | miles | 0.62137 |
+
+**Pro tip:** A quick rough estimate for miles to kilometers: multiply by 1.6. For kilometers to miles: multiply by 0.6. These are accurate enough for everyday navigation.
+
+### Weight / Mass
+
+| From | To | Factor |
+|---|---|---|
+| 1 pound (lb) | kilograms | 0.45359 |
+| 1 kilogram | pounds | 2.20462 |
+| 1 ounce (oz) | grams | 28.3495 |
+| 1 stone (UK) | kilograms | 6.35029 |
+
+**Quick estimate:** A kilogram is roughly 2.2 pounds. A 70 kg person weighs about 154 pounds.
+
+### Temperature
+
+Temperature conversions are the most mathematically complex because they involve both multiplication and addition (unlike most conversions which are simple multiplication):
+
+- **Celsius to Fahrenheit:** °F = (°C × 9/5) + 32
+- **Fahrenheit to Celsius:** °C = (°F − 32) × 5/9
+- **Celsius to Kelvin:** K = °C + 273.15
+
+**Quick estimates:**
+- 0°C = 32°F (freezing)
+- 20°C = 68°F (room temperature)
+- 37°C = 98.6°F (body temperature)
+- 100°C = 212°F (boiling)
+
+### Volume
+
+Liquid volume is particularly confusing because the US and UK define a "gallon" differently:
+- **US gallon** = 3.785 liters
+- **UK (Imperial) gallon** = 4.546 liters
+
+| From | To | Factor |
+|---|---|---|
+| 1 US gallon | liters | 3.785 |
+| 1 UK gallon | liters | 4.546 |
+| 1 liter | US fluid ounces | 33.814 |
+| 1 cup (US) | milliliters | 236.588 |
+
+## Common Conversion Mistakes
+
+**Mistake 1: Confusing mass and weight.** Mass (kilograms) measures how much matter an object contains. Weight (Newtons) measures the force of gravity on that mass. In everyday use, we treat them interchangeably, but in science and engineering, the distinction matters enormously.
+
+**Mistake 2: Using the wrong definition of "gallon."** Copying a recipe from a UK cookbook? Remember that a British recipe calling for "1 gallon" means 4.55 liters, not 3.79 liters.
+
+**Mistake 3: Forgetting that some units share a name.** A "calorie" in nutrition (a food Calorie, written with a capital C) is actually 1,000 chemistry calories (kilocalories). This is a 1,000× error hiding in plain sight.
+
+**Mistake 4: Confusing fluid ounces and weight ounces.** Fluid ounces measure volume; ounces measure weight. Water happens to weigh roughly 1 ounce per fluid ounce, but most liquids don't — a fluid ounce of honey weighs significantly more.
+
+## Tools for Accurate Conversion
+
+For quick, reliable conversions across length, weight, temperature, speed, area, volume, and more, our free [Unit Converter](/tools/unit-converter) handles all major measurement categories with precise conversion factors. It works entirely in your browser — no app to download, no account to create.
+
+Whether you're an engineer verifying calculations, a traveler navigating an unfamiliar measurement system, or a home cook adapting a recipe, accurate unit conversion is a skill that saves time, money, and — as history has shown — occasionally spacecraft.
+    `,
+    author: "Toolzaply Team",
+    date: "2024-05-01",
+    category: "Education",
+    readTime: "8 min read",
+    keywords: ["unit conversion", "metric to imperial", "measurement systems", "convert units", "kg to lbs", "celsius to fahrenheit"],
+    slug: "complete-guide-unit-conversion"
   }
 ];
 

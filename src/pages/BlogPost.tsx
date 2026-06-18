@@ -1,16 +1,17 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { getBlogBySlug } from "@/data/blogs";
 import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { getSEOConfig } from "@/lib/seo-config";
-import { Calendar, Clock, User } from "lucide-react";
+import { Calendar, Clock, User, ArrowLeft } from "lucide-react";
 import NotFound from "./NotFound";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
-  const navigate = useNavigate();
   const blog = slug ? getBlogBySlug(slug) : undefined;
 
   if (!blog) {
@@ -22,7 +23,7 @@ const BlogPost = () => {
   return (
     <>
       <SEOHead config={seoConfig} />
-      <div className="min-h-screen bg-gradient-subtle">
+      <div className="min-h-screen bg-gradient-subtle flex flex-col">
         <Header />
         
         <article className="container mx-auto px-4 py-12 max-w-4xl">
@@ -93,22 +94,16 @@ const BlogPost = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="mt-12 pt-8 border-t border-border"
           >
-            <button
-              onClick={() => {
-                navigate("/");
-                setTimeout(() => {
-                  const element = document.getElementById("blogs");
-                  if (element) {
-                    element.scrollIntoView({ behavior: "smooth" });
-                  }
-                }, 100);
-              }}
-              className="inline-flex items-center gap-2 text-primary hover:underline font-medium cursor-pointer"
+            <Link
+              to="/blog"
+              className="inline-flex items-center gap-2 text-primary hover:underline font-medium"
             >
-              ← Back to all blogs
-            </button>
+              <ArrowLeft className="h-4 w-4" />
+              Back to all articles
+            </Link>
           </motion.div>
         </article>
+        <Footer />
       </div>
     </>
   );
