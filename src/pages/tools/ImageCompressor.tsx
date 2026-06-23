@@ -8,10 +8,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
-import { ImageIcon, Upload, Download, Trash2, Settings } from "lucide-react";
-import imageCompression from "browser-image-compression";
+import { Badge } from "@/components/ui/badge";
+import { ImageIcon, Upload, Download, Trash2, Settings, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
@@ -20,165 +19,238 @@ import { ToolExplanation } from "@/components/ToolExplanation";
 
 interface CompressedImage {
   original: File;
-  compressed: File;
+  compressed: Blob;
   originalSize: number;
   compressedSize: number;
   compressionRatio: number;
   previewUrl: string;
+  outputType: string;
+  outputExt: string;
+}
+
+// Returns true if canvas has any pixel with alpha < 255
+function hasTransparency(ctx: CanvasRenderingContext2D, w: number, h: number): boolean {
+  const data = ctx.getImageData(0, 0, w, h).data;
+  // Sample every 8th pixel for performance
+  for (let i = 3; i < data.length; i += 32) {
+    if (data[i] < 255) return true;
+  }
+  return false;
+}
+
+async function compressImage(
+  file: File,
+  quality: number // 0.0 – 1.0
+): Promise<{ blob: Blob; type: string; ext: string }> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext("2d")!;
+
+      const isPng = file.type === "image/png";
+      const isWebp = file.type === "image/webp";
+
+      if (isPng) {
+        ctx.drawImage(img, 0, 0);
+        const transparent = hasTransparency(ctx, canvas.width, canvas.height);
+
+        if (transparent) {
+          // Keep as WebP with quality (supports transparency + lossy compression)
+          canvas.toBlob(
+            (b) => resolve({ blob: b!, type: "image/webp", ext: "webp" }),
+            "image/webp",
+            quality
+          );
+        } else {
+          // No transparency — flatten to white and compress as JPEG
+          const c2 = document.createElement("canvas");
+          c2.width = img.naturalWidth;
+          c2.height = img.naturalHeight;
+          const ctx2 = c2.getContext("2d")!;
+          ctx2.fillStyle = "#ffffff";
+          ctx2.fillRect(0, 0, c2.width, c2.height);
+          ctx2.drawImage(img, 0, 0);
+          c2.toBlob(
+            (b) => resolve({ blob: b!, type: "image/jpeg", ext: "jpg" }),
+            "image/jpeg",
+            quality
+          );
+        }
+      } else if (isWebp) {
+        ctx.drawImage(img, 0, 0);
+        canvas.toBlob(
+          (b) => resolve({ blob: b!, type: "image/webp", ext: "webp" }),
+          "image/webp",
+          quality
+        );
+      } else {
+        // JPEG / GIF / BMP / TIFF → JPEG with quality
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+        canvas.toBlob(
+          (b) => resolve({ blob: b!, type: "image/jpeg", ext: "jpg" }),
+          "image/jpeg",
+          quality
+        );
+      }
+    };
+
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error("Failed to load image"));
+    };
+
+    img.src = objectUrl;
+  });
+}
+
+function qualityLabel(q: number): { text: string; color: string } {
+  if (q >= 0.85) return { text: "Maximum", color: "bg-blue-500" };
+  if (q >= 0.70) return { text: "High", color: "bg-green-500" };
+  if (q >= 0.50) return { text: "Medium", color: "bg-yellow-500" };
+  if (q >= 0.30) return { text: "Low", color: "bg-orange-500" };
+  return { text: "Minimum", color: "bg-red-500" };
+}
+
+function formatSize(bytes: number) {
+  if (bytes === 0) return "0 B";
+  const k = 1024;
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return (bytes / Math.pow(k, i)).toFixed(1) + " " + ["B", "KB", "MB", "GB"][i];
 }
 
 export default function ImageCompressor() {
   const seoConfig = getSEOConfig("imagecompressor");
   const [images, setImages] = useState<CompressedImage[]>([]);
   const [processing, setProcessing] = useState(false);
+  const [recompressing, setRecompressing] = useState(false);
   const [quality, setQuality] = useState([0.8]);
-  const [maxWidth, setMaxWidth] = useState(1920);
-  const [maxHeight, setMaxHeight] = useState(1080);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const MAX_FILE_SIZE_MB = 10;
+  const MAX_FILE_SIZE_MB = 20;
 
-  const validateAndFilterFiles = (files: File[]): File[] => {
-    return files.filter((file) => {
-      if (!file.type.startsWith("image/")) {
-        toast({
-          title: "Invalid file type",
-          description: `${file.name} is not an image file`,
-          variant: "destructive",
-        });
+  const validateFiles = (files: File[]): File[] =>
+    files.filter((f) => {
+      if (!f.type.startsWith("image/")) {
+        toast({ title: "Invalid file", description: `${f.name} is not an image`, variant: "destructive" });
         return false;
       }
-      if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-        toast({
-          title: "File too large",
-          description: `${file.name} exceeds the ${MAX_FILE_SIZE_MB}MB limit`,
-          variant: "destructive",
-        });
+      if (f.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+        toast({ title: "File too large", description: `${f.name} exceeds ${MAX_FILE_SIZE_MB} MB`, variant: "destructive" });
         return false;
       }
       return true;
     });
+
+  const processFiles = async (files: File[], q: number): Promise<CompressedImage[]> => {
+    const results: CompressedImage[] = [];
+    for (const file of files) {
+      const { blob, type, ext } = await compressImage(file, q);
+      const previewUrl = URL.createObjectURL(blob);
+      const ratio = ((file.size - blob.size) / file.size) * 100;
+      results.push({
+        original: file,
+        compressed: blob,
+        originalSize: file.size,
+        compressedSize: blob.size,
+        compressionRatio: ratio,
+        previewUrl,
+        outputType: type,
+        outputExt: ext,
+      });
+    }
+    return results;
   };
 
-  const compressFiles = async (files: File[]) => {
-    const validFiles = validateAndFilterFiles(files);
-    if (validFiles.length === 0) return;
-
+  const handleFiles = async (rawFiles: File[]) => {
+    const valid = validateFiles(rawFiles);
+    if (!valid.length) return;
     setProcessing(true);
     try {
-      const compressedImages: CompressedImage[] = [];
-
-      for (const file of validFiles) {
-        const options = {
-          maxSizeMB: 1,
-          maxWidthOrHeight: Math.max(maxWidth, maxHeight),
-          useWebWorker: true,
-          quality: quality[0],
-        };
-
-        const compressedFile = await imageCompression(file, options);
-        const previewUrl = URL.createObjectURL(compressedFile);
-        const ratio = ((file.size - compressedFile.size) / file.size) * 100;
-
-        compressedImages.push({
-          original: file,
-          compressed: compressedFile,
-          originalSize: file.size,
-          compressedSize: compressedFile.size,
-          compressionRatio: ratio,
-          previewUrl,
-        });
-      }
-
-      setImages((prev) => [...prev, ...compressedImages]);
-      toast({
-        title: "Success",
-        description: `${validFiles.length} image(s) processed successfully!`,
-      });
-    } catch (error) {
-      console.error("Compression error:", error);
-      toast({
-        title: "Error",
-        description: "Failed to compress some images. Please try again.",
-        variant: "destructive",
-      });
+      const results = await processFiles(valid, quality[0]);
+      setImages((prev) => [...prev, ...results]);
+      toast({ title: "Done", description: `${valid.length} image(s) compressed.` });
+    } catch {
+      toast({ title: "Error", description: "Compression failed. Please try again.", variant: "destructive" });
     } finally {
       setProcessing(false);
     }
   };
 
-  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || []);
-    if (files.length === 0) return;
-    await compressFiles(files);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+  const recompressAll = async () => {
+    if (!images.length) return;
+    setRecompressing(true);
+    try {
+      // Revoke old preview URLs
+      images.forEach((img) => URL.revokeObjectURL(img.previewUrl));
+      const originals = images.map((i) => i.original);
+      const results = await processFiles(originals, quality[0]);
+      setImages(results);
+      toast({ title: "Re-compressed", description: `All images re-compressed at ${Math.round(quality[0] * 100)}% quality.` });
+    } catch {
+      toast({ title: "Error", description: "Re-compression failed.", variant: "destructive" });
+    } finally {
+      setRecompressing(false);
     }
+  };
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    await handleFiles(files);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
-    }
+    setDragActive(e.type === "dragenter" || e.type === "dragover");
   };
 
   const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    const files = Array.from(e.dataTransfer.files);
-    if (files.length === 0) return;
-    await compressFiles(files);
+    await handleFiles(Array.from(e.dataTransfer.files));
   };
 
   const removeImage = (index: number) => {
-    const image = images[index];
-    URL.revokeObjectURL(image.previewUrl);
+    URL.revokeObjectURL(images[index].previewUrl);
     setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const clearAllImages = () => {
-    images.forEach((image) => URL.revokeObjectURL(image.previewUrl));
+  const clearAll = () => {
+    images.forEach((img) => URL.revokeObjectURL(img.previewUrl));
     setImages([]);
   };
 
-  const downloadImage = (image: CompressedImage) => {
-    const url = URL.createObjectURL(image.compressed);
+  const downloadImage = (img: CompressedImage) => {
+    const baseName = img.original.name.replace(/\.[^.]+$/, "");
+    const url = URL.createObjectURL(img.compressed);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `compressed-${image.original.name}`;
+    a.download = `${baseName}-compressed.${img.outputExt}`;
     a.click();
     URL.revokeObjectURL(url);
   };
 
-  const downloadAll = () => {
-    images.forEach((image) => downloadImage(image));
-  };
+  const downloadAll = () => images.forEach(downloadImage);
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-  };
-
-  const triggerFileInput = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
+  const q = quality[0];
+  const ql = qualityLabel(q);
 
   return (
     <>
       <SEOHead config={seoConfig} />
-
       <ToolLayout>
         <div className="container mx-auto px-4 py-8">
           <motion.div
@@ -188,83 +260,75 @@ export default function ImageCompressor() {
             className="max-w-4xl mx-auto"
           >
             <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold text-foreground mb-4">
-                Image Compressor
-              </h1>
+              <h1 className="text-4xl font-bold text-foreground mb-4">Image Compressor</h1>
               <p className="text-xl text-muted-foreground">
-                Compress and resize images without quality loss
+                Compress images with precise quality control — no uploads, runs entirely in your browser
               </p>
             </div>
 
-            <Card className="mb-8">
+            {/* Settings */}
+            <Card className="mb-6">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Settings className="h-5 w-5" />
-                  Compression Settings
+                  Compression Quality
                 </CardTitle>
                 <CardDescription>
-                  Configure compression options before uploading images
+                  Lower quality = smaller file. Higher quality = better image. Recommended: 70–85% for web.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <label className="text-sm font-medium mb-2 block">
-                      Quality: {Math.round(quality[0] * 100)}%
-                    </label>
-                    <Slider
-                      value={quality}
-                      onValueChange={setQuality}
-                      max={1}
-                      min={0.1}
-                      step={0.1}
-                      className="w-full"
-                    />
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm font-medium">Quality: {Math.round(q * 100)}%</span>
+                    <span className={`text-xs text-white px-2 py-0.5 rounded-full ${ql.color}`}>
+                      {ql.text}
+                    </span>
+                  </div>
+                  <Slider
+                    value={quality}
+                    onValueChange={setQuality}
+                    min={0.05}
+                    max={1}
+                    step={0.05}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>5% — Smallest file</span>
+                    <span className="text-center">70–85% — Recommended</span>
+                    <span>100% — Best quality</span>
                   </div>
 
-                  <div>
-                    <label className="text-sm font-medium mb-2 block">
-                      Max Width (px)
-                    </label>
-                    <Input
-                      type="number"
-                      value={maxWidth}
-                      onChange={(e) =>
-                        setMaxWidth(parseInt(e.target.value) || 1920)
-                      }
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-medium mb-2 block">
-                      Max Height (px)
-                    </label>
-                    <Input
-                      type="number"
-                      value={maxHeight}
-                      onChange={(e) =>
-                        setMaxHeight(parseInt(e.target.value) || 1080)
-                      }
-                    />
-                  </div>
+                  {images.length > 0 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={recompressAll}
+                      disabled={recompressing || processing}
+                      className="mt-2"
+                    >
+                      <RefreshCw className={`h-4 w-4 mr-2 ${recompressing ? "animate-spin" : ""}`} />
+                      {recompressing ? "Re-compressing…" : `Re-compress all at ${Math.round(q * 100)}%`}
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="mb-8">
+            {/* Upload */}
+            <Card className="mb-6">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <ImageIcon className="h-5 w-5" />
                   Upload Images
                 </CardTitle>
                 <CardDescription>
-                  Select images to compress. Supported formats: JPG, PNG, WebP,
-                  GIF
+                  JPG, PNG, WebP, GIF supported · Max {MAX_FILE_SIZE_MB} MB per file
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div
-                  className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                  className={`border-2 border-dashed rounded-lg p-10 text-center transition-colors cursor-pointer ${
                     dragActive
                       ? "border-primary bg-primary/5"
                       : "border-border hover:border-primary/50"
@@ -273,21 +337,14 @@ export default function ImageCompressor() {
                   onDragLeave={handleDrag}
                   onDragOver={handleDrag}
                   onDrop={handleDrop}
+                  onClick={() => fileInputRef.current?.click()}
                 >
                   <Upload className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <Button
-                    variant="outline"
-                    className="mb-2"
-                    disabled={processing}
-                    onClick={triggerFileInput}
-                  >
-                    {processing ? "Compressing..." : "Choose Images"}
-                  </Button>
-                  <p className="text-sm text-muted-foreground mb-2">
-                    or drag and drop images here
+                  <p className="text-sm font-medium mb-1">
+                    {processing ? "Compressing…" : "Click to choose images or drag & drop"}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    Maximum file size: 10MB per image
+                    Compresses at <strong>{Math.round(q * 100)}% quality</strong> ({ql.text})
                   </p>
                   <input
                     ref={fileInputRef}
@@ -296,29 +353,28 @@ export default function ImageCompressor() {
                     accept="image/*"
                     onChange={handleFileSelect}
                     className="hidden"
+                    disabled={processing}
                   />
                 </div>
               </CardContent>
             </Card>
 
+            {/* Results */}
             {images.length > 0 && (
               <Card>
                 <CardHeader>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between flex-wrap gap-3">
                     <CardTitle>Compressed Images ({images.length})</CardTitle>
                     <div className="flex gap-2">
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={clearAllImages}
+                        onClick={clearAll}
                         className="text-destructive hover:text-destructive"
                       >
                         Clear All
                       </Button>
-                      <Button
-                        onClick={downloadAll}
-                        className="bg-primary text-primary-foreground hover:bg-primary/90"
-                      >
+                      <Button onClick={downloadAll}>
                         <Download className="mr-2 h-4 w-4" />
                         Download All
                       </Button>
@@ -326,54 +382,53 @@ export default function ImageCompressor() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {images.map((image, index) => (
+                  <div className="space-y-3">
+                    {images.map((img, index) => (
                       <div key={index} className="border rounded-lg p-4">
                         <div className="flex items-center gap-4">
                           <img
-                            src={image.previewUrl}
-                            alt={`Compressed ${index + 1}`}
-                            className="w-16 h-16 object-cover rounded border"
+                            src={img.previewUrl}
+                            alt={img.original.name}
+                            className="w-16 h-16 object-cover rounded border flex-shrink-0"
                           />
 
-                          <div className="flex-1">
-                            <p className="font-medium text-sm">
-                              {image.original.name}
-                            </p>
-                            <div className="text-xs text-muted-foreground space-y-1">
-                              <p>
-                                Original: {formatFileSize(image.originalSize)}
-                              </p>
-                              <p>
-                                Compressed:{" "}
-                                {formatFileSize(image.compressedSize)}
-                              </p>
-                              {image.compressionRatio > 0 ? (
-                                <p className="text-green-600">
-                                  Reduced by {image.compressionRatio.toFixed(1)}%
-                                </p>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm truncate">{img.original.name}</p>
+                            <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                              <span>Original: <strong>{formatSize(img.originalSize)}</strong></span>
+                              <span>→</span>
+                              <span>Compressed: <strong>{formatSize(img.compressedSize)}</strong></span>
+                              <Badge variant="outline" className="text-xs">
+                                .{img.outputExt}
+                              </Badge>
+                            </div>
+                            <div className="mt-2">
+                              {img.compressionRatio > 0 ? (
+                                <div className="flex items-center gap-2">
+                                  <div className="flex-1 bg-muted rounded-full h-1.5">
+                                    <div
+                                      className="bg-green-500 h-1.5 rounded-full transition-all"
+                                      style={{ width: `${Math.min(img.compressionRatio, 100)}%` }}
+                                    />
+                                  </div>
+                                  <span className="text-green-600 text-xs font-semibold whitespace-nowrap">
+                                    −{img.compressionRatio.toFixed(1)}%
+                                  </span>
+                                </div>
                               ) : (
-                                <p className="text-yellow-600">
-                                  Already optimized (no size reduction)
-                                </p>
+                                <span className="text-yellow-600 text-xs">
+                                  File increased — image was already highly optimized
+                                </span>
                               )}
                             </div>
                           </div>
 
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => downloadImage(image)}
-                            >
-                              <Download className="h-3 w-3" />
+                          <div className="flex gap-2 flex-shrink-0">
+                            <Button size="sm" variant="outline" onClick={() => downloadImage(img)} title="Download">
+                              <Download className="h-4 w-4" />
                             </Button>
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              onClick={() => removeImage(index)}
-                            >
-                              <Trash2 className="h-3 w-3" />
+                            <Button size="sm" variant="destructive" onClick={() => removeImage(index)} title="Remove">
+                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
                         </div>
@@ -386,34 +441,39 @@ export default function ImageCompressor() {
 
             <ToolExplanation
               title="Image Compressor"
-              description="Toolzaply's free online Image Compressor is an optimized, privacy-first image shrinker designed to reduce file sizes of JPEG, PNG, WebP, and GIF images without sacrificing layout clarity. It offers fine-grained control over file compression parameters, allowing users to define exact maximum target widths, heights, and compression ratios. All calculations are executed directly in your browser, ensuring your original image files never leave your computer."
+              description="Toolzaply's Image Compressor uses the browser's native Canvas API to compress images with true quality control. Unlike tools that target a fixed file size, this tool compresses strictly to the quality percentage you set — giving you predictable, consistent results. All processing is local; your images never leave your device."
               howToUse={[
-                "Configure your desired quality ratio (e.g., 80% is the recommended sweet spot for web use) using the slider.",
-                "Define the maximum width and height bounds in pixels if resizing is needed.",
-                "Click 'Choose Images' to select files, or drag and drop images directly into the upload area.",
-                "Review the output size metrics showing file savings and compression percentages.",
-                "Download individual images or select 'Download All' to save all compressed files instantly."
+                "Set the quality slider to your desired level (70–85% is recommended for web use).",
+                "Click the upload area or drag and drop your images.",
+                "Review the original vs compressed size and the savings percentage.",
+                "If you want to try a different quality level, adjust the slider and click 'Re-compress all'.",
+                "Download individual files or use 'Download All' to save everything at once.",
               ]}
               features={[
-                "Adjustable quality scales from 10% to 100% to balance file size and visual sharpness.",
-                "Custom resolution constraints to resize oversized digital camera photos.",
-                "Accurate file comparisons displaying old size, new size, and saving percentages.",
-                "Batch operations to compress multiple images simultaneously.",
-                "100% client-side compression: processes files in-browser using local web workers."
+                "Canvas-based compression — quality slider directly controls output quality, not a file size target.",
+                "Re-compress button lets you change quality and re-process all images without re-uploading.",
+                "Transparent PNGs preserved — automatically outputs WebP (with transparency + lossy compression).",
+                "Non-transparent PNGs converted to JPEG for maximum size reduction.",
+                "Visual savings progress bar with exact percentage reduction per image.",
+                "Batch processing — compress multiple images simultaneously.",
               ]}
               faqs={[
                 {
-                  question: "Does image compression affect image quality?",
-                  answer: "Yes, if using lossy compression (standard for JPEGs). However, at 75%-85% quality, the visual differences are virtually indistinguishable to the human eye, while the file size is often reduced by 70% or more."
+                  question: "Why does the quality slider actually work now?",
+                  answer: "Previously the tool used a library that overrode your quality setting with a 1 MB file-size target. Now it uses the browser's Canvas API directly, so 30% quality always produces a smaller file than 80% quality.",
                 },
                 {
-                  question: "Is there a limit on file size uploads?",
-                  answer: "Yes, the maximum file size per image is restricted to 10MB to maintain smooth browser memory performance."
+                  question: "What happens to PNG files?",
+                  answer: "PNG files with transparency are converted to WebP (which supports transparency AND lossy compression). PNG files without transparency are converted to JPEG, which achieves much better compression ratios.",
                 },
                 {
-                  question: "Are my images uploaded to Toolzaply's servers?",
-                  answer: "No. Unlike other compression tools, Toolzaply uses browser JavaScript and Web Worker APIs. Your images are compressed locally in your web browser and never sent to our servers."
-                }
+                  question: "Are my images uploaded to any server?",
+                  answer: "No. Compression runs entirely in your browser using the Canvas API. Your files never leave your device.",
+                },
+                {
+                  question: "What quality setting should I use?",
+                  answer: "70–85% is the sweet spot for web images — visually indistinguishable from the original at a fraction of the file size. Use 90%+ for photos you'll print. Use 50–60% for thumbnails or previews where file size matters most.",
+                },
               ]}
             />
           </motion.div>
