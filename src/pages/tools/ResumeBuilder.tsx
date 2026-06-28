@@ -1,8 +1,9 @@
-import { useState, useRef, useCallback } from "react";
+﻿import { useState, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
 import { ToolExplanation } from "@/components/ToolExplanation";
+import { ToolGuide } from "@/components/ToolGuide";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -1047,8 +1048,9 @@ export default function ResumeBuilder() {
                 { question: "Which template is best for ATS?", answer: "Classic and Minimal use single-column layouts which are most ATS-friendly. Modern's sidebar may cause some ATS systems to read columns out of order, but it looks the most impressive for human reviewers." },
                 { question: "Can I save my resume and edit it later?", answer: "Currently the form doesn't persist across browser sessions. Fill in all sections in one sitting and download the PDF. You can keep the PDF and re-enter content anytime." },
                 { question: "How do I add bullet points to my experience?", answer: "In the description field, put each achievement on its own line. The templates automatically format each line as a bullet point (▸ or •)." },
-              ]}
-            />
+              ]}            />
+
+            <ToolGuide id="resume-builder" />
           </motion.div>
         </div>
       </ToolLayout>

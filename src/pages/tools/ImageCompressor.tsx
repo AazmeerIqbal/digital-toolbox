@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+﻿import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import {
   Card,
@@ -16,6 +16,7 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
 import { ToolExplanation } from "@/components/ToolExplanation";
+import { ToolGuide } from "@/components/ToolGuide";
 
 interface CompressedImage {
   original: File;
@@ -474,8 +475,9 @@ export default function ImageCompressor() {
                   question: "What quality setting should I use?",
                   answer: "70–85% is the sweet spot for web images — visually indistinguishable from the original at a fraction of the file size. Use 90%+ for photos you'll print. Use 50–60% for thumbnails or previews where file size matters most.",
                 },
-              ]}
-            />
+              ]}            />
+
+            <ToolGuide id="imagecompressor" />
           </motion.div>
         </div>
       </ToolLayout>

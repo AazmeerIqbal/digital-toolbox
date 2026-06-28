@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Card,
@@ -15,6 +15,7 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
 import { ToolExplanation } from "@/components/ToolExplanation";
+import { ToolGuide } from "@/components/ToolGuide";
 
 export default function TextConverter() {
   const seoConfig = getSEOConfig("text-converter");
@@ -225,8 +226,9 @@ export default function TextConverter() {
                   question: "Is there a character limit on the input?",
                   answer: "No strict limit is enforced. However, for very large texts (e.g., tens of thousands of characters), browser rendering performance may affect the speed of live updates."
                 }
-              ]}
-            />
+              ]}            />
+
+            <ToolGuide id="text-converter" />
           </motion.div>
         </div>
       </ToolLayout>

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+﻿import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
@@ -36,6 +36,7 @@ import {
 import { QRCodeCanvas } from "qrcode.react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import { ToolLayout } from "@/components/ToolLayout";
+import { ToolGuide } from "@/components/ToolGuide";
 
 export default function QrTools() {
   const seoConfig = getSEOConfig("qr-tools");
@@ -574,6 +575,7 @@ export default function QrTools() {
                 </CardContent>
               </Card>
             </motion.div>
+            <ToolGuide id="qr-tools" />
           </motion.div>
         </div>
       </ToolLayout>

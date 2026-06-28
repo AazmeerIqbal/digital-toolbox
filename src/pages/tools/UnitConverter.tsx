@@ -1,7 +1,8 @@
-import { ToolLayout } from "@/components/ToolLayout";
+﻿import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
 import { ToolExplanation } from "@/components/ToolExplanation";
+import { ToolGuide } from "@/components/ToolGuide";
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -236,6 +237,7 @@ export default function UnitConverter() {
                 }
               ]}
             />
+            <ToolGuide id="unit-converter" />
           </motion.div>
         </div>
       </ToolLayout>

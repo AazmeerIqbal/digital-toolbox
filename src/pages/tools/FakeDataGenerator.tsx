@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
 import { ToolExplanation } from "@/components/ToolExplanation";
+import { ToolGuide } from "@/components/ToolGuide";
 
 type DataType = 'person' | 'address' | 'contact' | 'lorem' | 'json';
 
@@ -286,8 +287,9 @@ export default function FakeDataGenerator() {
                   question: "Can I use this generated data for commercial testing?",
                   answer: "Yes, the generated data is completely license-free and can be used in commercial mock APIs, unit testing suites, database seeding, or design mockups without restriction."
                 }
-              ]}
-            />
+              ]}            />
+
+            <ToolGuide id="fake-data-generator" />
           </motion.div>
         </div>
       </ToolLayout>

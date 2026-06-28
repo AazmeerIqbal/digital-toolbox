@@ -1,4 +1,5 @@
-import { ToolLayout } from "@/components/ToolLayout";
+﻿import { ToolLayout } from "@/components/ToolLayout";
+import { ToolGuide } from "@/components/ToolGuide";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
 import { useState, useRef, useEffect } from "react";
@@ -620,6 +621,7 @@ export default function ImageToPdf() {
                 </CardContent>
               </Card>
             </motion.div>
+            <ToolGuide id="image-to-pdf" />
           </motion.div>
         </div>
       </ToolLayout>

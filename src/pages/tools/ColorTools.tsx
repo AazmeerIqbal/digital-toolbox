@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+﻿import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import {
   Card,
@@ -15,6 +15,7 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
 import { ToolExplanation } from "@/components/ToolExplanation";
+import { ToolGuide } from "@/components/ToolGuide";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { InContentAd } from "@/components/AdSense";
 
@@ -553,8 +554,9 @@ export default function ColorTools() {
                   question: "Do I need to install any plugin to use this picker?",
                   answer: "No, this tool uses standard browser APIs. It is fully compatible with modern browsers on both desktop and mobile devices without any extension or plugin."
                 }
-              ]}
-            />
+              ]}            />
+
+            <ToolGuide id="color-tools" />
           </Card>
         </motion.div>
       </ToolLayout>

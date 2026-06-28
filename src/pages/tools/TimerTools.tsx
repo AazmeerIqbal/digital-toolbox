@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Card,
@@ -14,6 +14,7 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
 import { ToolExplanation } from "@/components/ToolExplanation";
+import { ToolGuide } from "@/components/ToolGuide";
 
 export default function TimerTools() {
   const seoConfig = getSEOConfig("timertools");
@@ -281,8 +282,9 @@ export default function TimerTools() {
                   question: "Can I customize the Pomodoro duration?",
                   answer: "The default Pomodoro is set to the standard 25 minutes. If you need a custom duration, you can use the Countdown Timer card and set it to your preferred work interval."
                 }
-              ]}
-            />
+              ]}            />
+
+            <ToolGuide id="timer-tools" />
           </motion.div>
         </div>
       </ToolLayout>

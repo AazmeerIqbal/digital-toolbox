@@ -1,7 +1,8 @@
-import { ToolLayout } from "@/components/ToolLayout";
+﻿import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
 import { ToolExplanation } from "@/components/ToolExplanation";
+import { ToolGuide } from "@/components/ToolGuide";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -292,8 +293,9 @@ export default function AgeCalculator() {
                   question: "Is there a limit on how many times I can use the tool?",
                   answer: "No. All tools on Toolzaply are completely free and unlimited. You do not need to register an account or pay a fee."
                 }
-              ]}
-            />
+              ]}            />
+
+            <ToolGuide id="age-calculator" />
           </motion.div>
         </div>
       </ToolLayout>

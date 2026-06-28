@@ -1,8 +1,9 @@
-import { useState, useRef, useCallback } from "react";
+﻿import { useState, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
 import { ToolExplanation } from "@/components/ToolExplanation";
+import { ToolGuide } from "@/components/ToolGuide";
 import {
   Card,
   CardContent,
@@ -738,8 +739,9 @@ export default function PdfTools() {
                 { question: "What image formats can be extracted?", answer: "JPEG (DCTDecode), JPEG2000 (JPXDecode), and raw/FlateDecode pixel data are supported. Vector graphics (SVG/paths drawn in PDF) are not raster images and cannot be extracted." },
                 { question: "Why is the compressed file the same size or larger?", answer: "pdf-lib's compression works on PDF structure (metadata, object streams). If the PDF was already structurally optimised, or its size is mostly large images, structural compression has little effect." },
                 { question: "Are my files uploaded anywhere?", answer: "No. All processing uses JavaScript running locally in your tab. Your PDFs never leave your device." },
-              ]}
-            />
+              ]}            />
+
+            <ToolGuide id="pdf-tools" />
           </motion.div>
         </div>
       </ToolLayout>

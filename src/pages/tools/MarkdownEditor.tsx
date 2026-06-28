@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Card,
@@ -15,6 +15,7 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
 import { ToolExplanation } from "@/components/ToolExplanation";
+import { ToolGuide } from "@/components/ToolGuide";
 
 export default function MarkdownEditor() {
   const seoConfig = getSEOConfig("markdown-editor");
@@ -298,8 +299,9 @@ Write your markdown here...
                   question: "Can I import an existing .md file into the editor?",
                   answer: "Currently the editor accepts manual input or pasting. You can open your .md file in any text editor, copy its contents, and paste them directly into the Toolzaply Markdown Notepad."
                 }
-              ]}
-            />
+              ]}            />
+
+            <ToolGuide id="markdown-editor" />
           </motion.div>
         </div>
       </ToolLayout>

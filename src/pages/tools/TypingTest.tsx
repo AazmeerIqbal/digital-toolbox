@@ -1,7 +1,8 @@
-import { ToolLayout } from "@/components/ToolLayout";
+﻿import { ToolLayout } from "@/components/ToolLayout";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
 import { ToolExplanation } from "@/components/ToolExplanation";
+import { ToolGuide } from "@/components/ToolGuide";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
@@ -510,6 +511,7 @@ export default function TypingTest() {
               { question: "What is a good typing speed?", answer: "The average is around 40 WPM. Professional typists reach 65–75 WPM, and top typists exceed 100 WPM. Accuracy above 95% matters more than raw speed when improving." },
             ]}
           />
+          <ToolGuide id="typing-test" />
         </motion.div>
       </ToolLayout>
     </>
