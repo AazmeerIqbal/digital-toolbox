@@ -1,17 +1,18 @@
-import { 
-  FileImage, 
-  FileText, 
-  Type, 
-  Calculator, 
-  QrCode, 
-  Edit3, 
-  Palette, 
-  Timer, 
-  FileUser, 
-  Database, 
-  ImageIcon, 
-  Calendar, 
-  Keyboard 
+import {
+  FileImage,
+  FileText,
+  Type,
+  Calculator,
+  QrCode,
+  Edit3,
+  Palette,
+  Timer,
+  FileUser,
+  Database,
+  ImageIcon,
+  Calendar,
+  Keyboard,
+  FileOutput
 } from "lucide-react";
 
 export interface Tool {
@@ -25,6 +26,15 @@ export interface Tool {
 }
 
 export const tools: Tool[] = [
+  {
+    id: "word-to-pdf",
+    title: "Word to PDF Converter",
+    description: "Convert .docx Word documents to PDF instantly in your browser — no upload, no software needed",
+    icon: FileOutput,
+    route: "/tools/word-to-pdf",
+    category: "conversion",
+    featured: true,
+  },
   {
     id: "image-to-pdf",
     title: "Image to PDF Converter",

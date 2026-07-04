@@ -111,6 +111,47 @@ export const seoConfigs: Record<string, SEOConfig> = {
     ],
   },
 
+  "word-to-pdf": {
+    title: "Word to PDF Converter — Free .docx to PDF, No Upload",
+    description:
+      "Convert Word documents (.docx) to PDF instantly in your browser. Preserves formatting, tables, and headings. 100% free, no file uploads, no software needed.",
+    keywords: [
+      "word to pdf converter",
+      "docx to pdf online free",
+      "convert word document to pdf",
+      "word to pdf no upload",
+      "free word to pdf converter online",
+      "docx to pdf browser",
+      "convert .docx to pdf",
+      "word document to pdf download",
+      "microsoft word to pdf free",
+      "word to pdf without microsoft office",
+      "online word to pdf converter",
+      "docx pdf converter no registration",
+    ],
+    ogTitle: "Free Word to PDF Converter — .docx to PDF in Seconds",
+    ogDescription:
+      "Convert .docx Word files to PDF instantly. Formatting preserved. No uploads, no sign-up — runs entirely in your browser.",
+    ogImage: siteConfig.ogImage,
+    canonical: `${siteConfig.url}/tools/word-to-pdf`,
+    structuredData: [
+      softwareApp(
+        "Word to PDF Converter",
+        "Convert Microsoft Word .docx documents to PDF format in your browser with formatting preserved.",
+        "/tools/word-to-pdf",
+        "UtilitiesApplication",
+        ["DOCX to PDF conversion", "Document preview", "Formatting preserved", "100% browser-based", "No file upload required"]
+      ),
+      breadcrumb("Word to PDF Converter", "/tools/word-to-pdf"),
+      faqSchema([
+        { q: "Can I convert a Word document to PDF for free?", a: "Yes. Toolzaply's Word to PDF converter is completely free with no limits, registration, or file uploads required." },
+        { q: "Does it support .doc files?", a: "Currently only .docx (the modern Word format) is supported. Old binary .doc files are not supported. You can open a .doc in Word or Google Docs and save it as .docx first." },
+        { q: "Will the formatting be preserved?", a: "Yes — headings, bold, italic, underline, lists, and tables are all preserved. Some complex Word-specific styles (SmartArt, embedded charts) may not render perfectly as the conversion happens entirely in your browser." },
+        { q: "Is my document safe?", a: "Absolutely. Your file never leaves your device. All conversion happens locally using JavaScript in your browser." },
+      ]),
+    ],
+  },
+
   "image-to-pdf": {
     title: "JPG to PDF Converter — Free, Instant, No Upload Required",
     description:

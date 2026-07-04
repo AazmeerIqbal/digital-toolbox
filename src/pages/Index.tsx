@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Card,
@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import {
   Accordion,
   AccordionContent,
@@ -20,15 +21,17 @@ import { ToolCard } from "@/components/ToolCard";
 import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
 import { tools, featuredTools, toolsByCategory } from "@/data/tools";
-import { 
-  Sparkles, 
-  Zap, 
-  Shield, 
-  Smartphone, 
-  Users, 
-  Globe, 
+import {
+  Sparkles,
+  Zap,
+  Shield,
+  Smartphone,
+  Users,
+  Globe,
   CheckCircle,
-  HelpCircle 
+  HelpCircle,
+  Search,
+  X,
 } from "lucide-react";
 import { TopBannerAd, InContentAd, BottomBannerAd } from "@/components/AdSense";
 import { BlogCard } from "@/components/BlogCard";
@@ -39,6 +42,7 @@ const Index = () => {
   const seoConfig = getSEOConfig("home");
 
   const currentYear = new Date().getFullYear();
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Scroll to #featured / #tools when arriving with a hash (e.g. from another page)
   useEffect(() => {
@@ -305,49 +309,127 @@ const Index = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="text-center mb-12"
+              className="text-center mb-8"
             >
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
                 All Tools
               </h2>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
                 Complete collection of productivity and utility tools
               </p>
+
+              {/* Search Bar */}
+              <div className="relative max-w-lg mx-auto">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
+                <Input
+                  type="text"
+                  placeholder="Search tools… (e.g. PDF, image, QR)"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 pr-10 h-12 text-base rounded-xl border-border/60 focus-visible:ring-primary"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    aria-label="Clear search"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
             </motion.div>
 
-            {Object.entries(toolsByCategory).map(
-              ([category, categoryTools], categoryIndex) => (
-                <motion.div
-                  key={category}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: categoryIndex * 0.1 }}
-                  viewport={{ once: true }}
-                  className="mb-12"
-                >
-                  <div className="flex items-center gap-2 mb-6">
-                    <Badge variant="secondary" className="text-sm">
-                      {category}
-                    </Badge>
-                    <h3 className="text-2xl font-bold text-foreground">
-                      {category} Tools
-                    </h3>
-                  </div>
+            {/* Search results */}
+            {searchQuery.trim() ? (
+              (() => {
+                const q = searchQuery.toLowerCase();
+                const filtered = tools.filter(
+                  (t) =>
+                    t.title.toLowerCase().includes(q) ||
+                    t.description.toLowerCase().includes(q) ||
+                    t.category.toLowerCase().includes(q)
+                );
+                return filtered.length > 0 ? (
+                  <motion.div
+                    key="search-results"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <p className="text-sm text-muted-foreground mb-6 text-center">
+                      {filtered.length} tool{filtered.length !== 1 ? "s" : ""} found for "{searchQuery}"
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                      {filtered.map((tool, index) => (
+                        <motion.div
+                          key={tool.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3, delay: index * 0.05 }}
+                        >
+                          <ToolCard tool={tool} index={index} />
+                        </motion.div>
+                      ))}
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="no-results"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-center py-16"
+                  >
+                    <Search className="h-12 w-12 text-muted-foreground/40 mx-auto mb-4" />
+                    <p className="text-lg font-medium text-foreground mb-2">No tools found</p>
+                    <p className="text-muted-foreground mb-4">
+                      No tools match "{searchQuery}". Try a different keyword.
+                    </p>
+                    <button
+                      onClick={() => setSearchQuery("")}
+                      className="text-primary hover:underline text-sm font-medium"
+                    >
+                      Clear search
+                    </button>
+                  </motion.div>
+                );
+              })()
+            ) : (
+              /* Default category view */
+              Object.entries(toolsByCategory).map(
+                ([category, categoryTools], categoryIndex) => (
+                  <motion.div
+                    key={category}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: categoryIndex * 0.1 }}
+                    viewport={{ once: true }}
+                    className="mb-12"
+                  >
+                    <div className="flex items-center gap-2 mb-6">
+                      <Badge variant="secondary" className="text-sm capitalize">
+                        {category}
+                      </Badge>
+                      <h3 className="text-2xl font-bold text-foreground capitalize">
+                        {category} Tools
+                      </h3>
+                    </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {categoryTools.map((tool, index) => (
-                      <motion.div
-                        key={tool.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: index * 0.1 }}
-                        viewport={{ once: true }}
-                      >
-                        <ToolCard tool={tool} index={index} />
-                      </motion.div>
-                    ))}
-                  </div>
-                </motion.div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {categoryTools.map((tool, index) => (
+                        <motion.div
+                          key={tool.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.6, delay: index * 0.1 }}
+                          viewport={{ once: true }}
+                        >
+                          <ToolCard tool={tool} index={index} />
+                        </motion.div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )
               )
             )}
           </div>
@@ -499,7 +581,8 @@ const Index = () => {
               <div>
                 <h4 className="font-semibold text-foreground mb-4">Quick Links</h4>
                 <ul className="space-y-2 text-sm">
-                  <li><a href="/tools/image-to-pdf" className="text-muted-foreground hover:text-primary transition-colors">PDF Converter</a></li>
+                  <li><a href="/tools/word-to-pdf" className="text-muted-foreground hover:text-primary transition-colors">Word to PDF</a></li>
+                  <li><a href="/tools/image-to-pdf" className="text-muted-foreground hover:text-primary transition-colors">Image to PDF</a></li>
                   <li><a href="/tools/image-compressor" className="text-muted-foreground hover:text-primary transition-colors">Image Compressor</a></li>
                   <li><a href="/tools/color-tools" className="text-muted-foreground hover:text-primary transition-colors">Color Tools</a></li>
                   <li><a href="/tools/qr-tools" className="text-muted-foreground hover:text-primary transition-colors">QR Generator</a></li>

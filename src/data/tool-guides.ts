@@ -13,6 +13,69 @@ export interface ToolGuideData {
 
 export const toolGuides: Record<string, ToolGuideData> = {
 
+  "word-to-pdf": {
+    headline: "The Complete Guide to Converting Word Documents to PDF",
+    intro: "Converting a Word document to PDF is one of the most common document tasks in professional and academic life. Yet despite how routine it sounds, doing it correctly — preserving formatting, ensuring compatibility, and protecting your content — requires understanding what actually happens during conversion. This guide covers everything from the technical differences between .docx and PDF to practical tips for perfect output every time.",
+    sections: [
+      {
+        heading: "Why PDF Is the Universal Standard for Sharing Documents",
+        paragraphs: [
+          "PDF — Portable Document Format — was invented by Adobe in 1993 with a specific goal: create a document format that looks exactly the same regardless of which computer, operating system, or software opens it. Before PDF existed, sharing documents electronically was a nightmare. A Word document formatted on a Windows machine with Arial fonts would look completely different when opened on a Mac with different fonts installed. Page breaks would shift, tables would collapse, and carefully laid-out resumes would turn into jumbled messes.",
+          "PDF solved this by essentially 'printing' the document into a fixed format. Everything — text, fonts, images, layout — is embedded directly into the PDF file. The reader's computer doesn't need the same fonts or software; it just needs any PDF reader, which is available free on every platform. This is why PDFs became the standard for resumes, legal contracts, academic papers, and any document where appearance matters.",
+          "A Word .docx file, by contrast, is a living document. It stores text with formatting instructions, but the actual visual rendering depends on the software and fonts available on the computer reading it. This flexibility is great for editing, but terrible for sharing. Converting to PDF locks in the appearance permanently, which is exactly what you want when sharing documents professionally."
+        ]
+      },
+      {
+        heading: "Understanding .docx vs. .doc: Which Format Can Be Converted?",
+        paragraphs: [
+          "Microsoft Word has used two fundamentally different file formats over its history. The older .doc format (used through Word 2003) is a binary format — a complex proprietary structure that only Microsoft fully understands. The newer .docx format (introduced with Word 2007) is actually a ZIP archive containing XML files, images, and other assets. This open structure is why browser-based converters can support .docx but not .doc.",
+          "If you have an old .doc file, the solution is straightforward: open it in Microsoft Word, Google Docs, or LibreOffice and save it as .docx. In Word, use File → Save As → Word Document (.docx). In Google Docs, upload the .doc file and it will automatically convert; then download it as .docx. This two-step process takes less than a minute and makes the file compatible with modern converters.",
+          "It's worth noting that .docx files from newer versions of Word (2016, 2019, Microsoft 365) are structurally identical to those from Word 2007. The format has been stable for nearly two decades, which is why browser-based tools can reliably support it."
+        ]
+      },
+      {
+        heading: "What Gets Preserved (and What Doesn't) in Browser Conversion",
+        paragraphs: [
+          "Browser-based Word to PDF conversion using libraries like Mammoth.js is excellent at preserving core document content: headings (H1 through H4), body text, bold, italic, underline, strikethrough, bullet lists, numbered lists, hyperlinks, and tables with basic formatting. For the vast majority of business documents — reports, memos, cover letters, resumes — this covers everything.",
+          "However, some Word-specific features have no direct equivalent in the HTML-to-PDF pipeline used by browser tools. SmartArt diagrams, which are Word's proprietary flowchart/diagram feature, may not render correctly. Embedded charts from Excel are similarly complex. Word Art — the styled text effects — may fall back to plain text. Complex multi-column layouts and text boxes may reflow differently than they appear in Word.",
+          "For documents with heavy use of these advanced features, server-based converters (which run a full copy of LibreOffice) or desktop software like Adobe Acrobat produce better results. But for everyday documents — and this covers 95% of common use cases — browser-based conversion is fast, free, and sufficiently accurate."
+        ]
+      },
+      {
+        heading: "When and Why to Convert Word to PDF",
+        paragraphs: [
+          "The most common reason to convert Word to PDF is ensuring your document looks exactly as intended on the recipient's computer. If you send a recruiter your resume as a .docx file, there's a real risk it will look different on their machine — especially if they're using a different version of Word, Google Docs, or LibreOffice. Converting to PDF before sending eliminates this risk completely.",
+          "PDF also provides a degree of content protection. While PDF files can be copied from, they're not as easily edited as Word files. For contracts, invoices, certificates, and official documents, PDF signals finality — this document is complete and not meant for further editing. Some organizations require PDF submissions specifically because they want an uneditable record.",
+          "For digital signatures, PDF is the industry standard. Adobe Sign, DocuSign, and every e-signature platform works with PDFs. If you need to sign or collect signatures on a document, converting to PDF first is an essential step.",
+          "Academic institutions almost universally require PDF submissions for papers and theses. The main reason is archival reliability — a PDF submitted today will still render correctly in 20 years, while a .docx file might not open correctly in future software."
+        ]
+      },
+      {
+        heading: "Getting the Best Quality Output",
+        paragraphs: [
+          "The quality of your Word to PDF conversion depends heavily on how the original Word document is constructed. Documents that use built-in Word styles (Heading 1, Heading 2, Normal, etc.) convert much better than documents where formatting was applied manually. If your document has headings that look like headings visually but are actually just large bold text with no heading style applied, the converter treats them as styled paragraphs rather than semantic headings.",
+          "For the best conversion results, use Word's built-in styles from the Styles panel. Apply 'Heading 1' to your top-level headings, 'Heading 2' for sub-sections, and keep body text as 'Normal.' This ensures headings appear correctly in the PDF, with proper visual hierarchy. It also improves PDF accessibility since screen readers use heading levels to navigate the document.",
+          "Images embedded in Word documents are included in the .docx ZIP archive and will be extracted and included during conversion. However, very large images may be scaled or quality-reduced depending on the converter. If image quality is critical, verify the preview before downloading."
+        ]
+      }
+    ],
+    tips: [
+      "Always preview the converted document before downloading the PDF — this lets you spot any formatting issues before sharing",
+      "For the most accurate conversion of complex documents, use Word's built-in heading styles (Heading 1, Heading 2) rather than manually bolded large text",
+      "If your file is a .doc (old format), open it in Google Docs first and download as .docx — conversion will then work perfectly",
+      "For documents with complex layouts, try Google Docs' built-in 'Download as PDF' option as an alternative — it uses the same rendering engine as Chrome",
+      "Keep the font choice simple (Arial, Times New Roman, Calibri) to ensure text renders correctly across all PDF readers"
+    ],
+    mistakes: [
+      "Sending .docx files when the recipient might not have Word — always convert to PDF when sharing final documents",
+      "Ignoring conversion warnings — yellow warning messages indicate formatting elements that may not have converted perfectly",
+      "Uploading sensitive documents to unknown online converters that store files on their servers — use browser-based tools that process locally",
+      "Trying to convert .doc files directly — these old binary format files require an extra conversion step to .docx first",
+      "Not checking the preview — what looks perfect in Word sometimes needs a tweak after conversion, and reviewing before download saves confusion"
+    ]
+  },
+
+
   "imagecompressor": {
     headline: "The Complete Guide to Image Compression for the Web",
     intro: "Image compression is one of the most impactful performance improvements you can make for any website, document, or digital project. Studies consistently show that images account for 60–80% of a typical webpage's total file size, making image optimization the single most effective step to improve loading speed. Yet despite how critical compression is, many people either skip it entirely or do it incorrectly. This guide covers everything you need to know.",

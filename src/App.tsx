@@ -30,6 +30,7 @@ import FakeDataGenerator from "./pages/tools/FakeDataGenerator";
 import ImageCompressor from "./pages/tools/ImageCompressor";
 import AgeCalculator from "./pages/tools/AgeCalculator";
 import TypingTest from "./pages/tools/TypingTest";
+import WordToPdf from "./pages/tools/WordToPdf";
 import BlogPost from "./pages/BlogPost";
 import Blog from "./pages/Blog";
 
@@ -77,6 +78,7 @@ const App = () => (
               />
               <Route path="/tools/age-calculator" element={<AgeCalculator />} />
               <Route path="/tools/typing-test" element={<TypingTest />} />
+              <Route path="/tools/word-to-pdf" element={<WordToPdf />} />
 
               {/* Blog Routes */}
               <Route path="/blog" element={<Blog />} />
