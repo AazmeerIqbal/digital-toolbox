@@ -14,10 +14,10 @@ import {
   Download,
   Trash2,
   CheckCircle,
-  AlertCircle,
   Loader2,
   Eye,
   EyeOff,
+  Printer,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ToolLayout } from "@/components/ToolLayout";
@@ -25,14 +25,11 @@ import { SEOHead } from "@/components/SEOHead";
 import { getSEOConfig } from "@/lib/seo-config";
 import { ToolExplanation } from "@/components/ToolExplanation";
 import { ToolGuide } from "@/components/ToolGuide";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 
-interface ConvertedDoc {
+interface DocInfo {
   name: string;
   originalSize: number;
-  html: string;
-  messages: string[];
+  arrayBuffer: ArrayBuffer;
 }
 
 function formatSize(bytes: number) {
@@ -44,16 +41,42 @@ function formatSize(bytes: number) {
 
 export default function WordToPdf() {
   const seoConfig = getSEOConfig("word-to-pdf");
-  const [doc, setDoc] = useState<ConvertedDoc | null>(null);
-  const [converting, setConverting] = useState(false);
-  const [exporting, setExporting] = useState(false);
-  const [dragActive, setDragActive] = useState(false);
+  const [doc, setDoc] = useState<DocInfo | null>(null);
+  const [loading, setLoading] = useState(false);
   const [showPreview, setShowPreview] = useState(true);
+  const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const previewRef = useRef<HTMLDivElement>(null);
+  const previewContainerRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  const convertFile = useCallback(async (file: File) => {
+  // Render DOCX into the preview container using docx-preview
+  const renderDocx = useCallback(async (arrayBuffer: ArrayBuffer) => {
+    if (!previewContainerRef.current) return;
+
+    const { renderAsync } = await import("docx-preview");
+
+    previewContainerRef.current.innerHTML = "";
+
+    await renderAsync(arrayBuffer, previewContainerRef.current, undefined, {
+      className: "docx-preview",
+      injectStylesheet: true,
+      ignoreWidth: false,
+      ignoreHeight: false,
+      ignoreFonts: false,
+      breakPages: true,
+      ignoreLastRenderedPageBreak: true,
+      experimental: false,
+      trimXmlDeclaration: true,
+      useBase64URL: true,
+      renderChanges: false,
+      renderHeaders: true,
+      renderFooters: true,
+      renderFootnotes: true,
+      renderEndnotes: true,
+    });
+  }, []);
+
+  const processFile = useCallback(async (file: File) => {
     if (!file.name.toLowerCase().endsWith(".docx")) {
       toast({
         title: "Unsupported format",
@@ -71,44 +94,23 @@ export default function WordToPdf() {
       return;
     }
 
-    setConverting(true);
+    setLoading(true);
     setDoc(null);
 
     try {
-      // Dynamically import mammoth to keep initial bundle small
-      const mammoth = await import("mammoth");
       const arrayBuffer = await file.arrayBuffer();
-      const result = await mammoth.convertToHtml(
-        { arrayBuffer },
-        {
-          styleMap: [
-            "p[style-name='Heading 1'] => h1:fresh",
-            "p[style-name='Heading 2'] => h2:fresh",
-            "p[style-name='Heading 3'] => h3:fresh",
-            "p[style-name='Heading 4'] => h4:fresh",
-            "p[style-name='Title'] => h1.doc-title:fresh",
-            "p[style-name='Subtitle'] => p.doc-subtitle:fresh",
-            "b => strong",
-            "i => em",
-            "u => u",
-            "strike => s",
-            "r[style-name='Strong'] => strong",
-          ],
-        }
-      );
-
-      const warnings = result.messages
-        .filter((m) => m.type === "warning")
-        .map((m) => m.message);
-
-      setDoc({
+      const docInfo: DocInfo = {
         name: file.name.replace(/\.docx$/i, ""),
         originalSize: file.size,
-        html: result.value,
-        messages: warnings,
-      });
+        arrayBuffer,
+      };
+      setDoc(docInfo);
 
-      toast({ title: "Converted successfully", description: `${file.name} is ready for download.` });
+      // Give React a tick to render the container before we fill it
+      await new Promise((r) => setTimeout(r, 50));
+      await renderDocx(arrayBuffer);
+
+      toast({ title: "Document ready", description: `${file.name} rendered successfully.` });
     } catch (err) {
       console.error(err);
       toast({
@@ -116,19 +118,20 @@ export default function WordToPdf() {
         description: "Could not parse the document. Make sure it's a valid .docx file.",
         variant: "destructive",
       });
+      setDoc(null);
     } finally {
-      setConverting(false);
+      setLoading(false);
     }
-  }, [toast]);
+  }, [renderDocx, toast]);
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
       setDragActive(false);
       const file = e.dataTransfer.files[0];
-      if (file) convertFile(file);
+      if (file) processFile(file);
     },
-    [convertFile]
+    [processFile]
   );
 
   const handleDrag = (e: React.DragEvent) => {
@@ -138,83 +141,85 @@ export default function WordToPdf() {
 
   const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) convertFile(file);
+    if (file) processFile(file);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const downloadPdf = async () => {
-    if (!doc || !previewRef.current) return;
-    setExporting(true);
+  // Print-to-PDF: opens a new window with just the rendered content and triggers print
+  const printToPdf = useCallback(() => {
+    if (!previewContainerRef.current) return;
 
-    try {
-      const A4_WIDTH_PX = 794;   // A4 at 96 dpi
-      const A4_HEIGHT_PX = 1123;
+    const previewHtml = previewContainerRef.current.innerHTML;
 
-      const element = previewRef.current;
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        width: A4_WIDTH_PX,
-        windowWidth: A4_WIDTH_PX,
+    // Collect all docx-preview stylesheets from the current page
+    const styleSheets = Array.from(document.styleSheets)
+      .map((sheet) => {
+        try {
+          return Array.from(sheet.cssRules)
+            .map((rule) => rule.cssText)
+            .join("\n");
+        } catch {
+          return "";
+        }
+      })
+      .join("\n");
+
+    const win = window.open("", "_blank");
+    if (!win) {
+      toast({
+        title: "Popup blocked",
+        description: "Please allow popups for this site, then try again.",
+        variant: "destructive",
       });
-
-      const imgData = canvas.toDataURL("image/jpeg", 0.95);
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-
-      // A4 in mm: 210 x 297
-      const pdf = new jsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-
-      // How many mm per pixel
-      const ratio = pdfWidth / imgWidth;
-      const totalPdfHeight = imgHeight * ratio;
-      let yOffset = 0;
-
-      while (yOffset < totalPdfHeight) {
-        if (yOffset > 0) pdf.addPage();
-
-        // Calculate pixel slice for this page
-        const sliceHeightPx = Math.min(
-          (pdfHeight / ratio),
-          imgHeight - yOffset / ratio
-        );
-
-        // Create a temporary canvas for this slice
-        const pageCanvas = document.createElement("canvas");
-        pageCanvas.width = imgWidth;
-        pageCanvas.height = Math.ceil(sliceHeightPx);
-        const ctx = pageCanvas.getContext("2d")!;
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
-        ctx.drawImage(
-          canvas,
-          0, Math.round(yOffset / ratio),
-          imgWidth, Math.ceil(sliceHeightPx),
-          0, 0,
-          imgWidth, Math.ceil(sliceHeightPx)
-        );
-
-        const pageImg = pageCanvas.toDataURL("image/jpeg", 0.95);
-        pdf.addImage(pageImg, "JPEG", 0, 0, pdfWidth, pageCanvas.height * ratio);
-
-        yOffset += pdfHeight;
-      }
-
-      pdf.save(`${doc.name}.pdf`);
-      toast({ title: "PDF downloaded!", description: `${doc.name}.pdf saved to your device.` });
-    } catch (err) {
-      console.error(err);
-      toast({ title: "Export failed", description: "Could not generate PDF.", variant: "destructive" });
-    } finally {
-      setExporting(false);
+      return;
     }
-  };
+
+    win.document.write(`<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <title>${doc?.name ?? "document"}</title>
+  <style>
+    ${styleSheets}
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #fff;
+    }
+
+    /* Ensure docx-preview pages render at full width */
+    .docx-preview section.docx {
+      box-shadow: none !important;
+      margin: 0 auto !important;
+    }
+
+    @media print {
+      body { margin: 0; padding: 0; }
+      @page { margin: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="docx-preview">${previewHtml}</div>
+  <script>
+    window.onload = function() {
+      setTimeout(function() {
+        window.print();
+        window.close();
+      }, 600);
+    };
+  </script>
+</body>
+</html>`);
+    win.document.close();
+  }, [doc, toast]);
 
   const reset = () => {
     setDoc(null);
+    if (previewContainerRef.current) previewContainerRef.current.innerHTML = "";
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -237,8 +242,8 @@ export default function WordToPdf() {
               </h1>
             </div>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Convert your .docx Word documents to PDF instantly — 100% in your browser.
-              Your files never leave your device.
+              Convert your .docx Word documents to PDF — colors, alignment, tables, and
+              formatting preserved. 100% browser-based, your files never leave your device.
             </p>
           </div>
 
@@ -266,11 +271,11 @@ export default function WordToPdf() {
                     className="hidden"
                   />
 
-                  {converting ? (
+                  {loading ? (
                     <div className="flex flex-col items-center gap-4">
                       <Loader2 className="h-12 w-12 text-primary animate-spin" />
-                      <p className="text-lg font-medium text-foreground">Converting document…</p>
-                      <p className="text-sm text-muted-foreground">This may take a moment for large files</p>
+                      <p className="text-lg font-medium text-foreground">Rendering document…</p>
+                      <p className="text-sm text-muted-foreground">Preserving all colors and formatting</p>
                     </div>
                   ) : (
                     <div className="flex flex-col items-center gap-4">
@@ -285,12 +290,15 @@ export default function WordToPdf() {
                           or <span className="text-primary font-medium">click to browse</span>
                         </p>
                       </div>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                      <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1">
-                          <CheckCircle className="h-4 w-4 text-green-500" /> .docx files
+                          <CheckCircle className="h-4 w-4 text-green-500" /> Colors preserved
                         </span>
                         <span className="flex items-center gap-1">
-                          <CheckCircle className="h-4 w-4 text-green-500" /> Up to 50 MB
+                          <CheckCircle className="h-4 w-4 text-green-500" /> Alignment preserved
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <CheckCircle className="h-4 w-4 text-green-500" /> Tables & images
                         </span>
                         <span className="flex items-center gap-1">
                           <CheckCircle className="h-4 w-4 text-green-500" /> 100% private
@@ -303,103 +311,87 @@ export default function WordToPdf() {
             </Card>
           )}
 
-          {/* Result Panel */}
+          {/* Result Controls */}
           {doc && (
-            <div className="space-y-4">
-              {/* File info bar */}
-              <Card className="border-green-500/30 bg-green-50/30 dark:bg-green-950/20">
-                <CardContent className="py-4">
-                  <div className="flex items-center justify-between flex-wrap gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/40">
-                        <FileText className="h-6 w-6 text-green-600" />
-                      </div>
-                      <div>
-                        <p className="font-semibold text-foreground">{doc.name}.docx</p>
-                        <p className="text-sm text-muted-foreground">
-                          {formatSize(doc.originalSize)} · Converted to PDF
-                        </p>
-                      </div>
-                      <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400">
-                        Ready
-                      </Badge>
+            <Card className="border-green-500/30 bg-green-50/30 dark:bg-green-950/20">
+              <CardContent className="py-4">
+                <div className="flex items-center justify-between flex-wrap gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/40">
+                      <FileText className="h-6 w-6 text-green-600" />
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setShowPreview((v) => !v)}
-                      >
-                        {showPreview ? (
-                          <><EyeOff className="h-4 w-4 mr-1" /> Hide Preview</>
-                        ) : (
-                          <><Eye className="h-4 w-4 mr-1" /> Show Preview</>
-                        )}
-                      </Button>
-                      <Button
-                        onClick={downloadPdf}
-                        disabled={exporting}
-                        className="gap-2"
-                      >
-                        {exporting ? (
-                          <><Loader2 className="h-4 w-4 animate-spin" /> Generating PDF…</>
-                        ) : (
-                          <><Download className="h-4 w-4" /> Download PDF</>
-                        )}
-                      </Button>
-                      <Button variant="outline" size="sm" onClick={reset}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                    <div>
+                      <p className="font-semibold text-foreground">{doc.name}.docx</p>
+                      <p className="text-sm text-muted-foreground">
+                        {formatSize(doc.originalSize)} · Ready to export
+                      </p>
                     </div>
+                    <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400">
+                      Rendered
+                    </Badge>
                   </div>
-                </CardContent>
-              </Card>
 
-              {/* Warnings */}
-              {doc.messages.length > 0 && (
-                <Card className="border-yellow-400/40 bg-yellow-50/30 dark:bg-yellow-950/20">
-                  <CardContent className="py-3 px-4">
-                    <div className="flex items-start gap-2 text-sm text-yellow-700 dark:text-yellow-400">
-                      <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium mb-1">Some formatting may not be fully preserved:</p>
-                        <ul className="list-disc list-inside space-y-0.5 text-xs opacity-80">
-                          {doc.messages.slice(0, 5).map((m, i) => <li key={i}>{m}</li>)}
-                        </ul>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowPreview((v) => !v)}
+                    >
+                      {showPreview ? (
+                        <><EyeOff className="h-4 w-4 mr-1" /> Hide Preview</>
+                      ) : (
+                        <><Eye className="h-4 w-4 mr-1" /> Show Preview</>
+                      )}
+                    </Button>
+                    <Button onClick={printToPdf} className="gap-2">
+                      <Printer className="h-4 w-4" />
+                      Save as PDF
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={reset}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
-              {/* Document Preview */}
-              {showPreview && (
-                <Card className="border-border/50 overflow-hidden">
-                  <CardHeader className="py-3 px-4 bg-muted/40 border-b">
-                    <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                      <Eye className="h-4 w-4" /> Document Preview
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-0 overflow-auto max-h-[700px]">
-                    <div
-                      ref={previewRef}
-                      className="word-preview"
-                      dangerouslySetInnerHTML={{ __html: doc.html }}
-                    />
-                  </CardContent>
-                </Card>
-              )}
+          {/* How to save as PDF tip — shown once doc is ready */}
+          {doc && (
+            <Card className="border-blue-400/30 bg-blue-50/30 dark:bg-blue-950/20">
+              <CardContent className="py-3 px-4 text-sm text-blue-700 dark:text-blue-400">
+                <strong>How to save as PDF:</strong> Click <em>"Save as PDF"</em> above → a print dialog will open →
+                set the <strong>Destination</strong> to <strong>"Save as PDF"</strong> → click Save.
+                This uses your browser's native PDF engine for pixel-perfect output.
+              </CardContent>
+            </Card>
+          )}
 
-              {/* Another file button */}
-              <div className="text-center">
-                <Button variant="outline" onClick={reset}>
-                  <Upload className="h-4 w-4 mr-2" /> Convert Another Document
-                </Button>
-              </div>
+          {/* Document Preview — always mounted so the ref is available */}
+          <div className={doc && showPreview ? "block" : "hidden"}>
+            <Card className="border-border/50 overflow-hidden">
+              <CardHeader className="py-3 px-4 bg-muted/40 border-b">
+                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <Eye className="h-4 w-4" /> Document Preview
+                  <span className="text-xs opacity-60 ml-2">Scroll to see all pages</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0 overflow-auto max-h-[800px] bg-gray-100">
+                <div ref={previewContainerRef} className="docx-wrapper" />
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Another file button */}
+          {doc && (
+            <div className="text-center">
+              <Button variant="outline" onClick={reset}>
+                <Upload className="h-4 w-4 mr-2" /> Convert Another Document
+              </Button>
             </div>
           )}
 
-          {/* How it works */}
+          {/* Steps — only shown before upload */}
           {!doc && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
@@ -411,12 +403,12 @@ export default function WordToPdf() {
                 {
                   step: "2",
                   title: "Preview",
-                  desc: "See how your document looks before downloading",
+                  desc: "See your document exactly as it appears in Word — colors and all",
                 },
                 {
                   step: "3",
-                  title: "Download PDF",
-                  desc: "Get a perfectly formatted PDF in seconds",
+                  title: "Save as PDF",
+                  desc: "Click 'Save as PDF' and choose PDF in the print dialog",
                 },
               ].map((s) => (
                 <Card key={s.step} className="border-border/50 text-center">
@@ -434,77 +426,44 @@ export default function WordToPdf() {
 
           <ToolExplanation
             title="Word to PDF Converter"
-            description="Convert Microsoft Word documents (.docx) to PDF format instantly in your browser. No software installation required, no file uploads, complete privacy."
+            description="Convert Microsoft Word documents (.docx) to PDF format with full fidelity — colors, fonts, alignment, tables, images, and headers all preserved exactly as they appear in Word."
             howToUse={[
               "Click the upload area or drag and drop your .docx file",
-              "Wait a moment while the document is parsed in your browser",
-              "Review the document preview to check formatting",
-              "Click 'Download PDF' to save the converted file",
-              "Upload another document with the 'Convert Another' button",
+              "Wait while the document renders — you'll see it exactly as Word shows it",
+              "Review the preview to confirm colors, alignment, and layout look correct",
+              "Click 'Save as PDF' to open the print dialog",
+              "In the print dialog, set Destination to 'Save as PDF' and click Save",
             ]}
             features={[
-              "Convert .docx files to PDF with formatting preserved",
-              "Live document preview before downloading",
-              "Tables, headings, bold, italic, and lists all supported",
+              "Full color preservation — text colors, highlights, table cell shading",
+              "Exact alignment — centered, right-aligned, justified text all preserved",
+              "Tables with borders, merged cells, and background colors",
+              "Images, headers, footers, and page breaks preserved",
               "100% browser-based — your documents never leave your device",
-              "Multi-page PDF output with proper pagination",
-              "Completely free, up to 50 MB per file",
+              "Completely free, supports documents up to 50 MB",
             ]}
             faqs={[
+              {
+                question: "Why use 'Save as PDF' in print instead of a direct download?",
+                answer: "The browser's built-in PDF printer produces pixel-perfect output because it uses the same rendering engine that draws the preview. This gives you the highest possible fidelity — exactly what you see on screen ends up in the PDF.",
+              },
               {
                 question: "Does it support .doc files?",
                 answer: "Only .docx (modern Word format) is supported. For old .doc files, open them in Word or Google Docs and re-save as .docx first.",
               },
               {
-                question: "Will the formatting be preserved?",
-                answer: "Yes — headings, bold, italic, underline, lists, tables, and links are all preserved. Complex elements like SmartArt or embedded charts may not render perfectly.",
+                question: "Will colors and formatting be preserved?",
+                answer: "Yes. Unlike simple text converters, this tool renders the full Word XML including text colors, cell shading, alignment, font sizes, and images.",
               },
               {
                 question: "Is my document safe?",
                 answer: "Absolutely. Your file never leaves your device. All conversion happens locally in your browser using JavaScript.",
-              },
-              {
-                question: "What is the maximum file size?",
-                answer: "You can convert documents up to 50 MB. Most typical Word documents are well under this limit.",
               },
             ]}
           />
 
           <ToolGuide id="word-to-pdf" />
         </motion.div>
-
-        {/* Global word-preview styles injected via a style tag */}
-        <style>{`
-          .word-preview {
-            max-width: 794px;
-            margin: 0 auto;
-            padding: 60px 80px;
-            background: #fff;
-            color: #111;
-            font-family: "Times New Roman", Times, serif;
-            font-size: 12pt;
-            line-height: 1.6;
-            min-height: 400px;
-          }
-          .word-preview h1 { font-size: 24pt; font-weight: bold; margin: 16pt 0 8pt; }
-          .word-preview h2 { font-size: 18pt; font-weight: bold; margin: 14pt 0 6pt; }
-          .word-preview h3 { font-size: 14pt; font-weight: bold; margin: 12pt 0 4pt; }
-          .word-preview h4 { font-size: 12pt; font-weight: bold; margin: 10pt 0 4pt; }
-          .word-preview p { margin: 0 0 8pt; }
-          .word-preview ul, .word-preview ol { margin: 4pt 0 8pt 24pt; }
-          .word-preview li { margin-bottom: 4pt; }
-          .word-preview table { border-collapse: collapse; width: 100%; margin: 12pt 0; }
-          .word-preview td, .word-preview th { border: 1px solid #999; padding: 6px 10px; }
-          .word-preview th { background: #f0f0f0; font-weight: bold; }
-          .word-preview strong { font-weight: bold; }
-          .word-preview em { font-style: italic; }
-          .word-preview u { text-decoration: underline; }
-          .word-preview s { text-decoration: line-through; }
-          .word-preview a { color: #1155cc; }
-          .word-preview img { max-width: 100%; height: auto; }
-          .word-preview .doc-title { font-size: 28pt; font-weight: bold; text-align: center; }
-          .word-preview .doc-subtitle { font-size: 14pt; color: #555; text-align: center; }
-        `}</style>
       </ToolLayout>
     </>
   );
