@@ -122,25 +122,27 @@ export default function WordToPdf() {
     setExporting(true);
     setExportProgress(5);
 
-    // Off-screen container — no height constraints, no overflow clipping.
-    // We re-render the DOCX here so html2canvas captures each page at its
-    // true natural dimensions instead of whatever the preview panel clips to.
+    // Off-screen container — absolutely positioned off-screen, no size constraints.
     const offscreen = document.createElement("div");
     offscreen.style.cssText =
-      "position:absolute;left:-99999px;top:0;background:#f3f3f3;z-index:-1;";
+      "position:absolute;left:-99999px;top:0;background:#fff;z-index:-1;";
     document.body.appendChild(offscreen);
 
     try {
       const { renderAsync } = await import("docx-preview");
+
+      // ignoreHeight: true → renders all content in one tall unclipped flow.
+      // This is the key fix: docx-preview normally clips each page-section to
+      // the Word page height (overflow:hidden). With ignoreHeight:true the
+      // full content — including paragraph spacing, box padding, blank space —
+      // is laid out naturally without any clipping.
       await renderAsync(doc.arrayBuffer, offscreen, undefined, {
         className: "docx-export",
         injectStylesheet: true,
         ignoreWidth: false,
-        ignoreHeight: false,
+        ignoreHeight: true,
         ignoreFonts: false,
-        breakPages: true,
-        ignoreLastRenderedPageBreak: true,
-        experimental: false,
+        breakPages: false,
         trimXmlDeclaration: true,
         useBase64URL: true,
         renderChanges: false,
@@ -152,65 +154,101 @@ export default function WordToPdf() {
 
       setExportProgress(20);
 
-      // docx-preview names each page <section> with the className we passed.
-      // Query all <section> children regardless of class to be robust.
-      const sections = Array.from(
-        offscreen.querySelectorAll<HTMLElement>("section")
-      );
-      const targets: HTMLElement[] = sections.length > 0 ? sections : [offscreen];
+      // Capture the single flowing container
+      const container =
+        offscreen.querySelector<HTMLElement>(".docx-wrapper") ||
+        offscreen.querySelector<HTMLElement>("section") ||
+        offscreen;
 
+      const totalW = container.scrollWidth;
+      const totalH = container.scrollHeight;
+
+      setExportProgress(30);
+
+      const canvas = await html2canvas(container, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+        width: totalW,
+        height: totalH,
+        windowWidth: totalW,
+        windowHeight: totalH,
+        scrollX: 0,
+        scrollY: 0,
+        onclone: (clonedDoc) => {
+          // Strip any overflow:hidden so nothing is clipped during capture
+          clonedDoc.querySelectorAll<HTMLElement>("*").forEach((el) => {
+            const cs = window.getComputedStyle(el);
+            if (cs.overflow === "hidden" || cs.overflowY === "hidden") {
+              el.style.overflow = "visible";
+            }
+          });
+        },
+      });
+
+      setExportProgress(75);
+
+      // Slice the tall canvas into A4 pages
       const pdf = new jsPDF({
         unit: "pt",
         format: "a4",
         orientation: "portrait",
         compress: true,
       });
-      const pdfW = pdf.internal.pageSize.getWidth(); // 595.28 pt
+      const pdfW = pdf.internal.pageSize.getWidth();   // 595.28 pt
+      const pdfH = pdf.internal.pageSize.getHeight();  // 841.89 pt
 
-      for (let i = 0; i < targets.length; i++) {
-        setExportProgress(20 + Math.round(((i + 1) / targets.length) * 75));
+      // How many canvas pixels equal one PDF point
+      const pxPerPt = canvas.width / pdfW;
+      // A4 page height in canvas pixels
+      const pageHeightPx = pdfH * pxPerPt;
 
-        const el = targets[i];
+      let yOffset = 0;
+      let pageIndex = 0;
 
-        // scrollWidth/scrollHeight captures overflowing content that
-        // offsetWidth/offsetHeight would miss (fixes text-out-of-box issue)
-        const elW = Math.max(el.offsetWidth, el.scrollWidth);
-        const elH = Math.max(el.offsetHeight, el.scrollHeight);
+      while (yOffset < canvas.height) {
+        if (pageIndex > 0) pdf.addPage("a4");
 
-        const canvas = await html2canvas(el, {
-          scale: 2,
-          useCORS: true,
-          allowTaint: true,
-          backgroundColor: "#ffffff",
-          logging: false,
-          width: elW,
-          height: elH,
-          windowWidth: elW,
-          windowHeight: elH,
-          scrollX: 0,
-          scrollY: 0,
-          onclone: (_doc, clone) => {
-            // Ensure cloned element has no overflow clipping
-            clone.style.overflow = "visible";
-            clone.style.height = "auto";
-          },
-        });
+        const sliceH = Math.min(pageHeightPx, canvas.height - yOffset);
 
-        const imgData = canvas.toDataURL("image/jpeg", 0.95);
-        // Scale canvas width → PDF width, keep aspect ratio for height
-        const scale = pdfW / canvas.width;
-        const renderedH = canvas.height * scale;
+        // Create a slice canvas for this page
+        const pageCanvas = document.createElement("canvas");
+        pageCanvas.width = canvas.width;
+        pageCanvas.height = Math.ceil(sliceH);
+        const ctx = pageCanvas.getContext("2d")!;
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+        ctx.drawImage(
+          canvas,
+          0, yOffset, canvas.width, sliceH,
+          0, 0,       canvas.width, sliceH
+        );
 
-        if (i > 0) pdf.addPage("a4");
-        pdf.addImage(imgData, "JPEG", 0, 0, pdfW, renderedH);
+        const sliceImg = pageCanvas.toDataURL("image/jpeg", 0.95);
+        // Height of this slice in PDF points
+        const slicePtH = (sliceH / canvas.width) * pdfW;
+        pdf.addImage(sliceImg, "JPEG", 0, 0, pdfW, slicePtH);
+
+        yOffset += sliceH;
+        pageIndex++;
+        setExportProgress(75 + Math.round((yOffset / canvas.height) * 20));
       }
 
       setExportProgress(100);
       pdf.save(`${doc.name}.pdf`);
-      toast({ title: "PDF downloaded!", description: `${doc.name}.pdf saved successfully.` });
+      toast({
+        title: "PDF downloaded!",
+        description: `${doc.name}.pdf — ${pageIndex} page${pageIndex !== 1 ? "s" : ""} saved.`,
+      });
     } catch (err) {
       console.error(err);
-      toast({ title: "Export failed", description: "Could not generate the PDF. Please try again.", variant: "destructive" });
+      toast({
+        title: "Export failed",
+        description: "Could not generate the PDF. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       document.body.removeChild(offscreen);
       setExporting(false);
