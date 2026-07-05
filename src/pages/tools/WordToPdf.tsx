@@ -152,9 +152,10 @@ export default function WordToPdf() {
 
       setExportProgress(20);
 
-      // Each Word page renders as <section class="docx">
+      // docx-preview names each page <section> with the className we passed.
+      // Query all <section> children regardless of class to be robust.
       const sections = Array.from(
-        offscreen.querySelectorAll<HTMLElement>("section.docx")
+        offscreen.querySelectorAll<HTMLElement>("section")
       );
       const targets: HTMLElement[] = sections.length > 0 ? sections : [offscreen];
 
@@ -164,15 +165,17 @@ export default function WordToPdf() {
         orientation: "portrait",
         compress: true,
       });
-      const pdfW = pdf.internal.pageSize.getWidth();   // 595.28 pt
+      const pdfW = pdf.internal.pageSize.getWidth(); // 595.28 pt
 
       for (let i = 0; i < targets.length; i++) {
         setExportProgress(20 + Math.round(((i + 1) / targets.length) * 75));
 
         const el = targets[i];
-        // Use the element's real rendered dimensions — not the clipped container
-        const elW = el.offsetWidth || el.scrollWidth;
-        const elH = el.offsetHeight || el.scrollHeight;
+
+        // scrollWidth/scrollHeight captures overflowing content that
+        // offsetWidth/offsetHeight would miss (fixes text-out-of-box issue)
+        const elW = Math.max(el.offsetWidth, el.scrollWidth);
+        const elH = Math.max(el.offsetHeight, el.scrollHeight);
 
         const canvas = await html2canvas(el, {
           scale: 2,
@@ -182,8 +185,15 @@ export default function WordToPdf() {
           logging: false,
           width: elW,
           height: elH,
+          windowWidth: elW,
+          windowHeight: elH,
           scrollX: 0,
-          scrollY: -window.scrollY,
+          scrollY: 0,
+          onclone: (_doc, clone) => {
+            // Ensure cloned element has no overflow clipping
+            clone.style.overflow = "visible";
+            clone.style.height = "auto";
+          },
         });
 
         const imgData = canvas.toDataURL("image/jpeg", 0.95);
