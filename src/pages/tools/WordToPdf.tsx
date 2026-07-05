@@ -20,7 +20,6 @@ import { getSEOConfig } from "@/lib/seo-config";
 import { ToolExplanation } from "@/components/ToolExplanation";
 import { ToolGuide } from "@/components/ToolGuide";
 import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 
 interface DocInfo {
   name: string;
@@ -131,18 +130,18 @@ export default function WordToPdf() {
     try {
       const { renderAsync } = await import("docx-preview");
 
-      // ignoreHeight: true → renders all content in one tall unclipped flow.
-      // This is the key fix: docx-preview normally clips each page-section to
-      // the Word page height (overflow:hidden). With ignoreHeight:true the
-      // full content — including paragraph spacing, box padding, blank space —
-      // is laid out naturally without any clipping.
+      // Paged render — identical settings to the on-screen preview, so the
+      // PDF gets exactly the same pagination the user sees (and the same
+      // page count as Word).
       await renderAsync(doc.arrayBuffer, offscreen, undefined, {
-        className: "docx-export",
+        className: "docx",
         injectStylesheet: true,
         ignoreWidth: false,
-        ignoreHeight: true,
+        ignoreHeight: false,
         ignoreFonts: false,
-        breakPages: false,
+        breakPages: true,
+        ignoreLastRenderedPageBreak: true,
+        experimental: false,
         trimXmlDeclaration: true,
         useBase64URL: true,
         renderChanges: false,
@@ -152,45 +151,46 @@ export default function WordToPdf() {
         renderEndnotes: true,
       });
 
-      setExportProgress(20);
+      setExportProgress(15);
 
-      // Capture the single flowing container
-      const container =
-        offscreen.querySelector<HTMLElement>(".docx-wrapper") ||
-        offscreen.querySelector<HTMLElement>("section") ||
-        offscreen;
+      // One <section> per Word page
+      const pages = Array.from(offscreen.querySelectorAll<HTMLElement>("section"));
+      if (pages.length === 0) throw new Error("No pages rendered");
 
-      const totalW = container.scrollWidth;
-      const totalH = container.scrollHeight;
+      // docx-preview clips each page to the exact Word page height with
+      // overflow:hidden. Its layout runs a few pixels taller than real Word,
+      // so content near the bottom of a page can poke out of boxes or get
+      // cut. Un-clip every page: let it grow to fit its content.
+      for (const page of pages) {
+        page.style.overflow = "visible";
+        page.style.height = "auto";
+        page.style.minHeight = "0";
+      }
 
-      setExportProgress(30);
+      // html-to-image uses the browser's own renderer (SVG foreignObject),
+      // so the capture is pixel-identical to the preview — unlike html2canvas
+      // which re-implements rendering and misplaces text.
+      // Note: its toCanvas() hangs on large SVGs in Chromium (img.decode bug),
+      // so we call toSvg() and rasterize the result ourselves.
+      const { toSvg } = await import("html-to-image");
 
-      const canvas = await html2canvas(container, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: "#ffffff",
-        logging: false,
-        width: totalW,
-        height: totalH,
-        windowWidth: totalW,
-        windowHeight: totalH,
-        scrollX: 0,
-        scrollY: 0,
-        onclone: (clonedDoc) => {
-          // Strip any overflow:hidden so nothing is clipped during capture
-          clonedDoc.querySelectorAll<HTMLElement>("*").forEach((el) => {
-            const cs = window.getComputedStyle(el);
-            if (cs.overflow === "hidden" || cs.overflowY === "hidden") {
-              el.style.overflow = "visible";
-            }
-          });
-        },
-      });
+      const svgToCanvas = (svgDataUrl: string, w: number, h: number, ratio: number) =>
+        new Promise<HTMLCanvasElement>((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => {
+            const c = document.createElement("canvas");
+            c.width = Math.round(w * ratio);
+            c.height = Math.round(h * ratio);
+            const ctx = c.getContext("2d")!;
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, c.width, c.height);
+            ctx.drawImage(img, 0, 0, c.width, c.height);
+            resolve(c);
+          };
+          img.onerror = () => reject(new Error("Failed to rasterize page"));
+          img.src = svgDataUrl;
+        });
 
-      setExportProgress(75);
-
-      // Slice the tall canvas into A4 pages
       const pdf = new jsPDF({
         unit: "pt",
         format: "a4",
@@ -200,47 +200,52 @@ export default function WordToPdf() {
       const pdfW = pdf.internal.pageSize.getWidth();   // 595.28 pt
       const pdfH = pdf.internal.pageSize.getHeight();  // 841.89 pt
 
-      // How many canvas pixels equal one PDF point
-      const pxPerPt = canvas.width / pdfW;
-      // A4 page height in canvas pixels
-      const pageHeightPx = pdfH * pxPerPt;
+      for (let i = 0; i < pages.length; i++) {
+        const page = pages[i];
 
-      let yOffset = 0;
-      let pageIndex = 0;
+        const pageW = page.offsetWidth;
+        const pageH = Math.max(page.offsetHeight, page.scrollHeight);
 
-      while (yOffset < canvas.height) {
-        if (pageIndex > 0) pdf.addPage("a4");
+        const svg = await toSvg(page, {
+          backgroundColor: "#ffffff",
+          width: pageW,
+          height: pageH,
+          // Word docs use system fonts (Calibri, Times, Arial) that the PDF
+          // viewer resolves anyway — embedding page fonts hangs the capture
+          // on external font fetches, so skip it.
+          skipFonts: true,
+          style: {
+            overflow: "visible",
+            height: "auto",
+            margin: "0",
+            boxShadow: "none",
+          },
+        });
 
-        const sliceH = Math.min(pageHeightPx, canvas.height - yOffset);
+        const canvas = await svgToCanvas(svg, pageW, pageH, 2);
 
-        // Create a slice canvas for this page
-        const pageCanvas = document.createElement("canvas");
-        pageCanvas.width = canvas.width;
-        pageCanvas.height = Math.ceil(sliceH);
-        const ctx = pageCanvas.getContext("2d")!;
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
-        ctx.drawImage(
-          canvas,
-          0, yOffset, canvas.width, sliceH,
-          0, 0,       canvas.width, sliceH
+        // Fit the page image inside A4, preserving aspect ratio
+        const scale = Math.min(pdfW / canvas.width, pdfH / canvas.height);
+        const imgW = canvas.width * scale;
+        const imgH = canvas.height * scale;
+
+        if (i > 0) pdf.addPage("a4");
+        pdf.addImage(
+          canvas.toDataURL("image/jpeg", 0.95),
+          "JPEG",
+          (pdfW - imgW) / 2, // center horizontally
+          0,
+          imgW,
+          imgH
         );
 
-        const sliceImg = pageCanvas.toDataURL("image/jpeg", 0.95);
-        // Height of this slice in PDF points
-        const slicePtH = (sliceH / canvas.width) * pdfW;
-        pdf.addImage(sliceImg, "JPEG", 0, 0, pdfW, slicePtH);
-
-        yOffset += sliceH;
-        pageIndex++;
-        setExportProgress(75 + Math.round((yOffset / canvas.height) * 20));
+        setExportProgress(15 + Math.round(((i + 1) / pages.length) * 85));
       }
 
-      setExportProgress(100);
       pdf.save(`${doc.name}.pdf`);
       toast({
         title: "PDF downloaded!",
-        description: `${doc.name}.pdf — ${pageIndex} page${pageIndex !== 1 ? "s" : ""} saved.`,
+        description: `${doc.name}.pdf — ${pages.length} page${pages.length !== 1 ? "s" : ""} saved.`,
       });
     } catch (err) {
       console.error(err);
