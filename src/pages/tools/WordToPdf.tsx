@@ -117,89 +117,82 @@ export default function WordToPdf() {
   }, [renderDocx, toast]);
 
   const downloadPdf = useCallback(async () => {
-    if (!previewContainerRef.current || !doc) return;
-
-    // docx-preview renders each Word page as a <section class="docx"> element
-    const pageSections = Array.from(
-      previewContainerRef.current.querySelectorAll<HTMLElement>("section.docx")
-    );
-
-    // Fall back to capturing the whole container if sections aren't found
-    const targets: HTMLElement[] =
-      pageSections.length > 0
-        ? pageSections
-        : [previewContainerRef.current];
+    if (!doc) return;
 
     setExporting(true);
-    setExportProgress(0);
+    setExportProgress(5);
+
+    // Off-screen container — no height constraints, no overflow clipping.
+    // We re-render the DOCX here so html2canvas captures each page at its
+    // true natural dimensions instead of whatever the preview panel clips to.
+    const offscreen = document.createElement("div");
+    offscreen.style.cssText =
+      "position:absolute;left:-99999px;top:0;background:#f3f3f3;z-index:-1;";
+    document.body.appendChild(offscreen);
 
     try {
+      const { renderAsync } = await import("docx-preview");
+      await renderAsync(doc.arrayBuffer, offscreen, undefined, {
+        className: "docx-export",
+        injectStylesheet: true,
+        ignoreWidth: false,
+        ignoreHeight: false,
+        ignoreFonts: false,
+        breakPages: true,
+        ignoreLastRenderedPageBreak: true,
+        experimental: false,
+        trimXmlDeclaration: true,
+        useBase64URL: true,
+        renderChanges: false,
+        renderHeaders: true,
+        renderFooters: true,
+        renderFootnotes: true,
+        renderEndnotes: true,
+      });
+
+      setExportProgress(20);
+
+      // Each Word page renders as <section class="docx">
+      const sections = Array.from(
+        offscreen.querySelectorAll<HTMLElement>("section.docx")
+      );
+      const targets: HTMLElement[] = sections.length > 0 ? sections : [offscreen];
+
       const pdf = new jsPDF({
         unit: "pt",
         format: "a4",
         orientation: "portrait",
         compress: true,
       });
-
       const pdfW = pdf.internal.pageSize.getWidth();   // 595.28 pt
-      const pdfH = pdf.internal.pageSize.getHeight();  // 841.89 pt
 
       for (let i = 0; i < targets.length; i++) {
-        setExportProgress(Math.round(((i + 1) / targets.length) * 90));
+        setExportProgress(20 + Math.round(((i + 1) / targets.length) * 75));
 
         const el = targets[i];
-
-        // Temporarily make element visible and positioned for capture
-        const prevVisibility = el.style.visibility;
-        el.style.visibility = "visible";
+        // Use the element's real rendered dimensions — not the clipped container
+        const elW = el.offsetWidth || el.scrollWidth;
+        const elH = el.offsetHeight || el.scrollHeight;
 
         const canvas = await html2canvas(el, {
-          scale: 2,                 // retina quality
+          scale: 2,
           useCORS: true,
           allowTaint: true,
           backgroundColor: "#ffffff",
           logging: false,
-          // Use scrollWidth/scrollHeight to capture full content
-          width: el.scrollWidth,
-          height: el.scrollHeight,
-          windowWidth: el.scrollWidth,
+          width: elW,
+          height: elH,
+          scrollX: 0,
+          scrollY: -window.scrollY,
         });
 
-        el.style.visibility = prevVisibility;
+        const imgData = canvas.toDataURL("image/jpeg", 0.95);
+        // Scale canvas width → PDF width, keep aspect ratio for height
+        const scale = pdfW / canvas.width;
+        const renderedH = canvas.height * scale;
 
-        const imgData = canvas.toDataURL("image/jpeg", 0.92);
-        const imgW = canvas.width;
-        const imgH = canvas.height;
-
-        // Scale the captured image to fit A4 width, preserving aspect ratio
-        const scale = pdfW / imgW;
-        const renderedH = imgH * scale;
-
-        if (i > 0) pdf.addPage();
-
-        // If the page content is taller than A4, split into sub-pages
-        if (renderedH <= pdfH) {
-          pdf.addImage(imgData, "JPEG", 0, 0, pdfW, renderedH);
-        } else {
-          // Content overflows one A4 page — slice it
-          let yOffset = 0;
-          let subPage = 0;
-          while (yOffset < imgH) {
-            if (subPage > 0) pdf.addPage();
-            const sliceH = Math.min(pdfH / scale, imgH - yOffset);
-            const sliceCanvas = document.createElement("canvas");
-            sliceCanvas.width = imgW;
-            sliceCanvas.height = Math.ceil(sliceH);
-            const ctx = sliceCanvas.getContext("2d")!;
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
-            ctx.drawImage(canvas, 0, yOffset, imgW, sliceH, 0, 0, imgW, sliceH);
-            const sliceImg = sliceCanvas.toDataURL("image/jpeg", 0.92);
-            pdf.addImage(sliceImg, "JPEG", 0, 0, pdfW, sliceH * scale);
-            yOffset += sliceH;
-            subPage++;
-          }
-        }
+        if (i > 0) pdf.addPage("a4");
+        pdf.addImage(imgData, "JPEG", 0, 0, pdfW, renderedH);
       }
 
       setExportProgress(100);
@@ -209,6 +202,7 @@ export default function WordToPdf() {
       console.error(err);
       toast({ title: "Export failed", description: "Could not generate the PDF. Please try again.", variant: "destructive" });
     } finally {
+      document.body.removeChild(offscreen);
       setExporting(false);
       setExportProgress(0);
     }
