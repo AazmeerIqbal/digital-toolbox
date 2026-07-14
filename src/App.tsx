@@ -15,6 +15,7 @@ import About from "./pages/legal/About";
 import Privacy from "./pages/legal/Privacy";
 import Terms from "./pages/legal/Terms";
 import Contact from "./pages/legal/Contact";
+import Faq from "./pages/legal/Faq";
 
 // Tool imports
 import ImageToPdf from "./pages/tools/ImageToPdf";
@@ -54,6 +55,7 @@ const App = () => (
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/faq" element={<Faq />} />
 
               {/* Tool Routes */}
               <Route path="/tools/image-to-pdf" element={<ImageToPdf />} />
