@@ -112,15 +112,14 @@ export const seoConfigs: Record<string, SEOConfig> = {
   },
 
   "word-to-pdf": {
-    title: "Word to PDF Converter — Free .docx to PDF, No Upload",
+    title: "Word to PDF Converter — Free, 100% Private, No Upload | Toolzaply",
     description:
-      "Convert Word documents (.docx) to PDF instantly in your browser. Preserves formatting, tables, and headings. 100% free, no file uploads, no software needed.",
+      "Convert Word documents (.docx) to PDF instantly in your browser without uploading to any server. 100% private local processing, preserves formatting, zero registration.",
     keywords: [
-      "word to pdf converter",
-      "docx to pdf online free",
-      "convert word document to pdf",
+      "convert docx to pdf without uploading",
       "word to pdf no upload",
       "free word to pdf converter online",
+      "convert word document to pdf private",
       "docx to pdf browser",
       "convert .docx to pdf",
       "word document to pdf download",
@@ -128,36 +127,58 @@ export const seoConfigs: Record<string, SEOConfig> = {
       "word to pdf without microsoft office",
       "online word to pdf converter",
       "docx pdf converter no registration",
+      "local data processing word to pdf",
     ],
-    ogTitle: "Free Word to PDF Converter — .docx to PDF in Seconds",
+    ogTitle: "Word to PDF Converter — Free, 100% Private, No Upload",
     ogDescription:
-      "Convert .docx Word files to PDF instantly. Formatting preserved. No uploads, no sign-up — runs entirely in your browser.",
+      "Convert .docx files to PDF in seconds without uploading to any cloud server. Your files stay on your device. Free, instant download.",
     ogImage: siteConfig.ogImage,
     canonical: `${siteConfig.url}/tools/word-to-pdf`,
     structuredData: [
       softwareApp(
         "Word to PDF Converter",
-        "Convert Microsoft Word .docx documents to PDF format in your browser with formatting preserved.",
+        "Convert Microsoft Word .docx documents to PDF format directly in your browser without uploading files to any server.",
         "/tools/word-to-pdf",
         "UtilitiesApplication",
-        ["DOCX to PDF conversion", "Document preview", "Formatting preserved", "100% browser-based", "No file upload required"]
+        [
+          "DOCX to PDF conversion",
+          "Document preview",
+          "Formatting preserved",
+          "100% browser-based local processing",
+          "No file upload to server",
+          "No registration required",
+        ]
       ),
       breadcrumb("Word to PDF Converter", "/tools/word-to-pdf"),
       faqSchema([
-        { q: "Can I convert a Word document to PDF for free?", a: "Yes. Toolzaply's Word to PDF converter is completely free with no limits, registration, or file uploads required." },
-        { q: "Does it support .doc files?", a: "Currently only .docx (the modern Word format) is supported. Old binary .doc files are not supported. You can open a .doc in Word or Google Docs and save it as .docx first." },
-        { q: "Will the formatting be preserved?", a: "Yes — headings, bold, italic, underline, lists, and tables are all preserved. Some complex Word-specific styles (SmartArt, embedded charts) may not render perfectly as the conversion happens entirely in your browser." },
-        { q: "Is my document safe?", a: "Absolutely. Your file never leaves your device. All conversion happens locally using JavaScript in your browser." },
+        {
+          q: "How can I convert Word to PDF without uploading my document to a server?",
+          a: "Toolzaply runs DOCX to PDF conversion entirely in your browser using client-side JavaScript. Your document is processed in local memory on your device and is never uploaded across the internet.",
+        },
+        {
+          q: "Can I convert .docx files to PDF on mobile or tablet?",
+          a: "Yes. Toolzaply's Word to PDF tool works directly on mobile browsers (Safari, Chrome, Firefox) on iOS and Android without installing any app.",
+        },
+        {
+          q: "Does it preserve fonts, tables, and headings?",
+          a: "Yes — headings, bold/italic formatting, paragraphs, lists, and tables are preserved in the generated PDF.",
+        },
+        {
+          q: "Is there a limit on how many Word documents I can convert?",
+          a: "No. You can convert unlimited documents for free without subscriptions, account sign-ups, or daily caps.",
+        },
       ]),
     ],
   },
 
   "image-to-pdf": {
-    title: "JPG to PDF Converter — Free, Instant, No Upload Required",
+    title: "Image to PDF Converter — Combine JPG & PNG to PDF Free | Toolzaply",
     description:
-      "Convert JPG, PNG, or GIF images to PDF in seconds. Merge multiple images into one PDF document. 100% free, works in your browser, no file uploads to any server.",
+      "Convert JPG, PNG, and WebP images to PDF in seconds. Combine multiple photos into a single PDF document. 100% free, works offline in browser, no server upload.",
     keywords: [
-      "jpg to pdf",
+      "convert multiple images to pdf free",
+      "jpg to pdf no upload no sign up",
+      "combine images to pdf offline",
       "image to pdf converter",
       "png to pdf online free",
       "convert jpg to pdf",
@@ -168,51 +189,67 @@ export const seoConfigs: Record<string, SEOConfig> = {
       "image to pdf no upload",
       "free jpg to pdf converter",
       "how to convert image to pdf online",
-      "combine images into one pdf free",
-      "convert photo to pdf without app",
       "batch image to pdf converter",
-      "gif to pdf converter",
     ],
-    ogTitle: "Free JPG to PDF Converter — No Upload, Instant Download",
+    ogTitle: "Image to PDF Converter — Combine JPG & PNG to PDF Free",
     ogDescription:
-      "Convert JPG, PNG, GIF images to PDF instantly. Merge multiple photos into one PDF. No file size limit, no sign-up.",
+      "Convert JPG, PNG, and WebP images to PDF instantly. Merge multiple photos into one PDF. No file size limit, no sign-up.",
     ogImage: siteConfig.ogImage,
     canonical: `${siteConfig.url}/tools/image-to-pdf`,
     structuredData: [
       softwareApp(
         "Image to PDF Converter",
-        "Convert JPG, PNG, and GIF images to PDF online for free. Merge multiple images into a single PDF document instantly in your browser.",
+        "Convert JPG, PNG, and WebP images to PDF online for free. Merge multiple images into a single PDF document instantly in your browser.",
         "/tools/image-to-pdf",
         "UtilityApplication",
-        ["Convert JPG to PDF", "Convert PNG to PDF", "Merge multiple images into PDF", "No file upload required", "Instant PDF download", "Supports JPG, PNG, GIF, WebP"]
+        [
+          "Convert JPG to PDF",
+          "Convert PNG to PDF",
+          "Merge multiple images into PDF",
+          "No file upload required",
+          "Instant PDF download",
+          "Supports JPG, PNG, GIF, WebP",
+        ]
       ),
       breadcrumb("Image to PDF Converter", "/tools/image-to-pdf"),
       faqSchema([
-        { q: "How do I convert a JPG image to PDF for free?", a: "Upload your JPG image on the Image to PDF page at Toolzaply, then click 'Convert to PDF'. The PDF downloads instantly in your browser — no account or payment needed." },
-        { q: "Can I merge multiple images into one PDF?", a: "Yes. Select multiple image files at once. Toolzaply will combine all of them into a single PDF in the order you choose." },
-        { q: "Is there a file size limit for converting images to PDF?", a: "There is no hard server limit because all processing happens in your browser. Performance depends on your device, but images up to 50MB each work well." },
-        { q: "Does converting images to PDF require an account?", a: "No. Toolzaply's Image to PDF converter requires no registration, no email, and no login. Just open the page and convert." },
-        { q: "Which image formats can be converted to PDF?", a: "Toolzaply supports JPG/JPEG, PNG, GIF, and WebP images for PDF conversion." },
+        {
+          q: "How do I convert multiple images to PDF for free without uploading?",
+          a: "Select your JPG, PNG, or WebP images on Toolzaply's Image to PDF page. All files are merged locally in your browser memory into a clean PDF document without uploading to external servers.",
+        },
+        {
+          q: "Can I rearrange the order of images before generating the PDF?",
+          a: "Yes. You can select and arrange images in your desired sequence before clicking Convert to PDF.",
+        },
+        {
+          q: "Is there any file size or conversion limit?",
+          a: "No. Because the conversion executes directly on your device, there are no artificial file size caps or daily conversion quotas.",
+        },
+        {
+          q: "Does this Image to PDF tool work on iPhone and Android?",
+          a: "Yes, it works directly inside any mobile browser without requiring app installations or subscriptions.",
+        },
       ]),
     ],
   },
 
   "pdf-tools": {
-    title: "PDF Tools — Merge, Split, Compress & Rotate PDF Free Online",
+    title: "Free PDF Tools — Merge, Split & Compress PDF Locally | Toolzaply",
     description:
-      "All-in-one free PDF tools: merge multiple PDFs into one, split PDF pages, rotate pages, compress PDF file size, and extract text — all in your browser.",
+      "All-in-one free browser PDF tools: merge multiple PDFs into one, split pages, rotate documents, compress file size, and extract text — 100% private.",
     keywords: [
+      "merge pdf files locally in browser",
+      "split pdf no upload private",
+      "rotate pdf pages free",
       "merge pdf online free",
       "pdf merger free",
       "split pdf online",
       "compress pdf online free",
-      "rotate pdf pages",
       "combine pdf files free",
       "pdf tools free",
       "pdf editor online free",
       "extract text from pdf",
       "reduce pdf file size online",
-      "how to merge pdf files",
       "merge pdf without adobe",
       "pdf splitter online",
       "compress pdf without losing quality",
@@ -229,18 +266,37 @@ export const seoConfigs: Record<string, SEOConfig> = {
         "Complete free online PDF tools: merge PDFs, split PDF pages, rotate PDFs, compress PDF file size, and extract text — all in your browser.",
         "/tools/pdf-tools",
         "UtilityApplication",
-        ["Merge PDF files", "Split PDF pages", "Rotate PDF documents", "Compress PDF size", "Extract text from PDF", "No software install required"]
+        [
+          "Merge PDF files",
+          "Split PDF pages",
+          "Rotate PDF documents",
+          "Compress PDF size",
+          "Extract text from PDF",
+          "No software install required",
+        ]
       ),
       breadcrumb("PDF Tools", "/tools/pdf-tools"),
       faqSchema([
-        { q: "How do I merge multiple PDF files into one for free?", a: "Go to PDF Tools on Toolzaply, select the 'Merge PDF' tab, upload your PDF files, arrange their order, and click Merge. The combined PDF downloads instantly — no account needed." },
-        { q: "Can I compress a PDF file to reduce its size online?", a: "Yes. Use the Compress PDF tab on Toolzaply's PDF Tools page. Upload your PDF and the tool reduces its file size while preserving readability, all in your browser." },
-        { q: "How do I split a PDF into separate pages?", a: "Select the Split PDF tab, upload your file, choose which pages to extract or specify a page range, and download the resulting PDF(s) instantly." },
-        { q: "Does compressing a PDF reduce its quality?", a: "Compression removes redundant data and optimises internal structures. Text quality stays intact. Very high-resolution images may see minor quality reduction, but documents remain readable." },
-        { q: "Do I need to install software to use these PDF tools?", a: "No installation is needed. All PDF tools on Toolzaply run entirely in your web browser using JavaScript." },
+        {
+          q: "How do I merge multiple PDF files into one for free?",
+          a: "Go to PDF Tools on Toolzaply, select the 'Merge PDF' tab, upload your PDF files, arrange their order, and click Merge. The combined PDF downloads instantly — no account needed.",
+        },
+        {
+          q: "Can I compress a PDF file to reduce its size online?",
+          a: "Yes. Use the Compress PDF tab on Toolzaply's PDF Tools page. Upload your PDF and the tool reduces its file size while preserving readability, all in your browser.",
+        },
+        {
+          q: "How do I split a PDF into separate pages?",
+          a: "Select the Split PDF tab, upload your file, choose which pages to extract or specify a page range, and download the resulting PDF(s) instantly.",
+        },
+        {
+          q: "Are my PDF documents uploaded to your server?",
+          a: "No. All PDF operations run locally in your web browser using WebAssembly and JavaScript. Your documents never leave your computer or phone.",
+        },
       ]),
     ],
   },
+
 
   "text-converter": {
     title: "Text Case Converter — UPPERCASE, lowercase, camelCase, snake_case Free",
@@ -333,46 +389,74 @@ export const seoConfigs: Record<string, SEOConfig> = {
   },
 
   "qr-tools": {
-    title: "QR Code Generator Free — Create QR Code for URL, Text, WiFi",
+    title: "Free QR Code Generator from URL & Text — Scannable & Instant | Toolzaply",
     description:
-      "Generate QR codes for any URL, text, WiFi password, or contact info instantly. Download as PNG. Free online QR code generator — no watermark, no sign-up.",
+      "Generate high-resolution, scannable QR codes from any URL, link, or text instantly. Download as PNG with no watermark. Free online QR code creator & camera scanner — 100% private.",
     keywords: [
+      "create qr code from url",
+      "scannable qr code",
+      "qr code url",
+      "qr url",
+      "link to qr code generator online",
+      "text to qr code online",
+      "scan code generator",
+      "make qr code from url",
+      "create qr code to url",
+      "generate qr code for url",
+      "qr from url",
       "qr code generator free",
-      "create qr code for url",
       "free qr code generator no watermark",
       "qr code maker online",
-      "generate qr code for website",
-      "qr code generator for wifi",
-      "qr code for text",
-      "qr code creator online",
-      "download qr code png",
-      "custom qr code generator",
-      "qr code generator no sign up",
-      "how to create a qr code for free",
       "qr code for link",
       "free qr code no expiry",
-      "qr code generator for business",
+      "how to create a scan code",
+      "word to qr code",
+      "link to scanner",
+      "qr code website",
     ],
-    ogTitle: "Free QR Code Generator — URL, Text, WiFi, No Watermark",
+    ogTitle: "Free QR Code Generator from URL & Text — Scannable & Instant",
     ogDescription:
-      "Create QR codes for URLs, text, WiFi passwords and more. Download as PNG instantly. No watermark, no expiry, no account needed.",
+      "Create high-resolution scannable QR codes for URLs, links, text, and WiFi passwords. Download PNG with no watermark, no expiry, and no account needed.",
     ogImage: siteConfig.ogImage,
     canonical: `${siteConfig.url}/tools/qr-tools`,
     structuredData: [
       softwareApp(
-        "QR Code Generator",
-        "Free online QR code generator. Create QR codes for URLs, text, WiFi, and contact info. Download as PNG instantly with no watermark.",
+        "QR Code Generator & Scanner",
+        "Free online QR code generator and scanner. Create scannable QR codes from URLs, links, text, WiFi, and contact info. Download PNG instantly with no watermark.",
         "/tools/qr-tools",
         "UtilityApplication",
-        ["URL to QR code", "Text to QR code", "WiFi QR code", "Contact card QR code", "PNG download", "No watermark", "No expiry date"]
+        [
+          "Create QR code from URL or link",
+          "Text to QR code generator",
+          "Scan QR codes online with camera",
+          "WiFi and Contact QR codes",
+          "High-resolution PNG download",
+          "No watermark and no expiration",
+          "100% client-side private generation",
+        ]
       ),
       breadcrumb("QR Code Generator", "/tools/qr-tools"),
       faqSchema([
-        { q: "How do I create a QR code for a website URL for free?", a: "Go to the QR Code Generator on Toolzaply, paste your URL into the input field, and your QR code generates instantly. Click Download to save it as a PNG image — no account needed." },
-        { q: "Do QR codes generated on Toolzaply expire?", a: "No. Because Toolzaply generates QR codes entirely in your browser without any server tracking, the QR codes never expire and are completely free." },
-        { q: "Can I generate a QR code for WiFi so guests can connect easily?", a: "Yes. Select the WiFi option, enter your network name (SSID) and password, and the tool creates a QR code that guests can scan to join your network automatically." },
-        { q: "Is there a watermark on QR codes generated by Toolzaply?", a: "No. QR codes downloaded from Toolzaply have no watermark and are free to use for personal or commercial purposes." },
-        { q: "What size should my QR code be for printing?", a: "For print, a QR code should be at least 2 cm × 2 cm (about 0.8 inches). Download the PNG from Toolzaply at high resolution and scale it up in your design software without quality loss." },
+        {
+          q: "How do I create a scannable QR code from a website URL for free?",
+          a: "Paste your website link or URL into the Toolzaply QR Code Generator input box. A high-resolution, scannable QR code generates instantly in real time. Click Download to save the PNG image with zero watermark and no sign-up.",
+        },
+        {
+          q: "Can I convert plain text, email, or messages into a QR code?",
+          a: "Yes. You can paste plain text, email addresses, SMS messages, or WiFi credentials into the input field. Any modern smartphone camera can scan the resulting QR code to view the text or action.",
+        },
+        {
+          q: "Do QR codes generated on Toolzaply ever expire?",
+          a: "No. All QR codes created on Toolzaply are static and permanent. The encoded data is embedded directly into the QR code pattern, so it works forever without redirects or subscriptions.",
+        },
+        {
+          q: "How do I scan a QR code online without an app?",
+          a: "Select the 'Scan QR Code' tab on Toolzaply and click 'Start Camera Scanner'. Point your webcam or mobile camera at any QR code to instantly decode and copy the underlying link or text.",
+        },
+        {
+          q: "Are Toolzaply QR codes free for commercial and print use?",
+          a: "Yes. All generated QR codes are 100% free with no watermarks, branding, or usage limits. You can print them on business cards, menus, posters, or flyers for personal and commercial projects.",
+        },
       ]),
     ],
   },
@@ -603,10 +687,11 @@ export const seoConfigs: Record<string, SEOConfig> = {
   },
 
   "image-compressor": {
-    title: "Compress Image Online Free — Reduce JPG, PNG Size Without Quality Loss",
+    title: "Free Image Compressor — Compress PNG, JPG, WebP Locally | Toolzaply",
     description:
-      "Compress JPG, PNG, and WebP images online for free. Reduce image file size by up to 90% without visible quality loss. No upload to server — runs in your browser.",
+      "Compress and reduce image file sizes by up to 90% without visible quality loss. Runs 100% locally in your browser — zero server uploads, no file size limits.",
     keywords: [
+      "compress image locally in browser",
       "compress image online free",
       "reduce image size online",
       "image compressor without quality loss",
@@ -620,10 +705,10 @@ export const seoConfigs: Record<string, SEOConfig> = {
       "webp image compressor",
       "compress image file size",
       "photo size reducer online",
-      "image compression tool free",
+      "local data processing image compression",
       "shrink image file size online",
     ],
-    ogTitle: "Free Image Compressor — Reduce JPG & PNG Size Online",
+    ogTitle: "Free Image Compressor — Compress PNG, JPG, WebP Locally",
     ogDescription:
       "Compress JPG, PNG, WebP images online without losing quality. Reduce file size by up to 90%. No upload, no sign-up, instant download.",
     ogImage: siteConfig.ogImage,
@@ -634,18 +719,43 @@ export const seoConfigs: Record<string, SEOConfig> = {
         "Free online image compressor. Reduce JPG, PNG, and WebP file sizes by up to 90% without visible quality loss, entirely in your browser.",
         "/tools/image-compressor",
         "UtilityApplication",
-        ["JPG/JPEG compression", "PNG compression", "WebP compression", "Up to 90% size reduction", "Batch compression", "Quality slider control", "No file upload to server"]
+        [
+          "JPG/JPEG compression",
+          "PNG compression",
+          "WebP compression",
+          "Up to 90% size reduction",
+          "Batch compression",
+          "Quality slider control",
+          "100% local client-side processing",
+          "No file upload to server",
+        ]
       ),
       breadcrumb("Image Compressor", "/tools/image-compressor"),
       faqSchema([
-        { q: "How do I compress an image without losing quality?", a: "Upload your image to the Image Compressor on Toolzaply and use the quality slider to find the best balance between file size and visual quality. Compression of 60–80% quality typically reduces file size by 50–80% with no visible difference." },
-        { q: "What image formats can I compress on Toolzaply?", a: "Toolzaply supports JPG/JPEG, PNG, and WebP image compression. All processing happens in your browser — your images are never uploaded to any server." },
-        { q: "How much can I reduce an image file size?", a: "Typically 40–90% depending on the original image and the quality setting. A 5MB JPG can often be reduced to under 500KB with minimal visible quality change." },
-        { q: "Can I compress multiple images at once?", a: "Yes. Select multiple images when uploading and the tool compresses each one individually, allowing you to download them all." },
-        { q: "Is my image data private when using Toolzaply's compressor?", a: "Yes. All image compression happens locally in your browser using JavaScript. Your images are never sent to any server, ensuring complete privacy." },
+        {
+          q: "How do I compress an image without losing quality or uploading it to a server?",
+          a: "Upload your image to the Image Compressor on Toolzaply. All compression algorithms execute inside your browser's memory without sending bytes across the web, preserving maximum visual fidelity while reducing file size by 50–90%.",
+        },
+        {
+          q: "What image formats can I compress on Toolzaply?",
+          a: "Toolzaply supports JPG/JPEG, PNG, and WebP image compression. All processing happens in your browser — your images are never uploaded to any server.",
+        },
+        {
+          q: "How much can I reduce an image file size?",
+          a: "Typically 40–90% depending on the original image and the quality setting. A 5MB JPG can often be reduced to under 500KB with minimal visible quality change.",
+        },
+        {
+          q: "Can I compress multiple images at once?",
+          a: "Yes. Select multiple images when uploading and the tool compresses each one individually, allowing you to download them all.",
+        },
+        {
+          q: "Is my image data private when using Toolzaply's compressor?",
+          a: "Yes. All image compression happens locally in your browser using JavaScript. Your images are never sent to any server, ensuring complete privacy.",
+        },
       ]),
     ],
   },
+
 
   "age-calculator": {
     title: "Age Calculator — How Old Am I? Calculate Exact Age Free",
@@ -1136,5 +1246,13 @@ export const seoConfigs: Record<string, SEOConfig> = {
 };
 
 export const getSEOConfig = (toolId: string): SEOConfig => {
-  return seoConfigs[toolId] || seoConfigs.home;
+  const normalized = toolId.toLowerCase().replace(/_/g, "-");
+  if (seoConfigs[normalized]) return seoConfigs[normalized];
+  if (normalized === "imagecompressor") return seoConfigs["image-compressor"];
+  if (normalized === "wordtopdf") return seoConfigs["word-to-pdf"];
+  if (normalized === "imagetopdf") return seoConfigs["image-to-pdf"];
+  if (normalized === "pdftools") return seoConfigs["pdf-tools"];
+  if (normalized === "qrtools" || normalized === "qr-generator") return seoConfigs["qr-tools"];
+  return seoConfigs.home;
 };
+

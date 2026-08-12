@@ -332,19 +332,40 @@ export const toolGuides: Record<string, ToolGuideData> = {
     intro: "QR codes have undergone a remarkable evolution from a niche industrial tracking technology to a ubiquitous part of everyday life. In 1994, Masahiro Hara invented the QR code at Denso Wave — a Toyota subsidiary — to solve a specific manufacturing problem: standard barcodes could only store about 20 characters, far too little to track complex automotive parts through production. The QR code's two-dimensional design increased capacity by several thousand percent while maintaining fast, reliable scanning. Today, QR codes appear on restaurant menus, payment terminals, museum exhibits, business cards, event tickets, and public health campaigns worldwide.",
     sections: [
       {
+        heading: "How to Create a Scannable QR Code from a Website URL or Link",
+        paragraphs: [
+          "Creating a scannable QR code from any website URL or link is straightforward with Toolzaply. Simply paste your complete link (e.g., https://yourwebsite.com) into the input field above. The tool immediately renders a high-contrast matrix that can be recognized by iOS Camera, Google Lens, and all Android camera scanners.",
+          "To ensure the highest scannability when printing on flyers, business cards, or packaging, keep your URLs as short as possible. Shorter destination links produce cleaner, less dense QR code grids with larger module squares, making them easy to scan even from a distance or under dim lighting conditions.",
+          "Once generated, you can download your custom QR code directly as a crisp PNG image. Because the generation runs entirely in your browser using local client-side processing, there are no artificial subscription locks, watermarks, or daily generation caps."
+        ]
+      },
+      {
+        heading: "Generating QR Codes from Plain Text, Emails, and WiFi Passwords",
+        paragraphs: [
+          "Beyond simple website links, QR codes can store plain text notes, email draft triggers (mailto:), SMS templates, and automated WiFi connection strings. When guests scan a WiFi QR code, modern smartphones automatically detect the network SSID and encryption key, prompting the user to connect without typing long, complex passwords.",
+          "Plain text QR codes are widely used for inventory tracking, digital business cards (vCard), coupon codes, and event check-in passes. The built-in error correction algorithms ensure that even if up to 30% of the QR code surface is scratched, obstructed, or printed on textured paper, the encoded text can still be recovered accurately."
+        ]
+      },
+      {
+        heading: "How to Scan QR Codes Online Directly in Your Web Browser",
+        paragraphs: [
+          "You no longer need to download ad-heavy mobile apps or third-party scanner utilities to read QR codes. Toolzaply includes a built-in browser scanner that accesses your device's camera via secure WebRTC APIs.",
+          "Simply toggle to the 'Scan QR Code' tab and grant temporary camera access. The scanner detects and decodes QR codes in real time, displaying the underlying URL or text with a one-click 'Copy to Clipboard' button. Your camera feed is processed strictly inside your device's memory and is never recorded or streamed to any remote server."
+        ]
+      },
+      {
+        heading: "Why Client-Side QR Codes Never Expire and Protect Privacy",
+        paragraphs: [
+          "Many commercial QR code generators create 'dynamic' redirect links that redirect through their private servers and stop working after 14 days unless you pay a recurring fee. In contrast, Toolzaply generates 100% static QR codes.",
+          "Static QR codes embed your actual URL or raw text directly into the optical matrix itself. They contain no middleman redirect, require zero server tracking, and will continue scanning permanently forever with zero risk of expiration."
+        ]
+      },
+      {
         heading: "How QR Codes Store and Encode Data",
         paragraphs: [
           "A QR code is essentially a two-dimensional barcode — a grid of black and white squares (called modules) that encode information in both horizontal and vertical dimensions. Unlike a traditional barcode that can only be read in one direction, a QR code can be scanned from any angle, even upside down. This is possible because of three finder patterns — the distinctive square spirals in three corners of every QR code — that tell the scanner both where the code is and how it's oriented.",
           "The data itself is stored in the remaining modules using a binary encoding scheme: dark module = 1, light module = 0. Depending on the content type, the code uses one of four encoding modes: Numeric (digits only, most efficient), Alphanumeric (uppercase letters and some symbols), Byte (full ASCII/UTF-8), and Kanji (Japanese characters). A standard QR code can hold up to 7,089 numeric characters or 4,296 alphanumeric characters. More data requires more modules, which creates a larger, denser code.",
           "A critical feature that makes QR codes robust in real-world conditions is Reed-Solomon error correction — the same algorithm used to recover data from scratched CDs. QR codes can be scanned successfully even with up to 30% of their surface damaged, obscured, or decorated (which is why you can put a company logo in the center of a QR code and it still scans). The error correction level trades capacity for resilience: Level L (7% recovery), Level M (15%), Level Q (25%), Level H (30%)."
-        ]
-      },
-      {
-        heading: "Creating Effective QR Codes",
-        paragraphs: [
-          "The most important principle for QR code generation is: shorter content = simpler code = faster, more reliable scanning. Every character you add to a QR code increases its density. A QR code encoding a URL like 'https://toolzaply.com' will be noticeably simpler and faster to scan than one encoding a 500-character vCard with full contact information. Where possible, use a URL shortener to minimize the encoded text before generating your code.",
-          "For print use, QR codes need a minimum size of approximately 2 cm × 2 cm (about 0.8 inches × 0.8 inches) to be reliably scanned from a normal reading distance of 20–30 cm. For codes that will be scanned from greater distances — such as on a billboard or poster — scale proportionally. A poster code scanned from 1 meter away should be at least 10 cm × 10 cm. Always include a sufficient quiet zone (white border) around the code — at least 4 modules wide — or scanners may not detect the code at all.",
-          "Test your QR code with at least two different devices and scanning apps before printing or publishing it. Different scanning apps handle edge cases differently, and what scans perfectly in one app may fail in another. If you're printing the code, test a physical print rather than relying on the screen version — the printing process can introduce subtle distortions that affect scannability."
         ]
       },
       {
@@ -358,18 +379,19 @@ export const toolGuides: Record<string, ToolGuideData> = {
     ],
     tips: [
       "Use URL shorteners before encoding long URLs — a shorter input produces a less dense QR code that scans faster and more reliably.",
-      "Add a brief text label below your printed QR code ('Scan to see our menu' or 'Scan to pay') — users are more likely to scan when they know what to expect.",
-      "For business cards, encode just your primary URL rather than full vCard data. A simple URL is more reliable and keeps the code clean enough to scale down on a business card.",
-      "Test your printed QR code in different lighting conditions — codes that scan easily in good light can fail in dim environments or under harsh direct lighting.",
-      "QR codes generated by client-side tools (like this one) are static and permanent — they will always encode the same data regardless of whether you can edit them later."
+      "Add a brief text label below your printed QR code ('Scan to visit website' or 'Scan to connect WiFi') — users are much more likely to scan when expectations are clear.",
+      "For business cards, encode your direct portfolio link or website rather than a massive 500-word vCard so the printed code remains clean and easy to scan.",
+      "Test your printed QR code under varied lighting conditions before mass printing.",
+      "Static QR codes generated here have no expiration date — they will scan indefinitely."
     ],
     mistakes: [
-      "Making the code too small for the scanning distance: a code that works on screen may be too dense to scan when printed at business card size.",
-      "Encoding too much data: every additional character increases code density and scanning difficulty. Keep encoded content concise.",
-      "Removing the quiet zone (white border): scanning apps use the quiet zone to locate the code boundary. Cutting into it will prevent many scanners from detecting the code.",
-      "Encoding a URL that is later taken down or changed: static QR codes cannot be redirected after generation. If the destination URL might change, use a dynamic QR code service that redirects through a short URL you control."
+      "Making the printed QR code smaller than 2cm x 2cm for normal handheld reading.",
+      "Removing the white quiet zone padding around the code which scanners need to detect boundaries.",
+      "Using third-party dynamic QR generators that expire after a 14-day free trial.",
+      "Inverting colors to dark backgrounds with light modules without verifying scanner compatibility."
     ]
   },
+
 
   "markdown-editor": {
     headline: "The Complete Guide to Markdown: Syntax, Uses, and Best Practices",

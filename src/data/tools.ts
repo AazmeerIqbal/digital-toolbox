@@ -29,7 +29,7 @@ export const tools: Tool[] = [
   {
     id: "word-to-pdf",
     title: "Word to PDF Converter",
-    description: "Convert .docx Word documents to PDF instantly in your browser — no upload, no software needed",
+    description: "Convert .docx Word documents to PDF without uploading — 100% private local processing",
     icon: FileOutput,
     route: "/tools/word-to-pdf",
     category: "conversion",
@@ -38,7 +38,7 @@ export const tools: Tool[] = [
   {
     id: "image-to-pdf",
     title: "Image to PDF Converter",
-    description: "Convert multiple images into a single PDF document instantly",
+    description: "Combine multiple JPG, PNG, and WebP images into a single PDF document instantly without uploads",
     icon: FileImage,
     route: "/tools/image-to-pdf",
     category: "conversion",
@@ -47,7 +47,7 @@ export const tools: Tool[] = [
   {
     id: "pdf-tools",
     title: "PDF Tools Suite",
-    description: "Merge, split, rotate, compress and extract content from PDFs",
+    description: "Merge, split, rotate, compress and extract content from PDFs locally in your browser",
     icon: FileText,
     route: "/tools/pdf-tools",
     category: "productivity",
@@ -56,7 +56,7 @@ export const tools: Tool[] = [
   {
     id: "text-converter",
     title: "Text Case Converter",
-    description: "Convert text to uppercase, lowercase, title case, camelCase and more",
+    description: "Convert text to uppercase, lowercase, title case, camelCase, snake_case and more",
     icon: Type,
     route: "/tools/text-converter",
     category: "conversion",
@@ -74,7 +74,7 @@ export const tools: Tool[] = [
   {
     id: "qr-tools",
     title: "QR Code Generator & Scanner",
-    description: "Generate QR codes from text/URLs and scan QR codes using your camera",
+    description: "Generate scannable QR codes from URLs/text and scan QR codes with camera — 100% free with no expiry",
     icon: QrCode,
     route: "/tools/qr-tools",
     category: "generation",
