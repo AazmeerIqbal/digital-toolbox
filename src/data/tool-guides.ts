@@ -709,3 +709,6 @@ export const toolGuides: Record<string, ToolGuideData> = {
   }
 
 };
+
+// Alias for kebab-case ID consistency
+toolGuides["image-compressor"] = toolGuides["imagecompressor"];
