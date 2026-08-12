@@ -97,6 +97,123 @@
         }
       }
     </script>
+    <!-- Critical Pre-hydration CSS (Guarantees zero FOUC / unstyled skeleton flash) -->
+    <style id="critical-theme">
+      html, body {
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+        background-color: #fafafa;
+        color: #09090b;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      @media (prefers-color-scheme: dark) {
+        html, body {
+          background-color: #09090b;
+          color: #f4f4f5;
+        }
+      }
+      #root > header {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        padding: 1rem 1.5rem;
+        background: rgba(255, 255, 255, 0.9);
+      }
+      @media (prefers-color-scheme: dark) {
+        #root > header {
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(9, 9, 11, 0.9);
+        }
+      }
+      #root > header nav {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
+      #root > header nav a {
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.95rem;
+        color: inherit;
+        opacity: 0.85;
+      }
+      #root > header nav a:first-child {
+        font-weight: 800;
+        font-size: 1.3rem;
+        color: #4f46e5;
+        opacity: 1;
+      }
+      #root > main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2.5rem 1.5rem;
+      }
+      #root > main h1 {
+        font-size: 2.25rem;
+        font-weight: 800;
+        line-height: 1.25;
+        margin-bottom: 1rem;
+        letter-spacing: -0.02em;
+      }
+      #root > main h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-top: 2rem;
+        margin-bottom: 0.75rem;
+      }
+      #root > main p {
+        line-height: 1.65;
+        margin-bottom: 1rem;
+        opacity: 0.85;
+      }
+      #root > main ul {
+        list-style: none;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+      #root > main ul li {
+        background: rgba(0, 0, 0, 0.02);
+        border: 1px solid rgba(0, 0, 0, 0.07);
+        border-radius: 0.75rem;
+        padding: 1.25rem;
+      }
+      @media (prefers-color-scheme: dark) {
+        #root > main ul li {
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+      }
+      #root > main ul li a {
+        text-decoration: none;
+        font-weight: 600;
+        color: #4f46e5;
+      }
+      @media (prefers-color-scheme: dark) {
+        #root > main ul li a {
+          color: #818cf8;
+        }
+      }
+      #root > footer {
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
+        max-width: 1200px;
+        margin: 4rem auto 0;
+        padding: 2.5rem 1.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2.5rem;
+        font-size: 0.875rem;
+      }
+      @media (prefers-color-scheme: dark) {
+        #root > footer {
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+      }
+    </style>
   </head>
 
   <body>
@@ -104,3 +221,4 @@
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
+
